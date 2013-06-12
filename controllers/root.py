@@ -4,15 +4,14 @@
 #
 
 from webapp2 import RequestHandler
-from helpers.views import static
+from helpers.views import static, render
 
 class HomeRoute(RequestHandler):
 
     def get(self):
-        body  = "Hello\nHere is your configuration\n"
-        for item in self.app.config.items():
-            body += " %s: %s\n" % item
-        return self.response.write(body)
+        data = {'message': 'Hello World!'}
+        body = render('index.html', data)
+        self.response.write(body)
 
 
 def error_404(request, response, exception):
