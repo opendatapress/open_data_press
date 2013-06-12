@@ -4,7 +4,7 @@
 #
 
 from webapp2 import RequestHandler
-
+from helpers.views import static
 
 class HomeRoute(RequestHandler):
 
@@ -16,10 +16,10 @@ class HomeRoute(RequestHandler):
 
 
 def error_404(request, response, exception):
-    response.write("Error 404")
+    response.write(static('404.html'))
     response.set_status(404)
 
 
 def error_500(request, response, exception):
-    response.write("Error 500")
+    response.write(static('500.html'))
     response.set_status(500)
