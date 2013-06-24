@@ -1,2 +1,3 @@
+environment: production
 api_key: production-1234567890
 debug: false
