@@ -17,10 +17,8 @@ def load_config():
     if os.environ['SERVER_SOFTWARE'].startswith('Dev'):
         conf_f = open(os.path.abspath('./conf/development.yaml'), 'r')
         config = dict(config.items() + yaml.load(conf_f.read()).items())
-        debug  = True
     else:
         conf_f = open(os.path.abspath('./conf/production.yaml'), 'r')
         config = dict(config.items() + yaml.load(conf_f.read()).items())
-        debug  = False
 
-    return debug, config
+    return config
