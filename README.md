@@ -68,6 +68,19 @@ Views can be rendered using the `helpers.views.render` method.
             self.response.write(body)
 
 
+Sessions
+--------
+
+A helper library exists to make session management easier.
+
+        from helpers.sessions import SessionHandler
+        class MyRoute(SessionHandler):
+            def get(self):
+                self.session['foo'] = 'bar'
+                foo = self.session.get('foo')
+                self.response.write("Foo: %s" % foo)
+
+
 Unit Tests
 ----------
 

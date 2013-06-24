@@ -1,1 +1,5 @@
 title: My Application
+
+# Session cookie configuration
+webapp2_extras.sessions:
+  secret_key: my-secret-session-key
