@@ -3,6 +3,10 @@
 # The main application file
 #
 
+# Add 3rd-party library folder in to system path
+import sys
+sys.path.insert(0, 'lib')
+
 from webapp2 import WSGIApplication
 from helpers.config import load_config
 
