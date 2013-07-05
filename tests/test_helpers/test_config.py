@@ -8,14 +8,12 @@ class LoadConfigTest(unittest.TestCase):
 
     def test_development_config(self):
         os.environ['SERVER_SOFTWARE'] = 'Dev-XXX'
-        debug, config = load_config()
-        self.assertIsInstance(debug, bool)
+        config = load_config()
         self.assertIsInstance(config, dict)
-        self.assertTrue(debug)
+        self.assertTrue(config['debug'])
 
     def test_production_config(self):
         os.environ['SERVER_SOFTWARE'] = 'Live-XXX'
-        debug, config = load_config()
-        self.assertIsInstance(debug, bool)
+        config = load_config()
         self.assertIsInstance(config, dict)
-        self.assertFalse(debug)
+        self.assertFalse(config['debug'])
