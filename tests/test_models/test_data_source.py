@@ -4,7 +4,7 @@ import unittest
 from models.data_source import DataSource
 
 
-class TestUserModel(unittest.TestCase):
+class TestDataSourceModel(unittest.TestCase):
 
     def setUp(self):
         self.ds = DataSource()
