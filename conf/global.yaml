@@ -1,5 +1,8 @@
 title: My Application
 
 # Session cookie configuration
+# For more options see: 
+# https://webapp-improved.appspot.com/api/webapp2_extras/sessions.html#api-webapp2-extras-sessions
 webapp2_extras.sessions:
   secret_key: my-secret-session-key
+  cookie_name: _odp
