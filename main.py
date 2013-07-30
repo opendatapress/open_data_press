@@ -40,9 +40,6 @@ routes = [
     ('/dashboard',                                        dashboard.MainRoute),
 
     # API
-    (r'/api/?',                                           api.Error404Route),
-    (r'/api/0/?',                                         api.Error404Route),
-    (r'/api/0/google/?',                                  api.Error404Route),
     (r'/api/0/google/sheets/?',                           api.GoogleSheetsListRoute),
     (r'/api/0/google/sheets/(\d+)/?',                     api.GoogleSheetsItemRoute),
     (r'/api/0/google/sheets/(\d+)/(\d+)/?',               api.GoogleSheetsWorksheetRoute),
@@ -51,6 +48,7 @@ routes = [
     (r'/api/0/data_source/(\d+)/?',                       api.DataSourceItemRoute),
     (r'/api/0/data_source/(\d+)/view/?',                  api.DataViewListRoute),
     (r'/api/0/data_source/(\d+)/view/(\d+)/?',            api.DataViewItemRoute),
+    (r'/api/.*',                                          api.Error404Route),
 
     # Public Site
     # Last in list for profile pattern matching
