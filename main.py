@@ -12,6 +12,10 @@ from helpers.config import load_config
 
 # Explicitly import controller classes
 from controllers import root
+from controllers import public
+from controllers import session
+from controllers import dashboard
+from controllers import api
 
 
 __author__  = "YOUR NAME"
@@ -23,7 +27,36 @@ __version__ = "0.1"
 
 # Map route patterns to controller handlers
 routes = [
-    ('/', root.HomeRoute)
+
+    # Home Root
+    ('/',                                                 root.HomeRoute),
+
+    # Session
+    ('/auth/login',                                       session.LoginRoute),
+    ('/auth/logout',                                      session.LogoutRoute),
+    ('/auth/oauth2callback',                              session.OAuth2CallbackRoute),
+
+    # Dashboard
+    ('/dashboard',                                        dashboard.MainRoute),
+
+    # API
+    (r'/api/?',                                           api.Error404Route),
+    (r'/api/0/?',                                         api.Error404Route),
+    (r'/api/0/user/?',                                    api.UserRoute),
+    (r'/api/0/data_source/?',                             api.DataSourceListRoute),
+    (r'/api/0/data_source/(\d+)/?',                       api.DataSourceItemRoute),
+    (r'/api/0/data_source/(\d+)/view/?',                  api.DataViewListRoute),
+    (r'/api/0/data_source/(\d+)/view/(\d+)/?',            api.DataViewItemRoute),
+    (r'/api/0/google/?',                                  api.Error404Route),
+    (r'/api/0/google/sheets/?',                           api.GoogleSheetsListRoute),
+    (r'/api/0/google/sheets/(\d+)/?',                     api.GoogleSheetsItemRoute),
+    (r'/api/0/google/sheets/(\d+)/(\d+)/?',               api.GoogleSheetsWorksheetRoute),
+
+    # Public Site
+    # Last in list for profile pattern matching
+    (r'/([A-Za-z0-9\-]+)/?',                              public.ProfileRoute),
+    (r'/([A-Za-z0-9\-]+)/([A-Za-z0-9\-]+)/?',             public.DataSourceRoute),
+    (r'/([A-Za-z0-9\-]+)/([A-Za-z0-9\-]+)\.([A-Za-z]+)?', public.DataViewRoute),
 ]
 
 
