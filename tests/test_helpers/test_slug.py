@@ -17,6 +17,9 @@ class SlugTest(unittest.TestCase):
         with self.assertRaises(ValueError): slug.create(False)
         with self.assertRaises(ValueError): slug.create(0.0)
         with self.assertRaises(ValueError): slug.create("")
+        with self.assertRaises(ValueError): slug.create("a")
+        with self.assertRaises(ValueError): slug.create("ab")
+        with self.assertRaises(ValueError): slug.create("ab!")
 
         # (input_string, output_string)
         strings_to_test = [
