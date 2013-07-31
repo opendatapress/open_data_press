@@ -6,6 +6,15 @@
 import re
 import unicodedata
 
+class SlugError(Exception):
+    """ A slug generation exception """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value
+
+
 def create(string):
     """ Attempts to create a valid url slug from string """
     if not isinstance(string, str) and not isinstance(string, unicode):
@@ -19,7 +28,7 @@ def create(string):
     slug = re.sub(r'\s+', '-', string).lower()
 
     if len(slug) < 3:
-        raise ValueError("Generated slug must be at least 3 characters long")
+        raise SlugError("Generated slug must be at least 3 characters long")
 
     return slug
 
