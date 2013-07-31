@@ -52,9 +52,9 @@ routes = [
 
     # Public Site
     # Last in list for profile pattern matching
-    (r'/([A-Za-z0-9\-]+)/?',                              public.ProfileRoute),
-    (r'/([A-Za-z0-9\-]+)/([A-Za-z0-9\-]+)/?',             public.DataSourceRoute),
-    (r'/([A-Za-z0-9\-]+)/([A-Za-z0-9\-]+)\.([A-Za-z]+)?', public.DataViewRoute),
+    (r'/([A-Za-z0-9\-\_]+)/?',                              public.ProfileRoute),
+    (r'/([A-Za-z0-9\-\_]+)/([A-Za-z0-9\-\_]+)/?',             public.DataSourceRoute),
+    (r'/([A-Za-z0-9\-\_]+)/([A-Za-z0-9\-\_]+)\.([A-Za-z]+)?', public.DataViewRoute),
 ]
 
 
