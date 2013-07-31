@@ -32,7 +32,7 @@ class SlugTest(unittest.TestCase):
         ]
 
         # Friendly URL regex
-        regex = re.compile('^[a-z0-9\-\_]+$')
+        regex = re.compile('^[a-z0-9\-\_]{3,}$')
 
         # Test a series of string conversions
         for in_str, out_str in strings_to_test:
@@ -46,4 +46,16 @@ class SlugTest(unittest.TestCase):
 
 
     def test_slug_validate(self):
-        pass
+
+        self.assertFalse(slug.validate(" abc123"))
+        self.assertFalse(slug.validate("abc123 "))
+        self.assertFalse(slug.validate("abc 123"))
+        self.assertFalse(slug.validate("abc!123"))
+        self.assertFalse(slug.validate("!!!"))
+        self.assertFalse(slug.validate("a"))
+        self.assertFalse(slug.validate("ab"))
+
+        self.assertTrue(slug.validate("abc"))
+        self.assertTrue(slug.validate("abc123"))
+        self.assertTrue(slug.validate("abc-123"))
+        self.assertTrue(slug.validate("abc_123"))

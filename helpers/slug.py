@@ -7,6 +7,7 @@ import re
 import unicodedata
 
 def create(string):
+    """ Attempts to create a valid url slug from string """
     if not isinstance(string, str) and not isinstance(string, unicode):
         raise ValueError("Input must be a non-empty string")
 
@@ -24,5 +25,6 @@ def create(string):
 
 
 def validate(string):
-    # TODO
-    return True
+    """ Validates that string is formatted like a url slug """
+    regex = re.compile('^[a-z0-9\-\_]{3,}$')
+    return regex.match(string)
