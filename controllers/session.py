@@ -7,15 +7,22 @@ from webapp2 import RequestHandler
 from helpers import google_api
 from oauth2client.client import FlowExchangeError
 
+
+# Build oAuth2 request and redirect to Google authentication endpoint
 class LoginRoute(RequestHandler):
     def get(self):
         flow = google_api.oauth2_flow()
         self.redirect(flow.step1_get_authorize_url())
 
+
+# Clear user session and return to home page
 class LogoutRoute(RequestHandler):
     def get(self):
         self.response.write('logout')
 
+
+# Handle oAuth2 callback
+# Create session and (if required) user account
 class OAuth2CallbackRoute(RequestHandler):
     def get(self):
         
