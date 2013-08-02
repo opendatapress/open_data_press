@@ -5,6 +5,16 @@
 
 import os
 import yaml
+import parser
+
+
+class ConfigurationError(Exception):
+    """ A general configuration exception """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value
 
 
 def load_config():
