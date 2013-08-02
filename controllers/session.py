@@ -7,6 +7,7 @@ from webapp2 import RequestHandler
 from helpers import google_api
 from helpers.sessions import SessionHandler
 from oauth2client.client import FlowExchangeError
+from oauth2client.anyjson import simplejson as json
 
 
 # Build oAuth2 request and redirect to Google authentication endpoint
@@ -33,8 +34,11 @@ class OAuth2CallbackRoute(SessionHandler):
 
         try:
             flow = google_api.oauth2_flow()
-            self.session['credentials'] = flow.step2_exchange(code).to_json()
-            self.response.write('Authenticated <a href="/auth/login">re-login</a><br><code>%s</code>' % self.session['credentials'])
+            auth = flow.step2_exchange(code).to_json()
+            self.session['credentials'] = auth
+            user_info = google_api.user_info(auth)
+            body = '<a href="/auth/login">re-login</a><hr><code>%s</code><hr><code>%s</code>'
+            self.response.write(body % (auth, json.dumps(user_info)))
         except FlowExchangeError as e:
             logging.error("oAuth2 Flow Exchange Error: %s" % e)
             self.response.write('Flow exchange error: %s' % e)
