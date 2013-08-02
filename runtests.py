@@ -12,8 +12,9 @@
 # Adapted from:
 # https://developers.google.com/appengine/docs/python/tools/localunittesting
 
-import os
 import sys
+sys.path.insert(0, 'lib')
+import os
 import unittest
 import optparse
 
