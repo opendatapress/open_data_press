@@ -5,6 +5,7 @@
 import logging
 from webapp2 import RequestHandler
 from helpers import google_api
+from helpers.sessions import SessionHandler
 from oauth2client.client import FlowExchangeError
 
 
@@ -23,7 +24,7 @@ class LogoutRoute(RequestHandler):
 
 # Handle oAuth2 callback
 # Create session and (if required) user account
-class OAuth2CallbackRoute(RequestHandler):
+class OAuth2CallbackRoute(SessionHandler):
     def get(self):
         
         code = self.request.GET.get('code')
@@ -32,8 +33,8 @@ class OAuth2CallbackRoute(RequestHandler):
 
         try:
             flow = google_api.oauth2_flow()
-            auth = flow.step2_exchange(code)
-            self.response.write('Authenticated <a href="/auth/login">re-login</a><br><code>%s</code>' % auth.to_json())
+            self.session['credentials'] = flow.step2_exchange(code).to_json()
+            self.response.write('Authenticated <a href="/auth/login">re-login</a><br><code>%s</code>' % self.session['credentials'])
         except FlowExchangeError as e:
             logging.error("oAuth2 Flow Exchange Error: %s" % e)
             self.response.write('Flow exchange error: %s' % e)
