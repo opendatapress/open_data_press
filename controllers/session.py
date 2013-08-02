@@ -35,13 +35,23 @@ class OAuth2CallbackRoute(SessionHandler):
         try:
             flow = google_api.oauth2_flow()
             auth = flow.step2_exchange(code).to_json()
-            self.session['credentials'] = auth
+            
+            # TODO Create/update user record in DB
+            # TODO Store credentials in DB rather than session
+            # TODO Create session
+            self.session['credentials'] = auth 
+            
+            # Get user info
             user_info = google_api.user_info(auth)
+
+            # Show results
             body = '<a href="/auth/login">re-login</a><hr><code>%s</code><hr><code>%s</code>'
             self.response.write(body % (auth, json.dumps(user_info)))
+
         except FlowExchangeError as e:
             logging.error("oAuth2 Flow Exchange Error: %s" % e)
             self.response.write('Flow exchange error: %s' % e)
+            
         except Exception as e:
             logging.error("oAuth2 Unknown Error: %s" % e)
             self.response.write('Something went wrong: %s' % e)
