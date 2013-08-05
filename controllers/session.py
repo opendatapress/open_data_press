@@ -18,9 +18,16 @@ class LoginRoute(RequestHandler):
 
 
 # Clear user session and return to home page
-class LogoutRoute(RequestHandler):
+class LogoutRoute(SessionHandler):
     def get(self):
-        self.response.write('logout')
+        del self.session['credentials']
+        self.response.write('loged out')
+
+
+# Show contents of session
+class SessionRoute(SessionHandler):
+    def get(self):
+        self.response.write("<code>%s</code>" % self.session)
 
 
 # Handle oAuth2 callback
