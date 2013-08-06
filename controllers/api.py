@@ -4,9 +4,14 @@
 #
 
 from webapp2 import RequestHandler
+from oauth2client.client import OAuth2Credentials
+from oauth2client.anyjson import simplejson as json
+
+from helpers import google_api
+from helpers.sessions import SessionHandler
 
 
-class UserRoute(RequestHandler):
+class UserRoute(SessionHandler):
 
     def get(self):
         self.response.content_type = 'application/json'
@@ -17,7 +22,7 @@ class UserRoute(RequestHandler):
         self.response.write('{"response":"success","body":"user"}')
 
 
-class DataSourceListRoute(RequestHandler):
+class DataSourceListRoute(SessionHandler):
 
     def get(self):
         self.response.content_type = 'application/json'
@@ -28,7 +33,7 @@ class DataSourceListRoute(RequestHandler):
         self.response.write('{"response":"success","body":"data source list"}')
 
 
-class DataSourceItemRoute(RequestHandler):
+class DataSourceItemRoute(SessionHandler):
 
     def get(self, data_source_id):
         self.response.content_type = 'application/json'
@@ -43,7 +48,7 @@ class DataSourceItemRoute(RequestHandler):
         self.response.write('{"response":"success","body":"data source item"}')
 
 
-class DataViewListRoute(RequestHandler):
+class DataViewListRoute(SessionHandler):
 
     def get(self, data_source_id):
         self.response.content_type = 'application/json'
@@ -54,7 +59,7 @@ class DataViewListRoute(RequestHandler):
         self.response.write('{"response":"success","body":"data view list"}')
 
 
-class DataViewItemRoute(RequestHandler):
+class DataViewItemRoute(SessionHandler):
 
     def get(self, data_source_id, data_view_id):
         self.response.content_type = 'application/json'
@@ -69,18 +74,21 @@ class DataViewItemRoute(RequestHandler):
         self.response.write('{"response":"success","body":"data view item"}')
 
 
-class GoogleSheetsListRoute(RequestHandler):
+class GoogleSheetsListRoute(SessionHandler):
 
     def get(self):
+        credentials = self.session.get('credentials')
+        query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
+        drive_files = google_api.list_drive_files(credentials, query=query)
         self.response.content_type = 'application/json'
-        self.response.write('{"response":"success","body":"google sheets list"}')
+        self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
 
     def post(self):
         self.response.content_type = 'application/json'
         self.response.write('{"response":"success","body":"google sheets list"}')
 
 
-class GoogleSheetsItemRoute(RequestHandler):
+class GoogleSheetsItemRoute(SessionHandler):
 
     def get(self, google_sheets_id):
         self.response.content_type = 'application/json'
@@ -91,7 +99,7 @@ class GoogleSheetsItemRoute(RequestHandler):
         self.response.write('{"response":"success","body":"google sheets item"}')
 
 
-class GoogleSheetsWorksheetRoute(RequestHandler):
+class GoogleSheetsWorksheetRoute(SessionHandler):
 
     def get(self, google_sheets_id, worksheet_key):
         self.response.content_type = 'application/json'
