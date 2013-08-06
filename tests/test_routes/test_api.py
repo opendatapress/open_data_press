@@ -7,19 +7,6 @@ from tests.utils import MockHttp
 from helpers import google_api
 import main # The app
 
-USER_AUTH_JSON="""
-{
-    "access_token":  "XXX",
-    "client_id":     "XXX",
-    "client_secret": "XXX",
-    "refresh_token": "XXX",
-    "token_expiry":  "2015-00-00T00:00:00Z",
-    "token_uri":     "http://example.com",
-    "user_agent":    "XXX",
-    "invalid":       "XXX"
-}
-"""
-
 class TestAPIHandler(unittest.TestCase):
 
     # Helper method to test generic error responses
