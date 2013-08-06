@@ -47,7 +47,7 @@ class OAuth2CallbackRoute(SessionHandler):
             # TODO Create/update user record in DB
             # TODO Store credentials in DB rather than session
             # TODO Create session
-            self.session['credentials'] = auth 
+            self.credentials(auth)
             
             # Get user info
             user_info = google_api.user_info(auth)

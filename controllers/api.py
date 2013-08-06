@@ -10,6 +10,8 @@ from oauth2client.anyjson import simplejson as json
 from helpers import google_api
 from helpers.sessions import SessionHandler
 
+import logging
+
 
 class UserRoute(SessionHandler):
 
@@ -78,10 +80,9 @@ class GoogleSheetsListRoute(SessionHandler):
 
     def get(self):
         self.response.content_type = 'application/json'
-        if 'credentials' in self.session:
-            credentials = self.session.get('credentials')
+        if self.credentials():
             query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-            drive_files = google_api.list_drive_files(credentials, query=query)
+            drive_files = google_api.list_drive_files(self.credentials(), query=query)
             self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
         else:
             self.response.set_status(404)

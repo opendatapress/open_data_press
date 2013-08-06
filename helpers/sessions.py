@@ -32,3 +32,13 @@ class SessionHandler(RequestHandler):
     @cached_property
     def session(self):
         return self.session_store.get_session()
+
+    # Method for getting and setting credentials for the current session
+    def credentials(self, credentials=None):
+        if credentials:
+            self.session['credentials'] = credentials
+            
+        if 'credentials' in self.session:
+            return self.session['credentials']
+        else:
+            return None
