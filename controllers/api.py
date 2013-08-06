@@ -77,11 +77,15 @@ class DataViewItemRoute(SessionHandler):
 class GoogleSheetsListRoute(SessionHandler):
 
     def get(self):
-        credentials = self.session.get('credentials')
-        query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-        drive_files = google_api.list_drive_files(credentials, query=query)
         self.response.content_type = 'application/json'
-        self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
+        if 'credentials' in self.session:
+            credentials = self.session.get('credentials')
+            query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
+            drive_files = google_api.list_drive_files(credentials, query=query)
+            self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
+        else:
+            self.response.set_status(404)
+            self.response.write('{"response":"error","body":"Unauthenticated request"}')
 
     def post(self):
         self.response.content_type = 'application/json'

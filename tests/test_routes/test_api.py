@@ -89,7 +89,7 @@ class TestDashboardHandler(unittest.TestCase):
 
     def test_api_0_google_sheets_path_responds(self):
         response = main.app.get_response('/api/0/google/sheets')
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 404)
         self.assertEqual(response.content_type, 'application/json')
         self.assertIsInstance(json.loads(response.body), dict)
 
