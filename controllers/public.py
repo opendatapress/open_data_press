@@ -13,7 +13,10 @@ class ProfileRoute(RequestHandler):
 class DataSourceRoute(RequestHandler):
 
     def get(self, profile_slug, data_source_slug):
-        self.response.write('data source')
+        if 'copy' in self.request.GET.keys():
+            self.response.write('copy data source')
+        else:
+            self.response.write('view data source')
 
 class DataViewRoute(RequestHandler):
 
