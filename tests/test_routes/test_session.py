@@ -2,6 +2,8 @@
 
 import unittest
 import webapp2
+from tests.utils import MockHttp
+from helpers import google_api
 import main # The app
 
 class TestSessionHandler(unittest.TestCase):
@@ -16,8 +18,15 @@ class TestSessionHandler(unittest.TestCase):
         response = main.app.get_response('/auth/logout')
         self.assertEqual(response.status_int, 200)
 
-    def test_oauth2callback_path_responds(self):
+    def test_oauth2callback_path_fails_without_code(self):
         response = main.app.get_response('/auth/oauth2callback')
         self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.body, 'No authentication code returned')
 
-    # TODO test oAuth2 authentication flow somehow...?
+    def test_oauth2callback_path_succeeds_with_code(self):
+        # Use mock http client in gogole wrappers
+        google_api.httplib2.Http = MockHttp
+        
+        response = main.app.get_response('/auth/oauth2callback?code=abc123')
+        self.assertEqual(response.status_int, 200)
+        self.assertTrue('Authenticated' in response.body)

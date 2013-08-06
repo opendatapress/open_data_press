@@ -53,7 +53,7 @@ class OAuth2CallbackRoute(SessionHandler):
             user_info = google_api.user_info(auth)
 
             # Show results
-            body = '<a href="/auth/login">re-login</a><hr><code>%s</code><hr><code>%s</code>'
+            body = 'Authenticated<br><a href="/auth/login">re-login</a> <a href="/auth/logout">logout</a><hr><code>%s</code><hr><code>%s</code>'
             self.response.write(body % (auth, json.dumps(user_info)))
 
         except FlowExchangeError as e:

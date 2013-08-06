@@ -1,0 +1,13 @@
+{
+ "id": "12345",
+ "email": "dummy_user@gmail.com",
+ "verified_email": true,
+ "name": "Dummy User",
+ "given_name": "Dummy",
+ "family_name": "User",
+ "link": "https://plus.google.com/1234",
+ "picture": "https://lh3.googleusercontent.com/photo.jpg",
+ "gender": "male",
+ "birthday": "0000-01-01",
+ "locale": "en-GB"
+}
