@@ -20,7 +20,8 @@ class LoginRoute(RequestHandler):
 # Clear user session and return to home page
 class LogoutRoute(SessionHandler):
     def get(self):
-        del self.session['credentials']
+        if 'credentials' in self.session:
+            del self.session['credentials']
         self.response.write('loged out')
 
 
