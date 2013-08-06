@@ -48,7 +48,8 @@ routes = [
     (r'/api/0/data_source/(\d+)/?',            api.DataSourceItemRoute),
     (r'/api/0/data_source/(\d+)/view/?',       api.DataViewListRoute),
     (r'/api/0/data_source/(\d+)/view/(\d+)/?', api.DataViewItemRoute),
-    (r'/api.*',                                api.Error404Route),
+    (r'/api/.*',                               api.Error404Route),
+    (r'/api/?',                                api.Error404Route),
 
     # Public Site
     # Last in list for profile pattern matching
