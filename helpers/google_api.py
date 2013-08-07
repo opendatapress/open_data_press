@@ -24,6 +24,9 @@ def oauth2_flow():
 
 
 # Get an HTTP client authorised with oAuth2 credentials json
+#
+#  auth_json : a JSON object of valid credentials
+#
 def http_from_oauth2(auth_json):
     http  = httplib2.Http()
     creds = OAuth2Credentials.from_json(auth_json)
@@ -31,6 +34,9 @@ def http_from_oauth2(auth_json):
 
 
 # Get user information using credentials json
+#
+#  auth_json : a JSON object of valid credentials
+#
 def user_info(auth_json):
     http = http_from_oauth2(auth_json)
     response = http.request('https://www.googleapis.com/oauth2/v2/userinfo')
