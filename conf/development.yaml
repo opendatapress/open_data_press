@@ -1,10 +1,11 @@
 environment: development
 debug: true
 google_api:
-  client_id: XXXX.apps.googleusercontent.com
-  client_secret: XXXX
-  redirect_uri: http://XXXX/auth/oauth2callback
+  client_id: XXX
+  client_secret: XXX
+  redirect_uri: http://localhost:8080/auth/oauth2callback
   scopes:
     - https://www.googleapis.com/auth/drive
     - https://www.googleapis.com/auth/userinfo.email
     - https://www.googleapis.com/auth/userinfo.profile
+    - https://spreadsheets.google.com/feeds
