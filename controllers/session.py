@@ -18,7 +18,6 @@ class LoginRoute(RequestHandler):
             flow = google_api.oauth2_flow(approval_prompt='force')
         else:
             flow = google_api.oauth2_flow()
-        print "login %s" % flow.step1_get_authorize_url()
         self.redirect(flow.step1_get_authorize_url())
 
 
