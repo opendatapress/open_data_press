@@ -95,12 +95,14 @@ def get_cell_data(auth_json, spreadsheet_id, worksheet_key):
 def create_spreadsheet(auth_json, title=""):
     pass
 
+
 # Create a new worksheet in a spreadsheet
 #  auth_json : a JSON object of valid credentials
 #  spreadsheet_id : Identifier for the spreadsheet
 #
 def create_worksheet(auth_json, spreadsheet_id):
     pass
+
 
 # Save data in to a worksheet
 #  auth_json : a JSON object of valid credentials
