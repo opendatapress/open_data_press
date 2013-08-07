@@ -13,7 +13,12 @@ from oauth2client.anyjson import simplejson as json
 # Build oAuth2 request and redirect to Google authentication endpoint
 class LoginRoute(RequestHandler):
     def get(self):
-        flow = google_api.oauth2_flow()
+        if 'approval_prompt' in self.request.GET.keys():
+            # Use /auth/login?approval_prompt to force refresh of authentication tokens
+            flow = google_api.oauth2_flow(approval_prompt='force')
+        else:
+            flow = google_api.oauth2_flow()
+        print "login %s" % flow.step1_get_authorize_url()
         self.redirect(flow.step1_get_authorize_url())
 
 

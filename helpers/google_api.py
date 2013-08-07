@@ -11,14 +11,15 @@ from apiclient.discovery import build
 
 
 # An oAuth2 authentication flow handler
-def oauth2_flow():
+def oauth2_flow(**kwargs):
     config = load_config()
     try:
         return OAuth2WebServerFlow(
             client_id     = config['google_api']['client_id'],
             client_secret = config['google_api']['client_secret'],
             scope         = " ".join(config['google_api']['scopes']),
-            redirect_uri  = config['google_api']['redirect_uri'])
+            redirect_uri  = config['google_api']['redirect_uri'],
+            **kwargs)
     except KeyError as e:
         raise ConfigurationError("Missing required configuration parameter %s" % e)
 
@@ -76,7 +77,9 @@ def list_drive_files(auth_json, query=""):
 #  spreadsheet_id : Identifier for the spreadsheet 
 # 
 def get_worksheets(auth_json, spreadsheet_id):
-    pass
+    http = http_from_oauth2(auth_json)
+    response = http.request('https://')
+    return response[1]
 
 
 # Get all the data in a worksheet
