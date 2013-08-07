@@ -46,3 +46,18 @@ class GoogleAPITest(unittest.TestCase):
         self.assertIsInstance(drive_files, dict)
         self.assertTrue('num_files' in drive_files)
         self.assertTrue('files' in drive_files)
+
+    def test_get_worksheets(self):
+        self.assertIn('get_worksheets', dir(google_api))
+
+    def test_get_cell_data(self):
+        self.assertIn('get_cell_data', dir(google_api))
+
+    def test_create_spreadsheet(self):
+        self.assertIn('create_spreadsheet', dir(google_api))
+
+    def test_create_worksheet(self):
+        self.assertIn('create_worksheet', dir(google_api))
+
+    def test_save_data(self):
+        self.assertIn('save_data', dir(google_api))

@@ -69,3 +69,43 @@ def list_drive_files(auth_json, query=""):
         if not page_token:
             break
     return {'num_files': len(file_list), 'files':file_list}
+
+
+# Get a list of all the worksheets in a spreadsheet
+#  auth_json      : a JSON object of valid credentials
+#  spreadsheet_id : Identifier for the spreadsheet 
+# 
+def get_worksheets(auth_json, spreadsheet_id):
+    pass
+
+
+# Get all the data in a worksheet
+#  auth_json      : a JSON object of valid credentials
+#  spreadsheet_id : Identifier for the spreadsheet 
+#  worksheet_key  : Identifier for the worksheet
+# 
+def get_cell_data(auth_json, spreadsheet_id, worksheet_key):
+    pass
+
+
+# Create a spreadsheet file in Drive
+#  auth_json : a JSON object of valid credentials
+#  title     : the title for the file
+#
+def create_spreadsheet(auth_json, title=""):
+    pass
+
+# Create a new worksheet in a spreadsheet
+#  auth_json : a JSON object of valid credentials
+#  spreadsheet_id : Identifier for the spreadsheet
+#
+def create_worksheet(auth_json, spreadsheet_id):
+    pass
+
+# Save data in to a worksheet
+#  auth_json : a JSON object of valid credentials
+#  spreadsheet_id : Identifier for the spreadsheet 
+#  worksheet_key  : Identifier for the worksheet
+#  data           : 2-D array of cell data - [row [column]]
+def save_data(auth_json, spreadsheet_id, worksheet_key, data=[[]]):
+    pass
