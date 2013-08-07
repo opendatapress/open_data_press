@@ -90,9 +90,6 @@ class GoogleSheetsListRoute(APIHandler):
         drive_files = google_api.list_drive_files(self.credentials(), query=query)
         self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
 
-    def post(self):
-        self.response.write('{"response":"success","body":"google sheets list"}')
-
 
 class GoogleSheetsItemRoute(APIHandler):
 
@@ -104,16 +101,10 @@ class GoogleSheetsItemRoute(APIHandler):
         else:
             self.response.write(json.dumps(sheet))
 
-    def post(self, google_sheets_id):
-        self.response.write('{"response":"success","body":"google sheets item"}')
-
 
 class GoogleSheetsWorksheetRoute(APIHandler):
 
     def get(self, google_sheets_id, worksheet_key):
-        self.response.write('{"response":"success","body":"google sheets worksheet"}')
-
-    def post(self, google_sheets_id, worksheet_key):
         self.response.write('{"response":"success","body":"google sheets worksheet"}')
 
 

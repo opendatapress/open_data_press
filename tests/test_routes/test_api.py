@@ -80,21 +80,12 @@ class TestAPIHandler(unittest.TestCase):
         response = main.app.get_response('/api/0/google/sheets')
         self.denied_authentication(response, 403)
         
-        response = main.app.get_response('/api/0/google/sheets', method='POST')
+        response = main.app.get_response('/api/0/google/sheets/abc123')
         self.denied_authentication(response, 403)
         
-        response = main.app.get_response('/api/0/google/sheets/0')
+        response = main.app.get_response('/api/0/google/sheets/abc123/abc123')
         self.denied_authentication(response, 403)
         
-        response = main.app.get_response('/api/0/google/sheets/0', method='POST')
-        self.denied_authentication(response, 403)
-        
-        response = main.app.get_response('/api/0/google/sheets/0/0')
-        self.denied_authentication(response, 403)
-        
-        response = main.app.get_response('/api/0/google/sheets/0/0', method='POST')
-        self.denied_authentication(response, 403)
-
 
     def test_api_0_get_google_sheets_list(self):
         google_api.httplib2.Http = MockHttp
