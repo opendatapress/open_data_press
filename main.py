@@ -41,8 +41,8 @@ routes = [
 
     # API
     (r'/api/0/google/sheets/?',                api.GoogleSheetsListRoute),
-    (r'/api/0/google/sheets/(\d+)/?',          api.GoogleSheetsItemRoute),
-    (r'/api/0/google/sheets/(\d+)/(\d+)/?',    api.GoogleSheetsWorksheetRoute),
+    (r'/api/0/google/sheets/(\w+)/?',          api.GoogleSheetsItemRoute),
+    (r'/api/0/google/sheets/(\w+)/(\d+)/?',    api.GoogleSheetsWorksheetRoute),
     (r'/api/0/user/?',                         api.UserRoute),
     (r'/api/0/data_source/?',                  api.DataSourceListRoute),
     (r'/api/0/data_source/(\d+)/?',            api.DataSourceItemRoute),

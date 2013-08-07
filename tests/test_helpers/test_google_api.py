@@ -45,10 +45,23 @@ class GoogleAPITest(unittest.TestCase):
         drive_files = google_api.list_drive_files(USER_AUTH_JSON)
         self.assertIsInstance(drive_files, dict)
         self.assertTrue('num_files' in drive_files)
-        self.assertTrue('files' in drive_files)
+        self.assertTrue('files'     in drive_files)
 
     def test_get_worksheets(self):
+        google_api.httplib2.Http = MockHttp
         self.assertIn('get_worksheets', dir(google_api))
+
+        spreadsheet = google_api.get_worksheets(USER_AUTH_JSON, 'dummy_key')
+        self.assertIsInstance(spreadsheet, dict)
+        self.assertTrue('key'           in spreadsheet)
+        self.assertTrue('title'         in spreadsheet)
+        self.assertTrue('updated'       in spreadsheet)
+        self.assertTrue('total_results' in spreadsheet)
+        self.assertTrue('start_index'   in spreadsheet)
+        self.assertTrue('author'        in spreadsheet)
+        self.assertTrue('worksheets'    in spreadsheet)
+        self.assertTrue('name'          in spreadsheet['author'])
+        self.assertTrue('email'         in spreadsheet['author'])
 
     def test_get_cell_data(self):
         self.assertIn('get_cell_data', dir(google_api))

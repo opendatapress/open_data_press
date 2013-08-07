@@ -39,6 +39,10 @@ class MockHttp(object):
         if 'https://www.googleapis.com/drive/v2/files' in uri:
             return httplib2.Response({'status': '200'}), load_data('list_files.json')
 
+        # Response for worksheets list
+        if 'https://spreadsheets.google.com/feeds/worksheets/dummy_key/private/full' in uri:
+            return httplib2.Response({'status': '200'}), load_data('worksheets.xml')
+
 
         logging.error("No MockHTTP response for request to '%s'" % uri)
         return httplib2.Response({}), ''

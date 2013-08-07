@@ -97,7 +97,8 @@ class GoogleSheetsListRoute(APIHandler):
 class GoogleSheetsItemRoute(APIHandler):
 
     def get(self, google_sheets_id):
-        self.response.write('{"response":"success","body":"google sheets item"}')
+        sheet = google_api.get_worksheets(self.credentials(), google_sheets_id)
+        self.response.write(json.dumps(sheet))
 
     def post(self, google_sheets_id):
         self.response.write('{"response":"success","body":"google sheets item"}')

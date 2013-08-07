@@ -4,6 +4,8 @@
 #
 
 import httplib2
+import re
+import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from oauth2client.anyjson import simplejson as json
@@ -74,20 +76,53 @@ def list_drive_files(auth_json, query=""):
 
 # Get a list of all the worksheets in a spreadsheet
 #  auth_json      : a JSON object of valid credentials
-#  spreadsheet_id : Identifier for the spreadsheet 
+#  spreadsheet_key : Identifier for the spreadsheet 
 # 
-def get_worksheets(auth_json, spreadsheet_id):
+def get_worksheets(auth_json, spreadsheet_key):
     http = http_from_oauth2(auth_json)
-    response = http.request('https://')
-    return response[1]
+    uri = 'https://spreadsheets.google.com/feeds/worksheets/%s/private/full' % spreadsheet_key
+    response = http.request(uri)
+    feed = ET.fromstring(response[1])
+
+    # XML Prefixes
+    atom    = '{http://www.w3.org/2005/Atom}'
+    search  = '{http://a9.com/-/spec/opensearchrss/1.0/}'
+    gs      = '{http://schemas.google.com/spreadsheets/2006}'
+
+    # Format spreadsheet data
+    data = {
+        'key':           spreadsheet_key,
+        'title':         feed.find('%stitle' % atom).text,
+        'updated':       feed.find('%supdated' % atom).text,
+        'total_results': int(feed.find('%stotalResults' % search).text),
+        'start_index':   int(feed.find('%sstartIndex' % search).text),
+        'author': {
+            'name':      feed.find('.//%sname' % atom).text,
+            'email':     feed.find('.//%semail' % atom).text,
+        },
+        'worksheets':    [],
+    }
+    
+    # Format worksheet data
+    for entry in feed.findall('%sentry' % atom):
+        worksheet = {
+            'id':        re.sub('^.*full/','',entry.find('%sid' % atom).text),
+            'title':     entry.find('%stitle' % atom).text,
+            'updated':   entry.find('%supdated' % atom).text,
+            'row_count': int(entry.find('%srowCount' % gs).text),
+            'col_count': int(entry.find('%scolCount' % gs).text),
+        }
+        data['worksheets'].append(worksheet)
+
+    return data
 
 
 # Get all the data in a worksheet
 #  auth_json      : a JSON object of valid credentials
-#  spreadsheet_id : Identifier for the spreadsheet 
+#  spreadsheet_key : Identifier for the spreadsheet 
 #  worksheet_key  : Identifier for the worksheet
 # 
-def get_cell_data(auth_json, spreadsheet_id, worksheet_key):
+def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
     pass
 
 
@@ -101,16 +136,16 @@ def create_spreadsheet(auth_json, title=""):
 
 # Create a new worksheet in a spreadsheet
 #  auth_json : a JSON object of valid credentials
-#  spreadsheet_id : Identifier for the spreadsheet
+#  spreadsheet_key : Identifier for the spreadsheet
 #
-def create_worksheet(auth_json, spreadsheet_id):
+def create_worksheet(auth_json, spreadsheet_key):
     pass
 
 
 # Save data in to a worksheet
 #  auth_json : a JSON object of valid credentials
-#  spreadsheet_id : Identifier for the spreadsheet 
+#  spreadsheet_key : Identifier for the spreadsheet 
 #  worksheet_key  : Identifier for the worksheet
 #  data           : 2-D array of cell data - [row [column]]
-def save_data(auth_json, spreadsheet_id, worksheet_key, data=[[]]):
+def save_data(auth_json, spreadsheet_key, worksheet_key, data=[[]]):
     pass
