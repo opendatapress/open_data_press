@@ -5,6 +5,7 @@
 
 import httplib2
 import re
+import logging
 import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
@@ -71,7 +72,8 @@ def list_drive_files(auth_json, query=""):
         page_token = files.get('nextPageToken')
         if not page_token:
             break
-    return {'num_files': len(file_list), 'files':file_list}
+    data = {'num_files': len(file_list), 'files':file_list}
+    return {'response':'success', 'body': data}
 
 
 # Get a list of all the worksheets in a spreadsheet
@@ -82,39 +84,50 @@ def get_worksheets(auth_json, spreadsheet_key):
     http = http_from_oauth2(auth_json)
     uri = 'https://spreadsheets.google.com/feeds/worksheets/%s/private/full' % spreadsheet_key
     response = http.request(uri)
-    feed = ET.fromstring(response[1])
 
-    # XML Prefixes
-    atom    = '{http://www.w3.org/2005/Atom}'
-    search  = '{http://a9.com/-/spec/opensearchrss/1.0/}'
-    gs      = '{http://schemas.google.com/spreadsheets/2006}'
+    if "The spreadsheet at this URL could not be found" in response[1]:
+        return {'response': 'error', 'body': response[1]}
 
-    # Format spreadsheet data
-    data = {
-        'key':           spreadsheet_key,
-        'title':         feed.find('%stitle' % atom).text,
-        'updated':       feed.find('%supdated' % atom).text,
-        'total_results': int(feed.find('%stotalResults' % search).text),
-        'start_index':   int(feed.find('%sstartIndex' % search).text),
-        'author': {
-            'name':      feed.find('.//%sname' % atom).text,
-            'email':     feed.find('.//%semail' % atom).text,
-        },
-        'worksheets':    [],
-    }
-    
-    # Format worksheet data
-    for entry in feed.findall('%sentry' % atom):
-        worksheet = {
-            'id':        re.sub('^.*full/','',entry.find('%sid' % atom).text),
-            'title':     entry.find('%stitle' % atom).text,
-            'updated':   entry.find('%supdated' % atom).text,
-            'row_count': int(entry.find('%srowCount' % gs).text),
-            'col_count': int(entry.find('%scolCount' % gs).text),
+    try:
+        # Attempt to parse response
+        feed = ET.fromstring(response[1])
+
+        # XML Prefixes
+        atom    = '{http://www.w3.org/2005/Atom}'
+        search  = '{http://a9.com/-/spec/opensearchrss/1.0/}'
+        gs      = '{http://schemas.google.com/spreadsheets/2006}'
+
+        # Format spreadsheet data
+        data = {
+            'key':           spreadsheet_key,
+            'title':         feed.find('%stitle' % atom).text,
+            'updated':       feed.find('%supdated' % atom).text,
+            'total_results': int(feed.find('%stotalResults' % search).text),
+            'start_index':   int(feed.find('%sstartIndex' % search).text),
+            'author': {
+                'name':      feed.find('.//%sname' % atom).text,
+                'email':     feed.find('.//%semail' % atom).text,
+            },
+            'worksheets':    [],
         }
-        data['worksheets'].append(worksheet)
+        
+        # Format worksheet data
+        for entry in feed.findall('%sentry' % atom):
+            worksheet = {
+                'id':        re.sub('^.*full/','',entry.find('%sid' % atom).text),
+                'title':     entry.find('%stitle' % atom).text,
+                'updated':   entry.find('%supdated' % atom).text,
+                'row_count': int(entry.find('%srowCount' % gs).text),
+                'col_count': int(entry.find('%scolCount' % gs).text),
+            }
+            data['worksheets'].append(worksheet)
 
-    return data
+        # Return structured data
+        return {'response': 'success', 'body': data}
+
+    except Exception as e:
+        return {'response': 'error', 'body': 'Could not parse spreadsheet data from Google.'}
+
 
 
 # Get all the data in a worksheet

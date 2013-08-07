@@ -42,26 +42,48 @@ class GoogleAPITest(unittest.TestCase):
         google_api.httplib2.Http = MockHttp
         self.assertIn('list_drive_files', dir(google_api))
 
-        drive_files = google_api.list_drive_files(USER_AUTH_JSON)
-        self.assertIsInstance(drive_files, dict)
-        self.assertTrue('num_files' in drive_files)
-        self.assertTrue('files'     in drive_files)
+        data = google_api.list_drive_files(USER_AUTH_JSON)
+        self.assertIsInstance(data, dict)
+        self.assertTrue('response'  in data)
+        self.assertTrue('body'      in data)
+        self.assertTrue('num_files' in data['body'])
+        self.assertTrue('files'     in data['body'])
+        self.assertEqual('success', data['response'])
 
-    def test_get_worksheets(self):
+    def test_get_worksheets_success(self):
         google_api.httplib2.Http = MockHttp
         self.assertIn('get_worksheets', dir(google_api))
 
-        spreadsheet = google_api.get_worksheets(USER_AUTH_JSON, 'dummy_key')
-        self.assertIsInstance(spreadsheet, dict)
-        self.assertTrue('key'           in spreadsheet)
-        self.assertTrue('title'         in spreadsheet)
-        self.assertTrue('updated'       in spreadsheet)
-        self.assertTrue('total_results' in spreadsheet)
-        self.assertTrue('start_index'   in spreadsheet)
-        self.assertTrue('author'        in spreadsheet)
-        self.assertTrue('worksheets'    in spreadsheet)
-        self.assertTrue('name'          in spreadsheet['author'])
-        self.assertTrue('email'         in spreadsheet['author'])
+        data = google_api.get_worksheets(USER_AUTH_JSON, 'dummy_key')
+        self.assertIsInstance(data, dict)
+        self.assertTrue('response'      in data)
+        self.assertTrue('body'          in data)
+        self.assertTrue('key'           in data['body'])
+        self.assertTrue('title'         in data['body'])
+        self.assertTrue('updated'       in data['body'])
+        self.assertTrue('total_results' in data['body'])
+        self.assertTrue('start_index'   in data['body'])
+        self.assertTrue('author'        in data['body'])
+        self.assertTrue('worksheets'    in data['body'])
+        self.assertTrue('name'          in data['body']['author'])
+        self.assertTrue('email'         in data['body']['author'])
+        self.assertEqual('success', data['response'])
+
+    def test_get_worksheets_not_found(self):
+        google_api.httplib2.Http = MockHttp
+        data = google_api.get_worksheets(USER_AUTH_JSON, 'not_found')
+        self.assertIsInstance(data, dict)
+        self.assertTrue('response' in data)
+        self.assertTrue('body'     in data)
+        self.assertEqual('error',  data['response'])    
+
+    def test_get_worksheets_bad_format(self):
+        google_api.httplib2.Http = MockHttp
+        data = google_api.get_worksheets(USER_AUTH_JSON, 'bad_format')
+        self.assertIsInstance(data, dict)
+        self.assertTrue('response' in data)
+        self.assertTrue('body'     in data)
+        self.assertEqual('error',  data['response'])    
 
     def test_get_cell_data(self):
         self.assertIn('get_cell_data', dir(google_api))

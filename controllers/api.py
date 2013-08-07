@@ -98,7 +98,11 @@ class GoogleSheetsItemRoute(APIHandler):
 
     def get(self, google_sheets_id):
         sheet = google_api.get_worksheets(self.credentials(), google_sheets_id)
-        self.response.write(json.dumps(sheet))
+        if sheet['response'] == 'error':
+            self.response.set_status(500)
+            self.response.write(json.dumps(sheet))
+        else:
+            self.response.write(json.dumps(sheet))
 
     def post(self, google_sheets_id):
         self.response.write('{"response":"success","body":"google sheets item"}')
@@ -118,4 +122,4 @@ class Error404Route(RequestHandler):
     def get(self):
         self.response.set_status(404)
         self.response.content_type = 'application/json'
-        self.response.write('{"response":"error","message":"Resource not found"}')
+        self.response.write('{"response":"error","body":"Resource not found"}')

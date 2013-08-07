@@ -16,6 +16,7 @@ class TestAPIHandler(unittest.TestCase):
         self.assertIsInstance(json.loads(response.body), dict)
         data = json.loads(response.body)
         self.assertTrue('response' in data)
+        self.assertTrue('body' in data)
         self.assertEqual('error', data['response'])
 
 
@@ -105,12 +106,44 @@ class TestAPIHandler(unittest.TestCase):
 
         self.assertEqual(response.status_int, 200)
         self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
         self.assertIsInstance(json.loads(response.body), dict)
 
-        # Parse response
-        data = json.loads(response.body)
-        self.assertTrue('response' in data)
-        self.assertEqual('success', data['response'])
-        self.assertTrue('body' in data)
-        self.assertTrue('files' in data['body'])
-        self.assertTrue('num_files' in data['body'])
+    def test_api_0_get_google_sheets_worksheets(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/dummy_key', headers=headers)
+
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
+
+    def test_api_0_get_google_sheets_worksheets_not_found(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/not_found', headers=headers)
+
+        self.assertEqual(response.status_int, 500)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
+
+    def test_api_0_get_google_sheets_worksheets_bad_format(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/bad_format', headers=headers)
+
+        self.assertEqual(response.status_int, 500)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
