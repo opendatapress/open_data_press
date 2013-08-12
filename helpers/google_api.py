@@ -6,6 +6,7 @@
 import httplib2
 import re
 import logging
+import unicodedata
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
@@ -219,8 +220,8 @@ def _key(heading):
     # Strip XML namespace    
     gsx = '{http://schemas.google.com/spreadsheets/2006/extended}'
     heading = heading.replace(gsx, '')
-    # TODO convert accented letter to ASCII lower-case equivalents strip otherwise
-    return heading
+    # Convert accented letter to ASCII lower-case equivalents
+    return unicodedata.normalize('NFD', unicode(heading)).encode('ascii', 'ignore')
 
 
 # Convert cell values to int or float if possible
