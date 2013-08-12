@@ -88,7 +88,7 @@ class GoogleSheetsListRoute(APIHandler):
     def get(self):
         query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
         drive_files = google_api.list_drive_files(self.credentials(), query=query)
-        self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files))
+        self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files, ensure_ascii=False))
 
 
 class GoogleSheetsItemRoute(APIHandler):
@@ -97,15 +97,15 @@ class GoogleSheetsItemRoute(APIHandler):
         sheet = google_api.get_worksheets(self.credentials(), google_sheets_id)
         if sheet['response'] == 'error':
             self.response.set_status(500)
-            self.response.write(json.dumps(sheet))
-        else:
-            self.response.write(json.dumps(sheet))
+        self.response.write(json.dumps(sheet, ensure_ascii=False))
 
 
 class GoogleSheetsWorksheetRoute(APIHandler):
 
     def get(self, google_sheets_id, worksheet_key):
         data = google_api.get_cell_data(self.credentials(), google_sheets_id, worksheet_key)
+        if data['response'] == 'error':
+            self.response.set_status(500)
         self.response.write(json.dumps(data, ensure_ascii=False))
 
 

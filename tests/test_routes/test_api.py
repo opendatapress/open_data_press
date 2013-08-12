@@ -160,7 +160,7 @@ class TestAPIHandler(unittest.TestCase):
         headers  = {'Cookie': response.headers['Set-Cookie']}
         response = main.app.get_response('/api/0/google/sheets/dummy_key/not_found', headers=headers)
 
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 500)
         self.assertEqual(response.content_type, 'application/json')
         # NB response content tested in helpers/test_google_api.py
         self.assertIsInstance(json.loads(response.body), dict)
@@ -173,7 +173,7 @@ class TestAPIHandler(unittest.TestCase):
         headers  = {'Cookie': response.headers['Set-Cookie']}
         response = main.app.get_response('/api/0/google/sheets/dummy_key/bad_format', headers=headers)
 
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 500)
         self.assertEqual(response.content_type, 'application/json')
         # NB response content tested in helpers/test_google_api.py
         self.assertIsInstance(json.loads(response.body), dict)
