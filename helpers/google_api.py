@@ -228,6 +228,7 @@ def _key(heading):
 # including with millisecond precision if available
 #  value: str/unicode
 def _val(value):
+    if value is None: return ""
     try: return int(value)
     except ValueError:
         try: return float(value)
