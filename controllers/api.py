@@ -105,7 +105,8 @@ class GoogleSheetsItemRoute(APIHandler):
 class GoogleSheetsWorksheetRoute(APIHandler):
 
     def get(self, google_sheets_id, worksheet_key):
-        self.response.write('{"response":"success","body":"google sheets worksheet"}')
+        data = google_api.get_cell_data(self.credentials(), google_sheets_id, worksheet_key)
+        self.response.write(json.dumps(data, ensure_ascii=False))
 
 
 class Error404Route(RequestHandler):

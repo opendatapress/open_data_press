@@ -6,6 +6,7 @@
 import httplib2
 import re
 import logging
+from datetime import datetime
 import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
@@ -86,7 +87,8 @@ def get_worksheets(auth_json, spreadsheet_key):
     response = http.request(uri)
 
     if "The spreadsheet at this URL could not be found" in response[1]:
-        return {'response': 'error', 'body': response[1]}
+        msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
+        return {'response': 'error', 'body': msg}
 
     try:
         # Attempt to parse response
@@ -100,13 +102,13 @@ def get_worksheets(auth_json, spreadsheet_key):
         # Format spreadsheet data
         data = {
             'key':           spreadsheet_key,
-            'title':         feed.find('%stitle' % atom).text,
-            'updated':       feed.find('%supdated' % atom).text,
-            'total_results': int(feed.find('%stotalResults' % search).text),
-            'start_index':   int(feed.find('%sstartIndex' % search).text),
+            'title':         _val(feed.find('%stitle' % atom).text),
+            'updated':       _val(feed.find('%supdated' % atom).text),
+            'total_results': _val(feed.find('%stotalResults' % search).text),
+            'start_index':   _val(feed.find('%sstartIndex' % search).text),
             'author': {
-                'name':      feed.find('.//%sname' % atom).text,
-                'email':     feed.find('.//%semail' % atom).text,
+                'name':      _val(feed.find('.//%sname' % atom).text),
+                'email':     _val(feed.find('.//%semail' % atom).text),
             },
             'worksheets':    [],
         }
@@ -115,10 +117,10 @@ def get_worksheets(auth_json, spreadsheet_key):
         for entry in feed.findall('%sentry' % atom):
             worksheet = {
                 'id':        re.sub('^.*full/','',entry.find('%sid' % atom).text),
-                'title':     entry.find('%stitle' % atom).text,
-                'updated':   entry.find('%supdated' % atom).text,
-                'row_count': int(entry.find('%srowCount' % gs).text),
-                'col_count': int(entry.find('%scolCount' % gs).text),
+                'title':     _val(entry.find('%stitle' % atom).text),
+                'updated':   _val(entry.find('%supdated' % atom).text),
+                'row_count': _val(entry.find('%srowCount' % gs).text),
+                'col_count': _val(entry.find('%scolCount' % gs).text),
             }
             data['worksheets'].append(worksheet)
 
@@ -136,7 +138,54 @@ def get_worksheets(auth_json, spreadsheet_key):
 #  worksheet_key  : Identifier for the worksheet
 # 
 def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
-    pass
+    http = http_from_oauth2(auth_json)
+    uri = 'https://spreadsheets.google.com/feeds/list/%s/%s/private/full' % (spreadsheet_key, worksheet_key)
+    response = http.request(uri)
+
+    if "The spreadsheet at this URL could not be found" in response[1]:
+        msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
+        return {'response': 'error', 'body': msg}
+
+    if "Invalid query parameter value for grid-id." in response[1]:
+        msg = "The worksheet with this id <%s> cannot be found. Make sure the ownder of the spreadsheet hasn't deleted it." % worksheet_key
+        return {'response': 'error', 'body': msg}
+
+    try:
+        # Attempt to parse response
+        feed = ET.fromstring(response[1])
+
+        # XML Prefixes
+        atom   = '{http://www.w3.org/2005/Atom}'
+        search = '{http://a9.com/-/spec/opensearchrss/1.0/}'
+        gsx    = '{http://schemas.google.com/spreadsheets/2006/extended}'
+
+        # Format worksheet data
+        data = {
+            'spreadsheet_key': spreadsheet_key,
+            'worksheet_key':   worksheet_key,
+            'title':           _val(feed.find('%stitle' % atom).text),
+            'updated':         _val(feed.find('%supdated' % atom).text),
+            'total_results':   _val(feed.find('%stotalResults' % search).text),
+            'start_index':     _val(feed.find('%sstartIndex' % search).text),
+            'author': {
+                'name':        _val(feed.find('.//%sname' % atom).text),
+                'email':       _val(feed.find('.//%semail' % atom).text),
+            },
+            'data_rows':       [],
+        }
+
+        # Format cell data
+        for entry in feed.findall('%sentry' % atom):
+            row = {}
+            for field in entry:
+                if gsx in field.tag:
+                    row[_key(field.tag)] = _val(field.text)
+            data['data_rows'].append(row)
+
+    except Exception as e:
+        return {'response': 'error', 'body': 'Could not parse spreadsheet data from Google.'}
+
+    return {'response': 'success', 'body': data}
 
 
 # Create a spreadsheet file in Drive
@@ -162,3 +211,33 @@ def create_worksheet(auth_json, spreadsheet_key):
 #  data           : 2-D array of cell data - [row [column]]
 def save_data(auth_json, spreadsheet_key, worksheet_key, data=[[]]):
     pass
+
+
+# Convert potentially unfriendly column headings in to friendly headings
+#  heading: Str
+def _key(heading):
+    # Strip XML namespace    
+    gsx = '{http://schemas.google.com/spreadsheets/2006/extended}'
+    heading = heading.replace(gsx, '')
+    # TODO convert accented letter to ASCII lower-case equivalents strip otherwise
+    return heading
+
+
+# Convert cell values to int or float if possible
+# Also normaises dates and times to "YYYY-MM-DD HH-MM-SS" format 
+# including with millisecond precision if available
+#  value: str/unicode
+def _val(value):
+    try: return int(value)
+    except ValueError:
+        try: return float(value)
+        except ValueError:
+            try: return str(datetime.strptime(value[0:23], "%Y-%m-%dT%H:%M:%S.%f"))
+            except ValueError:
+                try: return str(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
+                except ValueError:
+                    try: return str(datetime.strptime(value, "%d/%m/%Y"))
+                    except ValueError:
+                        try: return str(datetime.strptime(value, "%H:%M:%S"))
+                        except ValueError:
+                            return value

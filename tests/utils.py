@@ -51,6 +51,17 @@ class MockHttp(object):
         if 'https://spreadsheets.google.com/feeds/worksheets/bad_format/private/full' in uri:
             return httplib2.Response({'status': '200'}), load_data('worksheets_bad_format.xml')
 
+        # Response for worksheet cells
+        if 'https://spreadsheets.google.com/feeds/list/dummy_key/dummy_id/private/full' in uri:
+            return httplib2.Response({'status': '200'}), load_data('worksheet_cells.xml')
+
+        # Response for worksheet cells not found
+        if 'https://spreadsheets.google.com/feeds/list/dummy_key/not_found/private/full' in uri:
+            return httplib2.Response({'status': '200'}), load_data('worksheet_cells_not_found.xml')
+
+        # Response for worksheet cells with bad format
+        if 'https://spreadsheets.google.com/feeds/list/dummy_key/bad_format/private/full' in uri:
+            return httplib2.Response({'status': '200'}), load_data('worksheet_cells_bad_format.xml')
 
         logging.error("No MockHTTP response for request to '%s'" % uri)
         return httplib2.Response({}), ''

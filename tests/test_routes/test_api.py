@@ -138,3 +138,42 @@ class TestAPIHandler(unittest.TestCase):
         self.assertEqual(response.content_type, 'application/json')
         # NB response content tested in helpers/test_google_api.py
         self.assertIsInstance(json.loads(response.body), dict)
+
+    def test_api_0_get_google_sheets_cells(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/dummy_key/dummy_id', headers=headers)
+
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
+
+    def test_api_0_get_google_sheets_cells_not_found(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/dummy_key/not_found', headers=headers)
+
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
+
+    def test_api_0_get_google_sheets_cells_bad_format(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/google/sheets/dummy_key/bad_format', headers=headers)
+
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        # NB response content tested in helpers/test_google_api.py
+        self.assertIsInstance(json.loads(response.body), dict)
