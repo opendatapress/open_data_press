@@ -43,27 +43,44 @@ class OAuth2CallbackRoute(SessionHandler):
         code = self.request.GET.get('code')
         if None == code:
             return self.response.write('No authentication code returned')
+            # TODO Display cancelled login page
 
         try:
             flow = google_api.oauth2_flow()
             auth = flow.step2_exchange(code).to_json()
             
-            # TODO Create/update user record in DB
-            # TODO Store credentials in DB rather than session
-            # TODO Create session
-            self.credentials(auth)
+            # TODO Attempt to fetch user record from DB with matching google_id
+
+            # TODO if not user exists with google id
+                # TODO Create user record in DB
+
+            # TODO if auth and user both have no refresh_token
+                # TODO redirect to /auth/login?approval_prompt to get one
             
             # Get user info
             user_info = google_api.user_info(auth)
+            # TODO Store updated user info in DB
+            # TODO Store updated credentials in DB
+
+            # Create session
+            self.credentials(auth)
 
             # Show results
             body = 'Authenticated<br><a href="/auth/login">re-login</a> <a href="/auth/logout">logout</a><hr><code>%s</code><hr><code>%s</code>'
             self.response.write(body % (auth, json.dumps(user_info)))
 
+            # TODO if any post-login redirects have been stored in the session
+                # TODO delete redirect from session
+                # TODO issue redirect
+
+            # TODO redirect to dashboard
+
         except FlowExchangeError as e:
             logging.error("oAuth2 Flow Exchange Error: %s" % e)
             self.response.write('Flow exchange error: %s' % e)
+            # TODO Display error reporting page
             
         except Exception as e:
             logging.error("oAuth2 Unknown Error: %s" % e)
             self.response.write('Something went wrong: %s' % e)
+            # TODO Display error reporting page
