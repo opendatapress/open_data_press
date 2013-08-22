@@ -6,8 +6,8 @@ import logging
 from webapp2 import RequestHandler
 from helpers import google_api
 from helpers.sessions import SessionHandler
-from oauth2client.client import FlowExchangeError
-from oauth2client.anyjson import simplejson as json
+from helpers.views import render
+from controllers.root import error_500
 
 
 # Build oAuth2 request and redirect to Google authentication endpoint
@@ -38,10 +38,11 @@ class OAuth2CallbackRoute(SessionHandler):
         if None == code:
             return self.response.write('No authentication code returned')
             # TODO Display cancelled login page
+            self.redirect('/')
 
         try:
             flow = google_api.oauth2_flow()
-            auth = flow.step2_exchange(code).to_json()
+            auth = flow.step2_exchange(code.to_json())
             
             # TODO Attempt to fetch user record from DB with matching google_id
 
@@ -50,7 +51,7 @@ class OAuth2CallbackRoute(SessionHandler):
 
             # TODO if auth and user both have no refresh_token
                 # TODO redirect to /auth/login?approval_prompt to get one
-            
+
             # Get user info
             user_info = google_api.user_info(auth)
             # TODO Store updated user info in DB
@@ -59,22 +60,14 @@ class OAuth2CallbackRoute(SessionHandler):
             # Create session
             self.credentials(auth)
 
-            # Show results
-            body = 'Authenticated<br><a href="/auth/login">re-login</a> <a href="/auth/logout">logout</a><hr><code>%s</code><hr><code>%s</code>'
-            self.response.write(body % (auth, json.dumps(user_info)))
-
             # TODO if any post-login redirects have been stored in the session
                 # TODO delete redirect from session
                 # TODO issue redirect
 
-            # TODO redirect to dashboard
+            # Show results
+            # TODO redirect to dashboard instead
+            data = {'message': 'Authenticated!', 'user_info': user_info, 'session': self.session}
+            self.response.write(render('index.html', data))
 
-        except FlowExchangeError as e:
-            logging.error("oAuth2 Flow Exchange Error: %s" % e)
-            self.response.write('Flow exchange error: %s' % e)
-            # TODO Display error reporting page
-            
         except Exception as e:
-            logging.error("oAuth2 Unknown Error: %s" % e)
-            self.response.write('Something went wrong: %s' % e)
-            # TODO Display error reporting page
+            error_500(self.request, self.response, e)
