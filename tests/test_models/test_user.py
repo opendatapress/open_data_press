@@ -18,6 +18,18 @@ class TestUserModel(unittest.TestCase):
     def test_user_google_name(self):
         self.assertTrue('google_name' in dir(self.user))
 
+    def test_user_google_gender(self):
+        self.assertTrue('google_gender' in dir(self.user))
+
+    def test_user_google_locale(self):
+        self.assertTrue('google_locale' in dir(self.user))
+
+    def test_user_google_picture_url(self):
+        self.assertTrue('google_picture_url' in dir(self.user))
+
+    def test_user_google_birthday(self):
+        self.assertTrue('google_birthday' in dir(self.user))
+
     def test_user_profile_slug(self):
         self.assertTrue('profile_slug' in dir(self.user))
 
