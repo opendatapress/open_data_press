@@ -26,7 +26,7 @@ class LogoutRoute(SessionHandler):
     def get(self):
         if 'credentials' in self.session:
             del self.session['credentials']
-        self.response.write('loged out')
+        self.redirect('/')
 
 
 # Show contents of session
