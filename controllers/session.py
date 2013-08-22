@@ -25,6 +25,7 @@ class LoginRoute(RequestHandler):
 class LogoutRoute(SessionHandler):
     def get(self):
         if 'credentials' in self.session:
+            # TODO delete user_id from session
             del self.session['credentials']
         self.redirect('/')
 
@@ -60,6 +61,7 @@ class OAuth2CallbackRoute(SessionHandler):
             # TODO Store updated credentials in DB
 
             # Create session
+            # TODO Store DB user_id in session
             self.credentials(auth.to_json())
 
             # TODO if any post-login redirects have been stored in the session
