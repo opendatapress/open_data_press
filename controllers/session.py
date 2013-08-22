@@ -42,23 +42,25 @@ class OAuth2CallbackRoute(SessionHandler):
 
         try:
             flow = google_api.oauth2_flow()
-            auth = flow.step2_exchange(code.to_json())
+            auth = flow.step2_exchange(code)
             
             # TODO Attempt to fetch user record from DB with matching google_id
 
             # TODO if not user exists with google id
                 # TODO Create user record in DB
 
-            # TODO if auth and user both have no refresh_token
-                # TODO redirect to /auth/login?approval_prompt to get one
+            # If we have no refresh token, redirect to /auth/login?approval_prompt to get one
+            # TODO also check DB to prevent needless double-auth
+            if None == auth.refresh_token:
+                self.redirect('/auth/login?approval_prompt')
 
             # Get user info
-            user_info = google_api.user_info(auth)
+            user_info = google_api.user_info(auth.to_json())
             # TODO Store updated user info in DB
             # TODO Store updated credentials in DB
 
             # Create session
-            self.credentials(auth)
+            self.credentials(auth.to_json())
 
             # TODO if any post-login redirects have been stored in the session
                 # TODO delete redirect from session

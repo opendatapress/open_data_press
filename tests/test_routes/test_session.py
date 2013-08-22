@@ -16,7 +16,7 @@ class TestSessionHandler(unittest.TestCase):
 
     def test_logout_path_responds(self):
         response = main.app.get_response('/auth/logout')
-        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.status_int, 302)
 
     def test_oauth2callback_path_fails_without_code(self):
         response = main.app.get_response('/auth/oauth2callback')
