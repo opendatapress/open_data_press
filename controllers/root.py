@@ -3,13 +3,13 @@
 # Base routes and error handlers
 #
 import logging
-from webapp2 import RequestHandler
+from helpers.sessions import SessionHandler
 from helpers.views import static, render
 
-class HomeRoute(RequestHandler):
+class HomeRoute(SessionHandler):
 
     def get(self):
-        data = {'message': 'Hello World!'}
+        data = {'message': 'Hello World!', 'session': self.session}
         body = render('index.html', data)
         self.response.write(body)
 
