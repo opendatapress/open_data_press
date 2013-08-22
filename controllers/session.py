@@ -29,12 +29,6 @@ class LogoutRoute(SessionHandler):
         self.redirect('/')
 
 
-# Show contents of session
-class SessionRoute(SessionHandler):
-    def get(self):
-        self.response.write("<code>%s</code>" % self.session)
-
-
 # Handle oAuth2 callback
 # Create session and (if required) user account
 class OAuth2CallbackRoute(SessionHandler):

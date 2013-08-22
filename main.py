@@ -34,7 +34,6 @@ routes = [
     (r'/auth/login/?',                         session.LoginRoute),
     (r'/auth/logout/?',                        session.LogoutRoute),
     (r'/auth/oauth2callback/?',                session.OAuth2CallbackRoute),
-    (r'/auth/session/?',                       session.SessionRoute),
 
     # Dashboard
     (r'/dashboard/?',                          dashboard.MainRoute),
