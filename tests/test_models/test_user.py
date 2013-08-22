@@ -14,28 +14,49 @@ class TestUserModel(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
 
+        # Valid user params
+        self.user_params = {
+            'created_at':          datetime.now(),
+            'credentials':         '{"token":"XXX"}',
+            'google_birthday':     u'0000-01-01',
+            'google_email':        u'test.user@gmail.com',
+            'google_gender':       u'male',
+            'google_id':           u'123456789',
+            'google_locale':       u'en-GB',
+            'google_name':         u'Test User',
+            'google_picture_url':  u'https://lh3.googleusercontent.com/image.png',
+            'last_login_at':       datetime.now(),
+            'modified_at':         datetime.now(),
+            'profile_email':       u'test.user@email.com',
+            'profile_description': u'This is a test user account',
+            'profile_name':        u'Test User',
+            'profile_slug':        'test-user',
+            'profile_web_address': 'http://test-user.com',
+        }
+
 
     def tearDown(self):
         self.testbed.deactivate()
 
 
     def test_user_properties_exist(self):
-        self.user = User()
-        self.assertTrue('created_at'          in dir(self.user))
-        self.assertTrue('credentials'         in dir(self.user))
-        self.assertTrue('google_birthday'     in dir(self.user))
-        self.assertTrue('google_email'        in dir(self.user))
-        self.assertTrue('google_gender'       in dir(self.user))
-        self.assertTrue('google_id'           in dir(self.user))
-        self.assertTrue('google_locale'       in dir(self.user))
-        self.assertTrue('google_name'         in dir(self.user))
-        self.assertTrue('google_picture_url'  in dir(self.user))
-        self.assertTrue('modified_at'         in dir(self.user))
-        self.assertTrue('profile_email'       in dir(self.user))
-        self.assertTrue('profile_description' in dir(self.user))
-        self.assertTrue('profile_name'        in dir(self.user))
-        self.assertTrue('profile_slug'        in dir(self.user))
-        self.assertTrue('profile_web_address' in dir(self.user))
+        user = User(**self.user_params)
+        self.assertTrue('created_at'          in dir(user))
+        self.assertTrue('credentials'         in dir(user))
+        self.assertTrue('google_birthday'     in dir(user))
+        self.assertTrue('google_email'        in dir(user))
+        self.assertTrue('google_gender'       in dir(user))
+        self.assertTrue('google_id'           in dir(user))
+        self.assertTrue('google_locale'       in dir(user))
+        self.assertTrue('google_name'         in dir(user))
+        self.assertTrue('google_picture_url'  in dir(user))
+        self.assertTrue('last_login_at'       in dir(user))
+        self.assertTrue('modified_at'         in dir(user))
+        self.assertTrue('profile_email'       in dir(user))
+        self.assertTrue('profile_description' in dir(user))
+        self.assertTrue('profile_name'        in dir(user))
+        self.assertTrue('profile_slug'        in dir(user))
+        self.assertTrue('profile_web_address' in dir(user))
 
 
     def test_user_class_methods_exist(self):
@@ -44,73 +65,71 @@ class TestUserModel(unittest.TestCase):
 
 
     def test_get_by_slug(self):
-        user_a = User(profile_slug = 'slug-1')
-        user_a.put()
-        user_b = User.get_by_slug('slug-1')
-        self.assertEqual(user_a.key(), user_b.key())
+        user = User(**self.user_params)
+        user.put()
+        self.assertEqual(user.key(), User.get_by_slug('test-user').key())
 
 
     def test_get_by_google_id(self):
-        user_a = User(google_id = '31459')
-        user_a.put()
-        user_b = User.get_by_google_id('31459')
-        self.assertEqual(user_a.key(), user_b.key())
+        user = User(**self.user_params)
+        user.put()
+        self.assertEqual(user.key(), User.get_by_google_id('123456789').key())
 
 
     def test_user_create_success(self):
-
-        user_data = {}
-        user_data['created_at']          = datetime.now()
-        user_data['credentials']         = '{"token":"XXX"}'
-        user_data['google_birthday']     = u'0000-01-01'
-        user_data['google_email']        = u'test.user@gmail.com'
-        user_data['google_gender']       = u'male'
-        user_data['google_id']           = u'123456789'
-        user_data['google_locale']       = u'en-GB'
-        user_data['google_name']         = u'Test User'
-        user_data['google_picture_url']  = u'https://lh3.googleusercontent.com/image.png'
-        user_data['modified_at']         = datetime.now()
-        user_data['profile_email']       = u'test.user@email.com'
-        user_data['profile_description'] = u'This is a test user account'
-        user_data['profile_name']        = u'Test User'
-        user_data['profile_slug']        = 'test-user'
-        user_data['profile_web_address'] = 'http://test-user.com'
-
         num_users = User.all().count()
-
-        user_a = User()
-        user_a.created_at          = user_data['created_at']
-        user_a.credentials         = user_data['credentials']
-        user_a.google_birthday     = user_data['google_birthday']
-        user_a.google_email        = user_data['google_email']
-        user_a.google_gender       = user_data['google_gender']
-        user_a.google_id           = user_data['google_id']
-        user_a.google_locale       = user_data['google_locale']
-        user_a.google_name         = user_data['google_name']
-        user_a.google_picture_url  = user_data['google_picture_url']
-        user_a.modified_at         = user_data['modified_at']
-        user_a.profile_email       = user_data['profile_email']
-        user_a.profile_description = user_data['profile_description']
-        user_a.profile_name        = user_data['profile_name']
-        user_a.profile_slug        = user_data['profile_slug']
-        user_a.profile_web_address = user_data['profile_web_address']
-        user_a.put()
-
+        user = User(**self.user_params)
+        user.put()
         self.assertEqual(num_users + 1, User.all().count())
 
-        user_b = User.get(user_a.key())
-        self.assertEqual(user_b.created_at,          user_data['created_at'])
-        self.assertEqual(user_b.credentials,         user_data['credentials'])
-        self.assertEqual(user_b.google_birthday,     user_data['google_birthday'])
-        self.assertEqual(user_b.google_email,        user_data['google_email'])
-        self.assertEqual(user_b.google_gender,       user_data['google_gender'])
-        self.assertEqual(user_b.google_id,           user_data['google_id'])
-        self.assertEqual(user_b.google_locale,       user_data['google_locale'])
-        self.assertEqual(user_b.google_name,         user_data['google_name'])
-        self.assertEqual(user_b.google_picture_url,  user_data['google_picture_url'])
-        self.assertEqual(user_b.modified_at,         user_data['modified_at'])
-        self.assertEqual(user_b.profile_email,       user_data['profile_email'])
-        self.assertEqual(user_b.profile_description, user_data['profile_description'])
-        self.assertEqual(user_b.profile_name,        user_data['profile_name'])
-        self.assertEqual(user_b.profile_slug,        user_data['profile_slug'])
-        self.assertEqual(user_b.profile_web_address, user_data['profile_web_address'])
+        user_b = User.get(user.key())
+        self.assertEqual(user_b.created_at,          user.created_at)
+        self.assertEqual(user_b.credentials,         user.credentials)
+        self.assertEqual(user_b.google_birthday,     user.google_birthday)
+        self.assertEqual(user_b.google_email,        user.google_email)
+        self.assertEqual(user_b.google_gender,       user.google_gender)
+        self.assertEqual(user_b.google_id,           user.google_id)
+        self.assertEqual(user_b.google_locale,       user.google_locale)
+        self.assertEqual(user_b.google_name,         user.google_name)
+        self.assertEqual(user_b.google_picture_url,  user.google_picture_url)
+        self.assertEqual(user_b.last_login_at,       user.last_login_at)
+        self.assertEqual(user_b.modified_at,         user.modified_at)
+        self.assertEqual(user_b.profile_email,       user.profile_email)
+        self.assertEqual(user_b.profile_description, user.profile_description)
+        self.assertEqual(user_b.profile_name,        user.profile_name)
+        self.assertEqual(user_b.profile_slug,        user.profile_slug)
+        self.assertEqual(user_b.profile_web_address, user.profile_web_address)
+
+
+    def test_user_required_properties(self):
+
+        with self.assertRaises(db.BadValueError) as cm:
+            bad_params = self.user_params.copy()
+            del bad_params['created_at']
+            User(**bad_params)
+        self.assertTrue('created_at' in cm.exception.message)
+
+        with self.assertRaises(db.BadValueError) as cm:
+            bad_params = self.user_params.copy()
+            del bad_params['google_id']
+            User(**bad_params)
+        self.assertTrue('google_id' in cm.exception.message)
+
+        with self.assertRaises(db.BadValueError) as cm:
+            bad_params = self.user_params.copy()
+            del bad_params['last_login_at']
+            User(**bad_params)
+        self.assertTrue('last_login_at' in cm.exception.message)
+
+        with self.assertRaises(db.BadValueError) as cm:
+            bad_params = self.user_params.copy()
+            del bad_params['modified_at']
+            User(**bad_params)
+        self.assertTrue('modified_at' in cm.exception.message)
+
+        with self.assertRaises(db.BadValueError) as cm:
+            bad_params = self.user_params.copy()
+            del bad_params['profile_slug']
+            User(**bad_params)
+        self.assertTrue('profile_slug' in cm.exception.message)
+
