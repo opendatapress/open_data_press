@@ -10,7 +10,8 @@ import json
 class HomeRoute(SessionHandler):
 
     def get(self):
-        data = {'message': 'Hello World!', 'session': self.session, 'current_user': self.current_user().to_dict()}
+        current_user = self.current_user().to_dict() if self.current_user() else {}
+        data = {'message': 'Hello World!', 'session': self.session, 'current_user': current_user}
         body = render('index.html', data)
         self.response.write(body)
 
