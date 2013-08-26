@@ -5,11 +5,12 @@
 import logging
 from helpers.sessions import SessionHandler
 from helpers.views import static, render
+import json
 
 class HomeRoute(SessionHandler):
 
     def get(self):
-        data = {'message': 'Hello World!', 'session': self.session}
+        data = {'message': 'Hello World!', 'session': self.session, 'current_user': self.current_user().to_dict()}
         body = render('index.html', data)
         self.response.write(body)
 

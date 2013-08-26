@@ -31,6 +31,26 @@ class User(db.Model):
         else:
             None
 
+    def to_dict(self):
+        return {
+            'created_at':          self.created_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'credentials':         self.credentials,
+            'google_birthday':     self.google_birthday,
+            'google_email':        self.google_email,
+            'google_gender':       self.google_gender,
+            'google_id':           self.google_id,
+            'google_locale':       self.google_locale,
+            'google_name':         self.google_name,
+            'google_picture_url':  self.google_picture_url,
+            'last_login_at':       self.last_login_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'modified_at':         self.modified_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'profile_description': self.profile_description,
+            'profile_email':       self.profile_email,
+            'profile_name':        self.profile_name,
+            'profile_slug':        self.profile_slug,
+            'profile_web_address': self.profile_web_address
+            }
+
     @classmethod
     def get_by_slug(self, profile_slug):
         """ Find a user with the specified profile slug """
