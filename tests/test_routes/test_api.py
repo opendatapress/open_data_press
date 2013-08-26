@@ -4,10 +4,20 @@ import unittest
 import webapp2
 import simplejson as json
 from tests.utils import MockHttp
+from google.appengine.ext import db
+from google.appengine.ext import testbed
 from helpers import google_api
 import main # The app
 
 class TestAPIHandler(unittest.TestCase):
+
+    def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+
+    def tearDown(self):
+        self.testbed.deactivate()
 
     # Helper method to test generic error responses
     def denied_authentication(self, response, code=404):

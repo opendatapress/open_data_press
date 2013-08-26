@@ -23,7 +23,7 @@ class APIHandler(SessionHandler):
         # of the parent class if the request is authenticated
         session = get_store(request=self.request).get_session()
 
-        if 'credentials' in session.keys():
+        if 'current_user' in session.keys():
             self.response.content_type = 'application/json'
             SessionHandler.dispatch(self)
         else:
@@ -87,14 +87,14 @@ class GoogleSheetsListRoute(APIHandler):
 
     def get(self):
         query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-        drive_files = google_api.list_drive_files(self.credentials(), query=query)
+        drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
         self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files, ensure_ascii=False))
 
 
 class GoogleSheetsItemRoute(APIHandler):
 
     def get(self, google_sheets_id):
-        sheet = google_api.get_worksheets(self.credentials(), google_sheets_id)
+        sheet = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
         if sheet['response'] == 'error':
             self.response.set_status(500)
         self.response.write(json.dumps(sheet, ensure_ascii=False))
@@ -103,7 +103,7 @@ class GoogleSheetsItemRoute(APIHandler):
 class GoogleSheetsWorksheetRoute(APIHandler):
 
     def get(self, google_sheets_id, worksheet_key):
-        data = google_api.get_cell_data(self.credentials(), google_sheets_id, worksheet_key)
+        data = google_api.get_cell_data(self.current_user().credentials, google_sheets_id, worksheet_key)
         if data['response'] == 'error':
             self.response.set_status(500)
         self.response.write(json.dumps(data, ensure_ascii=False))

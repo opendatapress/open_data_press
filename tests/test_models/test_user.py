@@ -59,6 +59,10 @@ class TestUserModel(unittest.TestCase):
         self.assertTrue('profile_web_address' in dir(user))
 
 
+    def test_user_instance_methods_exist(self):
+        user = User(**self.user_params)
+        self.assertTrue('refresh_token' in dir(user))
+
     def test_user_class_methods_exist(self):
         self.assertTrue('get_by_slug' in dir(User))
         self.assertTrue('get_by_google_id' in dir(User))

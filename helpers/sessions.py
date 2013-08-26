@@ -16,6 +16,7 @@
 
 from webapp2 import RequestHandler, cached_property
 from webapp2_extras.sessions import get_store
+from models.user import User
 
 
 class SessionHandler(RequestHandler):
@@ -33,12 +34,11 @@ class SessionHandler(RequestHandler):
     def session(self):
         return self.session_store.get_session()
 
-    # Method for getting and setting credentials for the current session
-    def credentials(self, credentials=None):
-        if credentials:
-            self.session['credentials'] = credentials
-            
-        if 'credentials' in self.session:
-            return self.session['credentials']
+    def current_user(self, user=None):
+        if user:
+            self.session['current_user'] = user.google_id
+
+        if 'current_user' in self.session:
+            return User.get_by_google_id(self.session['current_user'])
         else:
             return None

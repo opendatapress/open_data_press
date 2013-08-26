@@ -4,6 +4,7 @@
 #
 
 from google.appengine.ext import db
+from oauth2client.anyjson import simplejson as json
 
 class User(db.Model):
 
@@ -23,6 +24,12 @@ class User(db.Model):
     profile_name        = db.StringProperty()
     profile_slug        = db.StringProperty(required=True)
     profile_web_address = db.LinkProperty()
+
+    def refresh_token(self):
+        if self.credentials:
+            return json.loads(self.credentials).get('refresh_token')
+        else:
+            None
 
     @classmethod
     def get_by_slug(self, profile_slug):

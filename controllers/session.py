@@ -3,12 +3,13 @@
 # Session route handlers
 #
 import logging
+from datetime import datetime
 from webapp2 import RequestHandler
 from helpers import google_api
 from helpers.sessions import SessionHandler
 from helpers.views import render
 from controllers.root import error_500
-
+from models.user import User
 
 # Build oAuth2 request and redirect to Google authentication endpoint
 class LoginRoute(RequestHandler):
@@ -24,9 +25,8 @@ class LoginRoute(RequestHandler):
 # Clear user session and return to home page
 class LogoutRoute(SessionHandler):
     def get(self):
-        if 'credentials' in self.session:
-            # TODO delete user_id from session
-            del self.session['credentials']
+        if 'current_user' in self.session:
+            del self.session['current_user']
         self.redirect('/')
 
 
@@ -37,41 +37,59 @@ class OAuth2CallbackRoute(SessionHandler):
         
         code = self.request.GET.get('code')
         if None == code:
-            return self.response.write('No authentication code returned')
             # TODO Display cancelled login page
-            self.redirect('/')
+            return self.response.write('No authentication code returned')
 
         try:
-            flow = google_api.oauth2_flow()
-            auth = flow.step2_exchange(code)
-            
-            # TODO Attempt to fetch user record from DB with matching google_id
+            flow      = google_api.oauth2_flow()
+            auth      = flow.step2_exchange(code)
+            now       = datetime.now()
+            google_id = auth.id_token['id']
 
-            # TODO if not user exists with google id
-                # TODO Create user record in DB
+            # Get Google user info
+            google_user = google_api.user_info(auth.to_json())
 
-            # If we have no refresh token, redirect to /auth/login?approval_prompt to get one
-            # TODO also check DB to prevent needless double-auth
-            if None == auth.refresh_token:
-                self.redirect('/auth/login?approval_prompt')
+            # Attempt to fetch user record from DB with matching google_id
+            user = User.get_by_google_id(google_id)
 
-            # Get user info
-            user_info = google_api.user_info(auth.to_json())
-            # TODO Store updated user info in DB
-            # TODO Store updated credentials in DB
+            # Create user if none exists
+            if user == None:
+                profile_slug = google_user['email'].split('@')[0]
+                user = User(google_id=google_id, profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
+
+            if user.refresh_token():
+                # Do nothing if we have a refresh token
+                pass
+            elif None == user.refresh_token() and auth.refresh_token:
+                # Store refresh token if we can
+                user.credentials = auth.to_json()
+            else:
+                # Go get a refresh token if we need one
+                return self.redirect('/auth/login?approval_prompt')
+
+            # Update user account
+            user.google_birthday    = google_user.get('birthday')
+            user.google_email       = google_user.get('email')
+            user.google_gender      = google_user.get('gender')
+            user.google_locale      = google_user.get('locale')
+            user.google_name        = google_user.get('name')
+            user.google_picture_url = google_user.get('picture')
+            user.last_login_at      = now
+            user.put()
 
             # Create session
-            # TODO Store DB user_id in session
-            self.credentials(auth.to_json())
+            self.current_user(user)
 
             # TODO if any post-login redirects have been stored in the session
                 # TODO delete redirect from session
                 # TODO issue redirect
 
-            # Show results
             # TODO redirect to dashboard instead
-            data = {'message': 'Authenticated!', 'user_info': user_info, 'session': self.session}
-            self.response.write(render('index.html', data))
+            self.redirect('/')
 
-        except Exception as e:
-            error_500(self.request, self.response, e)
+        # except Exception as e:
+        #     logging.error(e)
+        #     error_500(self.request, self.response, e)
+
+        finally:
+            pass
