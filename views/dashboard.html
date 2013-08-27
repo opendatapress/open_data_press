@@ -2,9 +2,9 @@
 <!--[if IE 8]> <html lang="en" class="lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-    <title>{% block title %}My Site{% endblock %}</title>
+    <title>Dashboard</title>
     <meta charset="utf-8">
-    <meta name="description" content="{% block description %}My Site{% endblock %}">
+    <meta name="description" content="Dashboard">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -12,22 +12,22 @@
     <link href="/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet" >
-    {% block stylesheets %}{% endblock %}
 </head>
 <body>
+
   <div class="container">
     
     <div class="header">
       <nav>
         <a href="/">Home</a> |
-        <a href="/auth/login">Login</a> |
         <a href="/auth/logout">Logout</a> |
         <a href="/dashboard">Dashboard</a>
       </nav>
     </div>
 
     <div class="content">
-      {% block content %}{% endblock %}
+      <h1>Dashboard</h1>
+      <p>This content dynamically redrawn by JS</p>
     </div>
 
     <div class="footer">
@@ -44,10 +44,13 @@
 
   </div><!-- .container -->
 
+  <!-- Templates -->
+  <script id="tpl-xxx" type="text/html"></script>
+
+  <!-- JS Dependencies -->
   <script src="/js/jquery-1.10.1.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/script.js"></script>
-  {% block javascripts %}{% endblock %}
 
   <script>
     var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

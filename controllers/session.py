@@ -84,7 +84,7 @@ class OAuth2CallbackRoute(SessionHandler):
                 # TODO issue redirect
 
             # TODO redirect to dashboard instead
-            self.redirect('/')
+            self.redirect('/dashboard')
 
         except Exception as e:
             logging.error(e)
