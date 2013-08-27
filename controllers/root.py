@@ -5,7 +5,6 @@
 import logging
 from helpers.sessions import SessionHandler
 from helpers.views import static, render
-import json
 
 class HomeRoute(SessionHandler):
 
