@@ -44,18 +44,17 @@ class OAuth2CallbackRoute(SessionHandler):
             flow      = google_api.oauth2_flow()
             auth      = flow.step2_exchange(code)
             now       = datetime.now()
-            google_id = auth.id_token['id']
 
             # Get Google user info
             google_user = google_api.user_info(auth.to_json())
 
             # Attempt to fetch user record from DB with matching google_id
-            user = User.get_by_google_id(google_id)
+            user = User.get_by_google_id(google_user.get('id'))
 
             # Create user if none exists
             if user == None:
                 profile_slug = google_user['email'].split('@')[0]
-                user = User(google_id=google_id, profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
+                user = User(google_id=google_user.get('id'), profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
 
             if user.refresh_token():
                 # Do nothing if we have a refresh token
