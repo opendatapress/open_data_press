@@ -23,7 +23,7 @@ def error_404(request, response, exception):
 
 
 def error_500(request, response, exception):
-    msg_info = (request.method, request.path_url, request.POST.items(), exception)
-    logging.error("%s %s %s 500 '%s'" % msg_info)
+    msg_info = (request.method, request.path_url, request.POST.items(), exception, exception.__class__)
+    logging.error("%s %s %s 500 '%s' %s" % msg_info)
     response.write(static('500.html'))
     response.set_status(500)
