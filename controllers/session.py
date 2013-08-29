@@ -88,7 +88,6 @@ class OAuth2CallbackRoute(SessionHandler):
             self.redirect('/dashboard')
 
         except Exception as e:
-            logging.error(e)
             error_500(self.request, self.response, e)
 
         finally:
