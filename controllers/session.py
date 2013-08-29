@@ -53,6 +53,7 @@ class OAuth2CallbackRoute(SessionHandler):
 
             # Create user if none exists
             if user == None:
+                # TODO proper slug generation
                 profile_slug = google_user['email'].split('@')[0]
                 user = User(google_id=google_user.get('id'), profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
 
