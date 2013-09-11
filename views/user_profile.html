@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}{{user.profile_name|e}}{% endblock %}
+
+{% block content %}
+  <h1>Profile for {{user.profile_name|e}}</h1>
+  <img src="{{ user.google_picture_url|e }}" width="150" heigth="150">
+  <dl class="dl-horizontal">
+    <dt>Profile Name</dt>        <dd>{{ user.profile_name|e }}</dd>
+    <dt>Created At</dt>          <dd>{{ user.created_at|e }}</dd>
+    <dt>Google Birthday</dt>     <dd>{{ user.google_birthday|e }}</dd>
+    <dt>Google Email</dt>        <dd>{{ user.google_email|e }}</dd>
+    <dt>Google Gender</dt>       <dd>{{ user.google_gender|e }}</dd>
+    <dt>Google ID</dt>           <dd>{{ user.google_id|e }}</dd>
+    <dt>Google Locale</dt>       <dd>{{ user.google_locale|e }}</dd>
+    <dt>Google Name</dt>         <dd>{{ user.google_name|e }}</dd>
+    <dt>Last Login At</dt>       <dd>{{ user.last_login_at|e }}</dd>
+    <dt>Modified At</dt>         <dd>{{ user.modified_at|e }}</dd>
+    <dt>Profile Description</dt> <dd>{{ user.profile_description|e }}</dd>
+    <dt>Profile Email</dt>       <dd>{{ user.profile_email|e }}</dd>
+    <dt>Profile Slug</dt>        <dd>{{ user.profile_slug|e }}</dd>
+    <dt>Profile Web Address</dt> <dd>{{ user.profile_web_address|e }}</dd>
+  </dl>
+{% endblock %}
