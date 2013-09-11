@@ -19,10 +19,15 @@
     
     <div class="header">
       <nav>
-        <a href="/">Home</a> |
-        <a href="/auth/login">Login</a> |
-        <a href="/auth/logout">Logout</a> |
-        <a href="/dashboard">Dashboard</a>
+        <strong><a href="/">Open Data Press</a></strong>
+        {% if current_user %}
+        | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
+        | <a href="/dashboard">Dashboard</a>
+        | <a href="/auth/logout">Logout</a>
+        {% else %}
+        | <a href="/auth/login">Login</a>
+        | <a href="/auth/login?approval_prompt">Login (Force Approval Prompt)</a>
+        {% endif %}
       </nav>
     </div>
 
@@ -31,18 +36,32 @@
     </div>
 
     <div class="footer">
-      <p>&copy; <a href="#">YOUR NAME</a> 2013</p>
+      &copy; Open Data Press 2013
+      | <a href="#" id="debug-toggle">Debug Info</a>
     </div>
     
-    <hr>
 
-    <div class="debug">
+    <div id="debug-block" class="debug" style="display:none">
+      <hr>
       <p><strong>Debug Information</strong></p>
       Session Data: <pre><code>{{ session|e }}</code></pre>
       Current User: <pre><code>{{ current_user|e }}</code></pre>
     </div>
 
+    <script type="text/javascript">
+      (function(d){
+        var t = d.getElementById('debug-toggle'),
+            b = d.getElementById('debug-block');
+        t.onclick = function(){
+          b.style.display = (b.style.display == "none") ? "block" : "none";
+          return false;
+        }
+      })(document)
+    </script>
+
   </div><!-- .container -->
+
+  {% block templates %}{% endblock %}
 
   <script src="/js/jquery-1.10.1.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
