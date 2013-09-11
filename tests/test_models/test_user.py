@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from datetime import datetime
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from models.user import User
+from tests import dummy
 
 
 class TestUserModel(unittest.TestCase):
@@ -14,33 +14,13 @@ class TestUserModel(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
 
-        # Valid user params
-        self.user_params = {
-            'created_at':          datetime.now(),
-            'credentials':         '{"token":"XXX"}',
-            'google_birthday':     u'0000-01-01',
-            'google_email':        u'test.user@gmail.com',
-            'google_gender':       u'male',
-            'google_id':           u'123456789',
-            'google_locale':       u'en-GB',
-            'google_name':         u'Test User',
-            'google_picture_url':  u'https://lh3.googleusercontent.com/image.png',
-            'last_login_at':       datetime.now(),
-            'modified_at':         datetime.now(),
-            'profile_email':       u'test.user@email.com',
-            'profile_description': u'This is a test user account',
-            'profile_name':        u'Test User',
-            'profile_slug':        'test-user',
-            'profile_web_address': 'http://test-user.com',
-        }
-
 
     def tearDown(self):
         self.testbed.deactivate()
 
 
     def test_user_properties_exist(self):
-        user = User(**self.user_params)
+        user = User(**dummy.user)
         self.assertTrue('created_at'          in dir(user))
         self.assertTrue('credentials'         in dir(user))
         self.assertTrue('google_birthday'     in dir(user))
@@ -61,7 +41,7 @@ class TestUserModel(unittest.TestCase):
 
 
     def test_user_instance_methods_exist(self):
-        user = User(**self.user_params)
+        user = User(**dummy.user)
         self.assertTrue('refresh_token' in dir(user))
 
 
@@ -71,20 +51,20 @@ class TestUserModel(unittest.TestCase):
 
 
     def test_get_by_slug(self):
-        user = User(**self.user_params)
+        user = User(**dummy.user)
         user.put()
         self.assertEqual(user.key(), User.get_by_slug('test-user').key())
 
 
     def test_get_by_google_id(self):
-        user = User(**self.user_params)
+        user = User(**dummy.user)
         user.put()
         self.assertEqual(user.key(), User.get_by_google_id('123456789').key())
 
 
     def test_user_create_success(self):
         num_users = User.all().count()
-        user = User(**self.user_params)
+        user = User(**dummy.user)
         user.put()
         self.assertEqual(num_users + 1, User.all().count())
 
@@ -110,31 +90,31 @@ class TestUserModel(unittest.TestCase):
     def test_user_required_properties(self):
 
         with self.assertRaises(db.BadValueError) as cm:
-            bad_params = self.user_params.copy()
+            bad_params = dummy.user.copy()
             del bad_params['created_at']
             User(**bad_params)
         self.assertTrue('created_at' in cm.exception.message)
 
         with self.assertRaises(db.BadValueError) as cm:
-            bad_params = self.user_params.copy()
+            bad_params = dummy.user.copy()
             del bad_params['google_id']
             User(**bad_params)
         self.assertTrue('google_id' in cm.exception.message)
 
         with self.assertRaises(db.BadValueError) as cm:
-            bad_params = self.user_params.copy()
+            bad_params = dummy.user.copy()
             del bad_params['last_login_at']
             User(**bad_params)
         self.assertTrue('last_login_at' in cm.exception.message)
 
         with self.assertRaises(db.BadValueError) as cm:
-            bad_params = self.user_params.copy()
+            bad_params = dummy.user.copy()
             del bad_params['modified_at']
             User(**bad_params)
         self.assertTrue('modified_at' in cm.exception.message)
 
         with self.assertRaises(db.BadValueError) as cm:
-            bad_params = self.user_params.copy()
+            bad_params = dummy.user.copy()
             del bad_params['profile_slug']
             User(**bad_params)
         self.assertTrue('profile_slug' in cm.exception.message)
