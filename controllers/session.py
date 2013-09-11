@@ -4,7 +4,6 @@
 #
 import logging
 from datetime import datetime
-from webapp2 import RequestHandler
 from helpers import google_api
 from helpers.sessions import SessionHandler
 from helpers.views import render
@@ -13,13 +12,20 @@ from controllers.root import error_500
 from models.user import User
 
 # Build oAuth2 request and redirect to Google authentication endpoint
-class LoginRoute(RequestHandler):
+class LoginRoute(SessionHandler):
     def get(self):
+
+        # Store redirect URL if provided
+        if 'redirect_url' in self.request.GET.keys():
+            print self.request.GET['redirect_url']
+            self.session['redirect_url'] = self.request.GET['redirect_url']
+
         if 'approval_prompt' in self.request.GET.keys():
-            # Use /auth/login?approval_prompt to force refresh of authentication tokens
+            # Force refresh of authentication tokens
             flow = google_api.oauth2_flow(approval_prompt='force')
         else:
             flow = google_api.oauth2_flow()
+
         self.redirect(flow.step1_get_authorize_url())
 
 
@@ -83,9 +89,11 @@ class OAuth2CallbackRoute(SessionHandler):
             # Create session
             self.current_user(user)
 
-            # TODO if any post-login redirects have been stored in the session
-                # TODO delete redirect from session
-                # TODO issue redirect
+            # Redirect to provided url if set
+            if 'redirect_url' in self.session.keys():
+                url = str(self.session['redirect_url'])
+                del self.session['redirect_url']
+                return self.redirect(url)
 
             # Redirect to dashboard instead
             self.redirect('/dashboard')
