@@ -61,7 +61,13 @@ class OAuth2CallbackRoute(SessionHandler):
             # Create user if none exists
             if user == None:
                 profile_slug = slug.create(google_user['email'].split('@')[0])
-                user = User(google_id=google_user.get('id'), profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
+                user = User(
+                    google_id     = google_user.get('id'), 
+                    profile_name  = google_user.get('name'),
+                    profile_slug  = profile_slug, 
+                    created_at    = now, 
+                    modified_at   = now, 
+                    last_login_at = now)
 
             # Do nothing if we have a refresh token
             if user.refresh_token():
