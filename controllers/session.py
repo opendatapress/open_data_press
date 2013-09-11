@@ -8,6 +8,7 @@ from webapp2 import RequestHandler
 from helpers import google_api
 from helpers.sessions import SessionHandler
 from helpers.views import render
+from helpers import slug
 from controllers.root import error_500
 from models.user import User
 
@@ -53,18 +54,19 @@ class OAuth2CallbackRoute(SessionHandler):
 
             # Create user if none exists
             if user == None:
-                # TODO proper slug generation
-                profile_slug = google_user['email'].split('@')[0]
+                profile_slug = slug.create(google_user['email'].split('@')[0])
                 user = User(google_id=google_user.get('id'), profile_slug=profile_slug, created_at=now, modified_at=now, last_login_at=now)
 
+            # Do nothing if we have a refresh token
             if user.refresh_token():
-                # Do nothing if we have a refresh token
                 pass
+        
+            # Store refresh token if we can
             elif None == user.refresh_token() and auth.refresh_token:
-                # Store refresh token if we can
                 user.credentials = auth.to_json()
+    
+            # Go get a refresh token if we need one
             else:
-                # Go get a refresh token if we need one
                 return self.redirect('/auth/login?approval_prompt')
 
             # Update user account
