@@ -41,9 +41,9 @@ class OAuth2CallbackRoute(SessionHandler):
             return self.response.write('No authentication code returned')
 
         try:
-            flow      = google_api.oauth2_flow()
-            auth      = flow.step2_exchange(code)
-            now       = datetime.now()
+            flow = google_api.oauth2_flow()
+            auth = flow.step2_exchange(code)
+            now  = datetime.now()
 
             # Get Google user info
             google_user = google_api.user_info(auth.to_json())
@@ -68,6 +68,7 @@ class OAuth2CallbackRoute(SessionHandler):
                 return self.redirect('/auth/login?approval_prompt')
 
             # Update user account
+            # https://github.com/opendatapress/open_data_press/issues/5#issuecomment-23477495
             user.google_birthday    = google_user.get('birthday')
             user.google_email       = google_user.get('email')
             user.google_gender      = google_user.get('gender')
@@ -84,7 +85,7 @@ class OAuth2CallbackRoute(SessionHandler):
                 # TODO delete redirect from session
                 # TODO issue redirect
 
-            # TODO redirect to dashboard instead
+            # Redirect to dashboard instead
             self.redirect('/dashboard')
 
         except Exception as e:
