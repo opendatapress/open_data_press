@@ -41,7 +41,7 @@ class UserRoute(APIHandler):
         # NB we have to decode "credentials" as it is stored as a string in the DB
         current_user = User.get_by_google_id(self.session['current_user']).to_dict()
         current_user["credentials"] = json.loads(current_user["credentials"])
-        self.response.write(json.dumps({"body": current_user, "response": "success"}))
+        self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
 
     def post(self):
         self.response.write('{"response":"success","body":"user"}')
