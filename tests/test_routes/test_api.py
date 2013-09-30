@@ -29,6 +29,16 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('body' in data)
         self.assertEqual('error', data['response'])
 
+    # Helper method to test successful response
+    def response_ok(self, response):
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.content_type, 'application/json')
+        self.assertIsInstance(json.loads(response.body), dict)
+        data = json.loads(response.body)
+        self.assertTrue('response' in data)
+        self.assertTrue('body' in data)
+
+
 
     def test_api_path_denies_unauthenticated_requests(self):
         response = main.app.get_response('/api')
@@ -47,6 +57,23 @@ class TestAPIHandler(unittest.TestCase):
         
         response = main.app.get_response('/api/0/user', method='POST')
         self.denied_authentication(response, 403)
+
+
+    def test_api_0_user_get_returns_user_data(self):
+        google_api.httplib2.Http = MockHttp
+
+        # Make authenticated request
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+        response = main.app.get_response('/api/0/user', headers=headers)
+
+        self.response_ok(response)
+        data = json.loads(response.body)
+        self.assertEqual("12345", data["body"]["google_id"])
+
+
+    def test_api_0_user_post_updates_user_data(self):
+        pass
 
 
     def test_api_0_data_source_path_denies_unauthenticated_requests(self):

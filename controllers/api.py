@@ -10,6 +10,7 @@ from oauth2client.anyjson import simplejson as json
 
 from helpers import google_api
 from helpers.sessions import SessionHandler
+from models.user import User
 
 import logging
 
@@ -25,6 +26,7 @@ class APIHandler(SessionHandler):
 
         if 'current_user' in session.keys():
             self.response.content_type = 'application/json'
+            self.session = session
             SessionHandler.dispatch(self)
         else:
             self.response.content_type = 'application/json'
@@ -35,7 +37,11 @@ class APIHandler(SessionHandler):
 class UserRoute(APIHandler):
 
     def get(self):
-        self.response.write('{"response":"success","body":"user"}')
+        # Return a json representation of the current user
+        # NB we have to decode "credentials" as it is stored as a string in the DB
+        current_user = User.get_by_google_id(self.session['current_user']).to_dict()
+        current_user["credentials"] = json.loads(current_user["credentials"])
+        self.response.write(json.dumps({"body": current_user, "response": "success"}))
 
     def post(self):
         self.response.write('{"response":"success","body":"user"}')
