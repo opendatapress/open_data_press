@@ -36,6 +36,6 @@ data_source = {
     'modified_at':        datetime.now(),
     'slug':               u'data-1',
     'tags':               u'Apples, Oranges, Pears',
-    'tbl_stars':          u'5',
+    'tbl_stars':          5,
     'title':              u'Dummy Data',
 }

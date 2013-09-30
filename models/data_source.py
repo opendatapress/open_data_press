@@ -17,7 +17,10 @@ class DataSource(db.Model):
     modified_at        = db.DateTimeProperty(required=True)
     slug               = db.StringProperty(required=True)
     tags               = db.StringProperty()
-    tbl_stars          = db.StringProperty()
+    tbl_stars          = db.IntegerProperty()
     title              = db.StringProperty()
     user               = db.ReferenceProperty(User, collection_name="data_sources")
 
+    def get_data(self):
+        """ Fetch worksheet data from Google """
+        return {}
