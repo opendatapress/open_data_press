@@ -49,6 +49,7 @@ class UserRoute(APIHandler):
         if None == user:
             self.response.write('{"response":"error","body":"Unknown User"}')
             self.response.set_status(500)
+            return
         try:
             if "profile_name"        in data.keys(): user.profile_name        = data["profile_name"]
             if "profile_email"       in data.keys(): user.profile_email       = data["profile_email"]
