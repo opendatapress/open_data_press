@@ -44,7 +44,7 @@ class UserRoute(APIHandler):
         self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
 
     def post(self):
-        data = json.loads(self.request.POST["user"])
+        data = json.loads(self.request.POST["payload"])
         user = User.get_by_google_id(data["google_id"])
         if None == user:
             self.response.write('{"response":"error","body":"Unknown User"}')

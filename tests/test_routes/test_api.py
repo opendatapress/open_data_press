@@ -89,7 +89,7 @@ class TestAPIHandler(unittest.TestCase):
         user_data_a["profile_name"]          = "New Name"
 
         # Attempt to save the modified user
-        response_b = main.app.get_response('/api/0/user', headers=headers, POST={"user":json.dumps(user_data_a)})
+        response_b = main.app.get_response('/api/0/user', headers=headers, POST={"payload":json.dumps(user_data_a)})
         self.response_ok(response_b)
 
         # Assert returned data is correct
