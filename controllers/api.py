@@ -44,7 +44,23 @@ class UserRoute(APIHandler):
         self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
 
     def post(self):
-        self.response.write('{"response":"success","body":"user"}')
+        data = json.loads(self.request.POST["user"])
+        user = User.get_by_google_id(data["google_id"])
+        if None == user:
+            self.response.write('{"response":"error","body":"Unknown User"}')
+            self.response.set_status(500)
+        try:
+            if "profile_name"        in data.keys(): user.profile_name        = data["profile_name"]
+            if "profile_email"       in data.keys(): user.profile_email       = data["profile_email"]
+            if "profile_description" in data.keys(): user.profile_description = data["profile_description"]
+            if "profile_web_address" in data.keys(): user.profile_web_address = data["profile_web_address"]
+            user.put()
+            self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict()))
+        except Exception as e:
+            self.response.write('{"response":"error","body":"Problem updating profile"}')
+            self.response.set_status(500)
+            msg_info = (self.request.method, self.request.path_url, self.request.POST.items(), e, e.__class__)
+            logging.error("%s %s %s 500 '%s' %s" % msg_info)
 
 
 class DataSourceListRoute(APIHandler):

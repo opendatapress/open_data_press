@@ -73,7 +73,31 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_user_post_updates_user_data(self):
-        pass
+        google_api.httplib2.Http = MockHttp
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        headers  = {'Cookie': response.headers['Set-Cookie']}
+
+        # Get user data
+        response_a = main.app.get_response('/api/0/user', headers=headers)
+        self.response_ok(response_a)
+
+        # Modify user
+        user_data_a = json.loads(response_a.body)["body"]
+        user_data_a["profile_description"]   = "New description"
+        user_data_a["profile_web_address"]   = "http://new_web_address.com"
+        user_data_a["profile_email"]         = "new@email.com"
+        user_data_a["profile_name"]          = "New Name"
+
+        # Attempt to save the modified user
+        response_b = main.app.get_response('/api/0/user', headers=headers, POST={"user":json.dumps(user_data_a)})
+        self.response_ok(response_b)
+
+        # Assert returned data is correct
+        user_data_b = json.loads(response_b.body)["body"]
+        self.assertEqual(user_data_b["profile_description"], "New description")
+        self.assertEqual(user_data_b["profile_web_address"], "http://new_web_address.com")
+        self.assertEqual(user_data_b["profile_email"],       "new@email.com")
+        self.assertEqual(user_data_b["profile_name"],        "New Name")
 
 
     def test_api_0_data_source_path_denies_unauthenticated_requests(self):
