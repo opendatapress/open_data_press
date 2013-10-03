@@ -7,7 +7,7 @@ import httplib2
 import re
 import logging
 import unicodedata
-from datetime import datetime
+from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
@@ -225,21 +225,32 @@ def _key(heading):
 
 
 # Convert cell values to int or float if possible
-# Also normaises dates and times to "YYYY-MM-DD HH-MM-SS" format 
+# Normaises dates and times to "YYYY-MM-DD HH-MM-SS" format 
 # including with millisecond precision if available
+#
 #  value: str/unicode
-def _val(value):
-    if value is None: return ""
-    try: return int(value)
-    except ValueError:
-        try: return float(value)
-        except ValueError:
-            try: return str(datetime.strptime(value[0:23], "%Y-%m-%dT%H:%M:%S.%f"))
-            except ValueError:
-                try: return str(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
-                except ValueError:
-                    try: return str(datetime.strptime(value, "%d/%m/%Y"))
-                    except ValueError:
-                        try: return str(datetime.strptime(value, "%H:%M:%S"))
-                        except ValueError:
-                            return value
+#                          .__
+#  Also: Skiing :)         |__]
+#                          |
+#                          |
+#                          |                              _
+def _val(val):    #::::....|...                       ___(_)
+    if val is None: return ""  #:.                   /  / /\
+    try: return int(val)          #:.               /   `\\ |
+    except ValueError:               #:.               \\// |
+        try:                            #:.             \\\
+            return float(val)              #:.           \\\
+        except ValueError:                     #:.        ``
+            try:                                   #:.                         ^
+                return str(dt.strptime(val,"%H:%M:%S"))#:.                     ^
+            except ValueError:                            #:.                 ^^^
+                try:                                         #:.              ^^^
+                    return str(dt.strptime(val, "%d/%m/%Y"))    #:.          ^^^^^
+                except ValueError:                                 #:.      ^^^^^^^
+                    try:                                              #:.      |
+                        return str(dt.strptime(val, "%d/%m/%Y %H:%M:%S")) #:.  |                  .__
+                    except ValueError:                                       #:.                  |__]
+                        try:                                                     #:.              |
+                            return str(dt.strptime(val[0:23], "%Y-%m-%dT%H:%M:%S.%f"))#:.         |
+                        except ValueError:                                                #:..    |
+                            return val                                                         #:.|..
