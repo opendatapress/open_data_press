@@ -20,10 +20,10 @@ class User(db.Model):
     last_login_at       = db.DateTimeProperty(required=True)
     modified_at         = db.DateTimeProperty(required=True)
     profile_description = db.TextProperty()
-    profile_email       = db.EmailProperty()
+    profile_email       = db.TextProperty()
     profile_name        = db.StringProperty()
     profile_slug        = db.StringProperty(required=True)
-    profile_web_address = db.LinkProperty()
+    profile_web_address = db.TextProperty()
 
     def refresh_token(self):
         if self.credentials:
