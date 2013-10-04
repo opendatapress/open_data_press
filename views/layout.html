@@ -13,6 +13,7 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+  {% block container %}
   <a href="#content" class="sr-only">Skip to content</a>
   <div class="container">
     
@@ -30,7 +31,7 @@
       </nav>
     </div>
 
-    <div class="container" id="content">
+    <div id="content">
       {% block content %}{% endblock %}
     </div>
 
@@ -59,12 +60,10 @@
     </script>
 
   </div><!-- .container -->
+  {% endblock %}
 
   {% block templates %}{% endblock %}
 
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
-  <script src="/js/script.js"></script>
   {% block javascripts %}{% endblock %}
 
   <script>
