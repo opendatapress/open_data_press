@@ -76,6 +76,7 @@
 
 
 {% block templates %}
+{% raw %}
 <script id="tpl-loading" type="text/html">
     <div style="text-align:center">
         Loading. Please wait...
@@ -87,6 +88,35 @@
         I&apos;m Sorry, Something went wrong... <strong>:(</strong>
     </div>
 </script>
+
+<script id="tpl-settings" type="text/x-handlebars-template">
+    <h1>Profile Settings</h1>
+    <form id="form-settings" role="form">
+        <div class="form-group">
+            <label for="profile_name">Name</label>
+            <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
+        </div>
+        <div class="form-group">
+            <label for="profile_decription">Description</label>
+            <textarea class="form-control" id="profile_decription">{{profile_decription}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="profile_email">Email</label>
+            <input type="email" class="form-control" id="profile_email" value="{{profile_email}}">
+        </div>
+        <div class="form-group">
+            <label for="profile_web_address">Web Address</label>
+            <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}">
+        </div>
+        <hr>
+        <div class="form-group">
+            <input type="hidden" id="google_id" value="{{google_id}}">
+            <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
+            <a href="#" class="btn btn-link">Cancel</a>
+        </div>
+    </form>
+</script>
+{% endraw %}
 {% endblock %}
 
 
@@ -94,6 +124,7 @@
 <script src="/js/jquery.js"></script>
 <script src="/js/bootstrap.js"></script>
 <script src="/js/router.js"></script>
+<script src="/js/handlebars.js"></script>
 
 <script type="text/javascript">
     
@@ -110,20 +141,24 @@
 
 
         /* Handlebars Templates */
-        // TODO
+        tpl_settings = Handlebars.compile($('#tpl-settings').html());
 
         /* URL Route Handlers */
-        router = new Router()
+        new Router()
 
         .before(function(req, next){
             dash_content.html(tpl_loading);
-            setTimeout(function(){next();}, 1000); //Fake request delay
-            // next();
+            next();
         })
 
         .addRoute('#/settings', function(req, next){
-            console.log(req);
-            dash_content.html('Profile settings');
+            $.ajax('/api/0/user')
+            .success(function(response){
+                dash_content.html(tpl_settings(response.body));
+            })
+            .error(function(){
+                dash_content.html(tpl_error);
+            });
         })
 
         .addRoute('#/data_source', function(req, next){
@@ -154,7 +189,32 @@
 
 
         /* Event Handlers */
-        // TODO
+        $(document)
+
+        .on('click', '#form-settings #submit', function(){
+            payload = {
+                google_id           : $('form #google_id').val(),
+                profile_name        : $('form #profile_name').val(),
+                profile_slug        : $('form #profile_slug').val(),
+                profile_decription  : $('form #profile_decription').val(),
+                profile_email       : $('form #profile_email').val(),
+                profile_web_address : $('form #profile_web_address').val()
+            }
+
+            $.ajax({
+                url: '/api/0/user',
+                type: 'POST',
+                data: {payload: JSON.stringify(payload)}
+            })
+            .success(function(response){
+                // TODO Display "saved" message
+            })
+            .error(function(){
+                // TODO Show error returned from server & highlight required fields
+            });
+
+            return false;
+        })
 
     })()
 
