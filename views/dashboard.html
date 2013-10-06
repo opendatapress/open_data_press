@@ -12,6 +12,19 @@
         min-width: 800px;
     }
 
+    #messages {
+        position: absolute;
+        z-index: 1001;
+        left: 300px;
+        right: 300px;
+        padding-top: 5px;
+        text-align: center;
+    }
+
+    #messages .alert {
+        padding: 8px;
+    }
+
     .navbar {
         margin-bottom: 0;
     }
@@ -47,6 +60,9 @@
 
 
 {% block container %}
+<div id="messages">
+    <!-- Alert Messages -->
+</div>
 <div class="navbar navbar-default navbar-static-top" role="navigation">
     <a class="navbar-brand" href="/">Open Data Press</a>
     <ul class="nav navbar-nav navbar-right">
@@ -71,7 +87,9 @@
         <a href="#">Contact</a>
     </div>
 </div>
-<div class="right-fluid" id="dash-content"></div>
+<div class="right-fluid" id="dash-content">
+    <!-- Dashboard Content -->
+</div>
 {% endblock %}
 
 
@@ -83,9 +101,10 @@
     </div>
 </script>
 
-<script id="tpl-error" type="text/html">
-    <div style="text-align:center">
-        I&apos;m Sorry, Something went wrong... <strong>:(</strong>
+<script id="tpl-message" type="text/x-handlebars-template">
+    <div class="alert alert-dismissable alert-{{type}}">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{message}}
     </div>
 </script>
 
@@ -97,8 +116,8 @@
             <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
         </div>
         <div class="form-group">
-            <label for="profile_decription">Description</label>
-            <textarea class="form-control" id="profile_decription">{{profile_decription}}</textarea>
+            <label for="profile_description">Description</label>
+            <textarea class="form-control" id="profile_description">{{profile_description}}</textarea>
         </div>
         <div class="form-group">
             <label for="profile_email">Email</label>
@@ -133,20 +152,31 @@
 
         /* Dynamic page elements */
         dash_content = $('#dash-content'),
+        messages     = $('#messages'),
 
 
         /* Static Templates */
         tpl_loading = $('#tpl-loading').html(),
-        tpl_error   = $('#tpl-error').html(),
 
 
         /* Handlebars Templates */
-        tpl_settings = Handlebars.compile($('#tpl-settings').html());
+        tpl_settings = Handlebars.compile($('#tpl-settings').html()),
+        tpl_message  = Handlebars.compile($('#tpl-message').html()),
+
+
+        /* Show a styled alert message in the navbar */
+        alertMsg = function(message, type){
+            message  = message || '';
+            type     = type    || 'info';
+            messages.html(tpl_message({message: message, type: type}));
+        };
+
 
         /* URL Route Handlers */
         new Router()
 
         .before(function(req, next){
+            // TODO show spinner in navbar instead
             dash_content.html(tpl_loading);
             next();
         })
@@ -157,7 +187,8 @@
                 dash_content.html(tpl_settings(response.body));
             })
             .error(function(){
-                dash_content.html(tpl_error);
+                alertMsg('Something went wrong', 'danger');
+                dash_content.html(':('); // TODO show support info in dashboard pane
             });
         })
 
@@ -196,7 +227,7 @@
                 google_id           : $('form #google_id').val(),
                 profile_name        : $('form #profile_name').val(),
                 profile_slug        : $('form #profile_slug').val(),
-                profile_decription  : $('form #profile_decription').val(),
+                profile_description : $('form #profile_description').val(),
                 profile_email       : $('form #profile_email').val(),
                 profile_web_address : $('form #profile_web_address').val()
             }
@@ -207,10 +238,11 @@
                 data: {payload: JSON.stringify(payload)}
             })
             .success(function(response){
-                // TODO Display "saved" message
+                alertMsg('Changes Saved!', 'success');
             })
             .error(function(){
-                // TODO Show error returned from server & highlight required fields
+                // TODO show actual error
+                alertMsg('<strong>Oops!</strong> Something went wrong', 'danger');
             });
 
             return false;
