@@ -22,7 +22,11 @@
     }
 
     #messages .alert {
-        padding: 8px;
+        padding: 8px 35px;
+    }
+
+    #messages .spinner {
+        padding-top: 5px;
     }
 
     .navbar {
@@ -96,8 +100,8 @@
 {% block templates %}
 {% raw %}
 <script id="tpl-loading" type="text/html">
-    <div style="text-align:center">
-        Loading. Please wait...
+    <div class="spinner">
+        <img src="/img/spinner.gif">
     </div>
 </script>
 
@@ -106,6 +110,16 @@
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         {{message}}
     </div>
+</script>
+
+<script id="tpl-dashboard" type="text/html">
+    <h1>Dashboard Home</h1>
+</script>
+
+<script id="tpl-help" type="text/html">
+    <h1>Oops! Error <strong>:(</strong></h1>
+    <p>I&apos;m sorry, something has gone wrong.</p>
+    <p>TODO: Add help and supprt info.</p>
 </script>
 
 <script id="tpl-settings" type="text/x-handlebars-template">
@@ -156,7 +170,9 @@
 
 
         /* Static Templates */
-        tpl_loading = $('#tpl-loading').html(),
+        tpl_loading   = $('#tpl-loading').html(),
+        tpl_dashboard = $('#tpl-dashboard').html(),
+        tpl_help      = $('#tpl-help').html(),
 
 
         /* Handlebars Templates */
@@ -169,6 +185,16 @@
             message  = message || '';
             type     = type    || 'info';
             messages.html(tpl_message({message: message, type: type}));
+        },
+
+        /* Show spinner in navbar */
+        showSpinner = function(){
+            messages.html(tpl_loading);
+        },
+
+        /* Hide spinner in navbar */
+        hideSpinner = function(){
+            messages.html('');
         };
 
 
@@ -176,19 +202,19 @@
         new Router()
 
         .before(function(req, next){
-            // TODO show spinner in navbar instead
-            dash_content.html(tpl_loading);
+            showSpinner();
             next();
         })
 
         .addRoute('#/settings', function(req, next){
             $.ajax('/api/0/user')
             .success(function(response){
+                hideSpinner();
                 dash_content.html(tpl_settings(response.body));
             })
             .error(function(){
                 alertMsg('Something went wrong', 'danger');
-                dash_content.html(':('); // TODO show support info in dashboard pane
+                dash_content.html(tpl_help);
             });
         })
 
@@ -212,8 +238,9 @@
             dash_content.html('Data View ' + req.params.data_view_id);
         })
 
+        // Catch missing routes
         .errors(404, function(){
-            dash_content.html('Dashboard');
+            dash_content.html(tpl_dashboard);
         })
 
         .run()
@@ -232,6 +259,8 @@
                 profile_web_address : $('form #profile_web_address').val()
             }
 
+            showSpinner();
+
             $.ajax({
                 url: '/api/0/user',
                 type: 'POST',
@@ -243,6 +272,7 @@
             .error(function(){
                 // TODO show actual error
                 alertMsg('<strong>Oops!</strong> Something went wrong', 'danger');
+                dash_content.html(tpl_help);
             });
 
             return false;
