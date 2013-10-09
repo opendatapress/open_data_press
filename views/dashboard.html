@@ -34,29 +34,38 @@
     }
 
     .left-fixed {
-        float: left;
+        position: absolute;
+        top: 51px;
+        left: 0;
+        bottom: 0;
         width:200px;
         border-right: 3px solid lightgrey;
-        height: 100%;
-        margin-top: -51px;
-    }
-
-    .left-fixed .nav {
-        margin-top: 51px;
+        padding: 3px;
     }
 
     .left-footer {
         position: absolute;
         bottom: 10px;
-        width: 197px;
+        width: 192px;
         text-align: center;
         font-size: 0.9em;
         color: #696969;
     }
 
     .right-fluid {
-        margin-left: 200px;
-        padding: 10px;
+        position: absolute;
+        top: 51px;
+        left: 200px;
+        bottom: 0;
+        right: 0;
+        overflow-y: scroll;
+        padding: 10px 30px;
+    }
+
+    @media (min-width: 1200px) {
+        .content-wrapper{
+            max-width: 950px;
+        }
     }
 
 </style>
@@ -76,13 +85,14 @@
     </ul>
 </div>
 <div class="left-fixed">
-    <ul class="nav nav-pills nav-stacked" role="navigation">
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="#/data_source">All Data Sources</a></li>
-        <li><a href="#/data_source/10">Data Source 10</a></li>
-        <li><a href="#/data_view">All Data Views</a></li>
-        <li><a href="#/data_view/10">Data View 10</a></li>
-    </ul>
+    <div class="list-group" role="navigation">
+        <a class="list-group-item" href="/dashboard">Dashboard</a>
+        <a class="list-group-item" href="#/import-data">Import Data from Drive</a>
+        <a class="list-group-item" href="#/data-source">All Data Sources</a>
+        <a class="list-group-item" href="#/data-source/10">Data Source 10</a>
+        <a class="list-group-item" href="#/data-view">All Data Views</a>
+        <a class="list-group-item" href="#/data-view/10">Data View 10</a>
+    </div>
     <div class="left-footer">
         <hr>
         Open Data Press v0.1 <br>
@@ -99,7 +109,7 @@
 
 {% block templates %}
 {% raw %}
-<script id="tpl-loading" type="text/html">
+<script id="tpl-spinner" type="text/html">
     <div class="spinner">
         <img src="/img/spinner.gif">
     </div>
@@ -108,46 +118,102 @@
 <script id="tpl-message" type="text/x-handlebars-template">
     <div class="alert alert-dismissable alert-{{type}}">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{message}}
+        {{{message}}}
     </div>
 </script>
 
 <script id="tpl-dashboard" type="text/html">
-    <h1>Dashboard Home</h1>
+    <div class="content-wrapper">
+        <h1>Dashboard Home</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
 </script>
 
 <script id="tpl-help" type="text/html">
-    <h1>Oops! Error <strong>:(</strong></h1>
-    <p>I&apos;m sorry, something has gone wrong.</p>
-    <p>TODO: Add help and supprt info.</p>
+    <div class="content-wrapper">
+        <h1>Oops! Error <strong>:(</strong></h1>
+        <p>I&apos;m sorry, something has gone wrong.</p>
+        <p>TODO: Add help and supprt info.</p>
+    </div>
 </script>
 
 <script id="tpl-settings" type="text/x-handlebars-template">
-    <h1>Profile Settings</h1>
-    <form id="form-settings" role="form">
-        <div class="form-group">
-            <label for="profile_name">Name</label>
-            <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
+    <div class="content-wrapper">
+        <h1>Profile Settings</h1>
+        <form id="form-settings" role="form">
+            <div class="form-group">
+                <label for="profile_name">Name</label>
+                <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
+            </div>
+            <div class="form-group">
+                <label for="profile_description">Description</label>
+                <textarea class="form-control" id="profile_description">{{profile_description}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="profile_email">Email</label>
+                <input type="email" class="form-control" id="profile_email" value="{{profile_email}}">
+            </div>
+            <div class="form-group">
+                <label for="profile_web_address">Web Address</label>
+                <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}">
+            </div>
+            <hr>
+            <div class="form-group">
+                <input type="hidden" id="google_id" value="{{google_id}}">
+                <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
+                <a href="#" class="btn btn-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script id="tpl-import" type="text/x-handlebars-template">
+    <div class="content-wrapper">
+        <h1>Spreadsheets on Google Drive</h1>
+        <div>
+            <strong>Choose Spreadsheet </strong> &gt;
+            Choose Worksheet &gt;
+
         </div>
-        <div class="form-group">
-            <label for="profile_description">Description</label>
-            <textarea class="form-control" id="profile_description">{{profile_description}}</textarea>
+        <div class="scroll-box">
+            <ul class="list-group">
+            {{#each files}}
+                <li class="list-group-item">
+                    {{this.title}}
+                </li>
+            {{/each}}
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="profile_email">Email</label>
-            <input type="email" class="form-control" id="profile_email" value="{{profile_email}}">
-        </div>
-        <div class="form-group">
-            <label for="profile_web_address">Web Address</label>
-            <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}">
-        </div>
-        <hr>
-        <div class="form-group">
-            <input type="hidden" id="google_id" value="{{google_id}}">
-            <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
-            <a href="#" class="btn btn-link">Cancel</a>
-        </div>
-    </form>
+    </div>
 </script>
 {% endraw %}
 {% endblock %}
@@ -170,7 +236,7 @@
 
 
         /* Static Templates */
-        tpl_loading   = $('#tpl-loading').html(),
+        tpl_spinner   = $('#tpl-spinner').html(),
         tpl_dashboard = $('#tpl-dashboard').html(),
         tpl_help      = $('#tpl-help').html(),
 
@@ -178,6 +244,7 @@
         /* Handlebars Templates */
         tpl_settings = Handlebars.compile($('#tpl-settings').html()),
         tpl_message  = Handlebars.compile($('#tpl-message').html()),
+        tpl_import_1 = Handlebars.compile($('#tpl-import').html()),
 
 
         /* Show a styled alert message in the navbar */
@@ -189,14 +256,19 @@
 
         /* Show spinner in navbar */
         showSpinner = function(){
-            messages.html(tpl_loading);
+            messages.html(tpl_spinner);
         },
 
         /* Hide spinner in navbar */
         hideSpinner = function(){
             messages.html('');
-        };
+        },
 
+        /* Show error in nav */
+        showError = function(response){
+            alertMsg('<strong>Error:</strong> ' + response.responseJSON.body, 'danger');
+            dash_content.html(tpl_help);
+        };
 
         /* URL Route Handlers */
         new Router()
@@ -206,16 +278,29 @@
             next();
         })
 
+        // Helper route for testing errors
+        .addRoute('#/404', function(req, next){
+            $.ajax('/api/0/404')
+            .error(function(res){ showError(res); });
+        })
+
         .addRoute('#/settings', function(req, next){
             $.ajax('/api/0/user')
-            .success(function(response){
+            .success(function(res){
                 hideSpinner();
-                dash_content.html(tpl_settings(response.body));
+                dash_content.html(tpl_settings(res.body));
             })
-            .error(function(){
-                alertMsg('Something went wrong', 'danger');
-                dash_content.html(tpl_help);
-            });
+            .error(function(res){ showError(res); });
+        })
+
+        .addRoute('#/import-data', function(req, next){
+            $.ajax('/api/0/google/sheets')
+            .success(function(res){
+                hideSpinner();
+                console.log(res.body);
+                dash_content.html(tpl_import_1(res.body));
+            })
+            .error(function(res){ showError(res); });
         })
 
         .addRoute('#/data_source', function(req, next){
@@ -266,14 +351,10 @@
                 type: 'POST',
                 data: {payload: JSON.stringify(payload)}
             })
-            .success(function(response){
+            .success(function(res){
                 alertMsg('Changes Saved!', 'success');
             })
-            .error(function(){
-                // TODO show actual error
-                alertMsg('<strong>Oops!</strong> Something went wrong', 'danger');
-                dash_content.html(tpl_help);
-            });
+            .error(function(res){ showError(res); });
 
             return false;
         })
