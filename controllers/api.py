@@ -109,27 +109,39 @@ class DataViewItemRoute(APIHandler):
 class GoogleSheetsListRoute(APIHandler):
 
     def get(self):
-        query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-        drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
-        self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files, ensure_ascii=False))
+        try:
+            query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
+            drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
+            self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files, ensure_ascii=False))
+        except Exception as e:
+            self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
+            self.response.set_status(500)
 
 
 class GoogleSheetsItemRoute(APIHandler):
 
     def get(self, google_sheets_id):
-        sheet = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
-        if sheet['response'] == 'error':
+        try:
+            sheet = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
+            if sheet['response'] == 'error':
+                self.response.set_status(500)
+            self.response.write(json.dumps(sheet, ensure_ascii=False))
+        except Exception as e:
+            self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
-        self.response.write(json.dumps(sheet, ensure_ascii=False))
 
 
 class GoogleSheetsWorksheetRoute(APIHandler):
 
     def get(self, google_sheets_id, worksheet_key):
-        data = google_api.get_cell_data(self.current_user().credentials, google_sheets_id, worksheet_key)
-        if data['response'] == 'error':
+        try:
+            data = google_api.get_cell_data(self.current_user().credentials, google_sheets_id, worksheet_key)
+            if data['response'] == 'error':
+                self.response.set_status(500)
+            self.response.write(json.dumps(data, ensure_ascii=False))
+        except Exception as e:
+            self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
-        self.response.write(json.dumps(data, ensure_ascii=False))
 
 
 class Error404Route(RequestHandler):
