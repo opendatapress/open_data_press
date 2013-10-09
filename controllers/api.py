@@ -41,20 +41,24 @@ class APIHandler(SessionHandler):
 class UserRoute(APIHandler):
 
     def get(self):
-        # Return a json representation of the current user
-        # NB we have to decode "credentials" as it is stored as a string in the DB
-        current_user = User.get_by_google_id(self.session['current_user']).to_dict()
-        current_user["credentials"] = json.loads(current_user["credentials"])
-        self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
+        try:
+            # NB we have to decode "credentials" as it is stored as a string in the DB
+            current_user = User.get_by_google_id(self.session['current_user']).to_dict()
+            current_user["credentials"] = json.loads(current_user["credentials"])
+            self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
+        except Exception as e:
+            self.response.write('{"response":"error","body":"Problem fetching user data"}')
+            self.response.set_status(500)
+            log_api_error(self, e)
 
     def post(self):
-        data = json.loads(self.request.POST["payload"])
-        user = User.get_by_google_id(data["google_id"])
-        if None == user:
-            self.response.write('{"response":"error","body":"Unknown User"}')
-            self.response.set_status(500)
-            return
         try:
+            data = json.loads(self.request.POST["payload"])
+            user = User.get_by_google_id(data["google_id"])
+            if None == user:
+                self.response.write('{"response":"error","body":"Unknown User"}')
+                self.response.set_status(500)
+                return
             if "profile_name"        in data.keys(): user.profile_name        = data["profile_name"]
             if "profile_email"       in data.keys(): user.profile_email       = data["profile_email"]
             if "profile_description" in data.keys(): user.profile_description = data["profile_description"]
