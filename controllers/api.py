@@ -16,7 +16,7 @@ import logging
 
 
 def log_api_error(obj,error):
-    msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), e, e.__class__)
+    msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), error, error.__class__)
     logging.error("%s %s %s 500 '%s' %s" % msg_info)
 
 #
@@ -46,10 +46,11 @@ class UserRoute(APIHandler):
             current_user = User.get_by_google_id(self.session['current_user']).to_dict()
             current_user["credentials"] = json.loads(current_user["credentials"])
             self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
+
         except Exception as e:
-            self.response.write('{"response":"error","body":"Problem fetching user data"}')
-            self.response.set_status(500)
             log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem fetching user profile"}')
+            self.response.set_status(500)
 
     def post(self):
         try:
@@ -65,10 +66,11 @@ class UserRoute(APIHandler):
             if "profile_web_address" in data.keys(): user.profile_web_address = data["profile_web_address"]
             user.put()
             self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict()))
+
         except Exception as e:
+            log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem updating profile"}')
             self.response.set_status(500)
-            log_api_error(self, e)
 
 
 class DataSourceListRoute(APIHandler):
@@ -118,8 +120,14 @@ class GoogleSheetsListRoute(APIHandler):
     def get(self):
         try:
             query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-            drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
-            self.response.write(json.dumps(drive_files, ensure_ascii=False))
+            data  = google_api.list_drive_files(self.current_user().credentials, query=query)
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data, ensure_ascii=False))
+        
+        except google_api.GoogleAPIException as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"%s"}' % e)
+            self.response.set_status(500)
+
         except Exception as e:
             log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
@@ -130,10 +138,14 @@ class GoogleSheetsItemRoute(APIHandler):
 
     def get(self, google_sheets_id):
         try:
-            sheet = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
-            if sheet['response'] == 'error':
-                self.response.set_status(500)
-            self.response.write(json.dumps(sheet, ensure_ascii=False))
+            data = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data, ensure_ascii=False))
+
+        except google_api.GoogleAPIException as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"%s"}' % e)
+            self.response.set_status(500)
+
         except Exception as e:
             log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
@@ -145,9 +157,13 @@ class GoogleSheetsWorksheetRoute(APIHandler):
     def get(self, google_sheets_id, worksheet_key):
         try:
             data = google_api.get_cell_data(self.current_user().credentials, google_sheets_id, worksheet_key)
-            if data['response'] == 'error':
-                self.response.set_status(500)
-            self.response.write(json.dumps(data, ensure_ascii=False))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data, ensure_ascii=False))
+        
+        except google_api.GoogleAPIException as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"%s"}' % e)
+            self.response.set_status(500)
+
         except Exception as e:
             log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')

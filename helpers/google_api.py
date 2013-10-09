@@ -15,6 +15,9 @@ from oauth2client.anyjson import simplejson as json
 from apiclient.discovery import build
 
 
+class GoogleAPIException(Exception):
+    pass
+
 # An oAuth2 authentication flow handler
 def oauth2_flow(**kwargs):
     config = load_config()
@@ -61,21 +64,23 @@ def drive_service():
 #  query     : A search query string for the files API
 #
 def list_drive_files(auth_json, query=""):
-    http = http_from_oauth2(auth_json)
-    service = drive_service()
-    file_list = []
-    page_token = None
-    while True:
-        param = {'q': query}
-        if page_token:
-            param['pageToken'] = page_token
-        files = service.files().list(**param).execute(http=http)
-        file_list.extend(files['items'])
-        page_token = files.get('nextPageToken')
-        if not page_token:
-            break
-    data = {'num_files': len(file_list), 'files':file_list}
-    return {'response':'success', 'body': data}
+    try:
+        http = http_from_oauth2(auth_json)
+        service = drive_service()
+        file_list = []
+        page_token = None
+        while True:
+            param = {'q': query}
+            if page_token:
+                param['pageToken'] = page_token
+            files = service.files().list(**param).execute(http=http)
+            file_list.extend(files['items'])
+            page_token = files.get('nextPageToken')
+            if not page_token:
+                break
+        return {'num_files': len(file_list), 'files':file_list}
+    except Exception as e:
+        raise GoogleAPIException('Could not fetch file list from Google Drive.')
 
 
 # Get a list of all the worksheets in a spreadsheet
@@ -89,7 +94,7 @@ def get_worksheets(auth_json, spreadsheet_key):
 
     if "The spreadsheet at this URL could not be found" in response[1]:
         msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
-        return {'response': 'error', 'body': msg}
+        raise GoogleAPIException(msg)
 
     try:
         # Attempt to parse response
@@ -124,12 +129,10 @@ def get_worksheets(auth_json, spreadsheet_key):
                 'col_count': _val(entry.find('%scolCount' % gs).text),
             }
             data['worksheets'].append(worksheet)
-
-        # Return structured data
-        return {'response': 'success', 'body': data}
+        return data
 
     except Exception as e:
-        return {'response': 'error', 'body': 'Could not parse spreadsheet data from Google.'}
+        raise GoogleAPIException('Could not parse spreadsheet data from Google.')
 
 
 
@@ -145,11 +148,11 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
 
     if "The spreadsheet at this URL could not be found" in response[1]:
         msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
-        return {'response': 'error', 'body': msg}
+        raise GoogleAPIException(msg)
 
     if "Invalid query parameter value for grid-id." in response[1]:
         msg = "The worksheet with this id <%s> cannot be found. Make sure the ownder of the spreadsheet hasn't deleted it." % worksheet_key
-        return {'response': 'error', 'body': msg}
+        raise GoogleAPIException(msg)
 
     try:
         # Attempt to parse response
@@ -182,11 +185,10 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
                 if gsx in field.tag:
                     row[_key(field.tag)] = _val(field.text)
             data['data_rows'].append(row)
+        return data
 
     except Exception as e:
-        return {'response': 'error', 'body': 'Could not parse spreadsheet data from Google.'}
-
-    return {'response': 'success', 'body': data}
+        raise GoogleAPIException('Could not parse spreadsheet data from Google.')
 
 
 # Create a spreadsheet file in Drive
