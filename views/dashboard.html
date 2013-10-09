@@ -14,12 +14,25 @@
     <!-- Alert Messages -->
 </div>
 <div class="navbar navbar-default navbar-static-top" role="navigation">
-    <a class="navbar-brand" href="/">Open Data Press</a>
-    <ul class="nav navbar-nav navbar-right">
-        <li><a class="navbar-link" href="/{{current_user.profile_slug|e}}" target="_blank">My Profile</a></li>
-        <li><a class="navbar-link" href="#/settings">Settings</a></li>
-        <li><a class="navbar-link" href="/auth/logout">Logout</a></li>
-    </ul>
+
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Open Data Press</a>
+    </div>
+
+    <div class="collapse navbar-collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="navbar-link" href="/{{current_user.profile_slug|e}}" target="_blank">My Profile</a></li>
+            <li><a class="navbar-link" href="#/settings">Settings</a></li>
+            <li><a class="navbar-link" href="/auth/logout">Logout</a></li>
+        </ul>
+    </div>
+
 </div>
 <div class="left-fixed">
     <div class="list-group" role="navigation">
