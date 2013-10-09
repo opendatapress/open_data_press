@@ -28,33 +28,33 @@ __version__ = "0.1"
 routes = [
 
     # Home Root
-    ('/',                                      root.HomeRoute),
+    ('/',                                       root.HomeRoute),
 
     # Session
-    (r'/auth/login/?',                         session.LoginRoute),
-    (r'/auth/logout/?',                        session.LogoutRoute),
-    (r'/auth/oauth2callback/?',                session.OAuth2CallbackRoute),
+    (r'/auth/login/?',                          session.LoginRoute),
+    (r'/auth/logout/?',                         session.LogoutRoute),
+    (r'/auth/oauth2callback/?',                 session.OAuth2CallbackRoute),
 
     # Dashboard
-    (r'/dashboard/?',                          dashboard.MainRoute),
+    (r'/dashboard/?',                           dashboard.MainRoute),
 
     # API
-    (r'/api/0/google/sheets/?',                api.GoogleSheetsListRoute),
-    (r'/api/0/google/sheets/(\w+)/?',          api.GoogleSheetsItemRoute),
-    (r'/api/0/google/sheets/(\w+)/(\w+)/?',    api.GoogleSheetsWorksheetRoute),
-    (r'/api/0/user/?',                         api.UserRoute),
-    (r'/api/0/data_source/?',                  api.DataSourceListRoute),
-    (r'/api/0/data_source/(\d+)/?',            api.DataSourceItemRoute),
-    (r'/api/0/data_source/(\d+)/view/?',       api.DataViewListRoute),
-    (r'/api/0/data_source/(\d+)/view/(\d+)/?', api.DataViewItemRoute),
-    (r'/api/.*',                               api.Error404Route),
-    (r'/api/?',                                api.Error404Route),
+    (r'/api/0/google/sheets/?',                 api.GoogleSheetsListRoute),
+    (r'/api/0/google/sheets/([\w\-]+)/?',       api.GoogleSheetsItemRoute),
+    (r'/api/0/google/sheets/([\w\-]+)/(\w+)/?', api.GoogleSheetsWorksheetRoute),
+    (r'/api/0/user/?',                          api.UserRoute),
+    (r'/api/0/data_source/?',                   api.DataSourceListRoute),
+    (r'/api/0/data_source/(\d+)/?',             api.DataSourceItemRoute),
+    (r'/api/0/data_source/(\d+)/view/?',        api.DataViewListRoute),
+    (r'/api/0/data_source/(\d+)/view/(\d+)/?',  api.DataViewItemRoute),
+    (r'/api/.*',                                api.Error404Route),
+    (r'/api/?',                                 api.Error404Route),
 
     # Public Site
     # Last in list for profile pattern matching
-    (r'/([\w\-]+)/?',                          public.ProfileRoute),
-    (r'/([\w\-]+)/([\w\-]+)/?',                public.DataSourceRoute),
-    (r'/([\w\-]+)/([\w\-]+)\.([A-Za-z]+)?',    public.DataViewRoute),
+    (r'/([\w\-]+)/?',                           public.ProfileRoute),
+    (r'/([\w\-]+)/([\w\-]+)/?',                 public.DataSourceRoute),
+    (r'/([\w\-]+)/([\w\-]+)\.([A-Za-z]+)?',     public.DataViewRoute),
 ]
 
 
