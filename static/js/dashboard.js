@@ -68,7 +68,6 @@
         $.ajax('/api/0/google/sheets')
         .success(function(res){
             hideSpinner();
-            console.log(res.body);
             dash_content.html(tpl_import_1(res.body));
         })
         .error(function(res){ showError(res); });
@@ -105,6 +104,7 @@
     /* Event Handlers */
     $(document)
 
+    // Saveprofile settings
     .on('click', '#form-settings #submit', function(){
         payload = {
             google_id           : $('form #google_id').val(),
@@ -127,6 +127,14 @@
         })
         .error(function(res){ showError(res); });
 
+        return false;
+    })
+
+    // Select spreadsheet from Google Drive
+    .on('click', '.drive-spreadsheet', function(){
+        spreadsheet = $(this);
+        console.log(spreadsheet.attr('data-title'));
+        console.log(spreadsheet.attr('data-key'));
         return false;
     })
 

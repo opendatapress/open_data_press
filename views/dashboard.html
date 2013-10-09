@@ -125,13 +125,14 @@
 
         </div>
         <div class="scroll-box">
-            <ul class="list-group">
+            <div class="list-group">
             {{#each files}}
-                <li class="list-group-item">
-                    {{this.title}}
-                </li>
+                <a class="list-group-item drive-spreadsheet" data-key="{{this.id}}" data-title="{{this.title}}" href="#">
+                    <h4 class="list-group-item-heading">{{this.title}}</h4>
+                    <p class="list-group-item-text"><strong>Owners:</strong> {{this.ownerNames}}</p>
+                </a>
             {{/each}}
-            </ul>
+            </div>
         </div>
     </div>
 </script>
