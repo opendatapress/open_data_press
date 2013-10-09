@@ -1,0 +1,60 @@
+html, body {
+    height: 100%;
+    min-width: 800px;
+}
+
+#messages {
+    position: absolute;
+    z-index: 1001;
+    left: 300px;
+    right: 300px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+#messages .alert {
+    padding: 8px 35px;
+}
+
+#messages .spinner {
+    padding-top: 5px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.left-fixed {
+    position: absolute;
+    top: 51px;
+    left: 0;
+    bottom: 0;
+    width:200px;
+    border-right: 3px solid lightgrey;
+    padding: 3px;
+}
+
+.left-footer {
+    position: absolute;
+    bottom: 10px;
+    width: 192px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #696969;
+}
+
+.right-fluid {
+    position: absolute;
+    top: 51px;
+    left: 200px;
+    bottom: 0;
+    right: 0;
+    overflow-y: scroll;
+    padding: 10px 30px;
+}
+
+@media (min-width: 1200px) {
+    .content-wrapper{
+        max-width: 950px;
+    }
+}
