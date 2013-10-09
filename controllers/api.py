@@ -112,8 +112,9 @@ class GoogleSheetsListRoute(APIHandler):
         try:
             query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
             drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
-            self.response.write('{"response":"success","body":%s}' % json.dumps(drive_files, ensure_ascii=False))
+            self.response.write(json.dumps(drive_files, ensure_ascii=False))
         except Exception as e:
+            # TODO log error
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
@@ -127,6 +128,7 @@ class GoogleSheetsItemRoute(APIHandler):
                 self.response.set_status(500)
             self.response.write(json.dumps(sheet, ensure_ascii=False))
         except Exception as e:
+            # TODO log error
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
@@ -140,6 +142,7 @@ class GoogleSheetsWorksheetRoute(APIHandler):
                 self.response.set_status(500)
             self.response.write(json.dumps(data, ensure_ascii=False))
         except Exception as e:
+            # TODO log error
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
