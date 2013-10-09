@@ -118,6 +118,26 @@ class TestAPIHandler(unittest.TestCase):
         self.denied_authentication(response, 403)
 
 
+    def test_api_0_data_source_list_all(self):
+        pass
+
+
+    def test_api_0_data_source_add_item(self):
+        pass
+
+
+    def test_api_0_data_source_get_item(self):
+        pass
+
+
+    def test_api_0_data_source_update_item(self):
+        pass
+
+
+    def test_api_0_data_source_delete_item(self):
+        pass
+
+
     def test_api_0_data_view_path_denies_unauthenticated_requests(self):
         
         response = main.app.get_response('/api/0/data_source/1/view')
@@ -134,6 +154,26 @@ class TestAPIHandler(unittest.TestCase):
         
         response = main.app.get_response('/api/0/data_source/1/view/0', method='DELETE')
         self.denied_authentication(response, 403)
+
+
+    def test_api_0_data_view_list_all(self):
+        pass
+
+
+    def test_api_0_data_view_add_item(self):
+        pass
+
+
+    def test_api_0_data_view_get_item(self):
+        pass
+
+
+    def test_api_0_data_view_update_item(self):
+        pass
+
+
+    def test_api_0_data_view_delete_item(self):
+        pass
 
 
     def test_api_0_google_sheets_path_denies_unauthenticated_requests(self):
