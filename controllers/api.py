@@ -15,6 +15,10 @@ from models.user import User
 import logging
 
 
+def log_api_error(obj,error):
+    msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), e, e.__class__)
+    logging.error("%s %s %s 500 '%s' %s" % msg_info)
+
 #
 # A request handler that denies any unauthenticated requests
 #
@@ -60,8 +64,7 @@ class UserRoute(APIHandler):
         except Exception as e:
             self.response.write('{"response":"error","body":"Problem updating profile"}')
             self.response.set_status(500)
-            msg_info = (self.request.method, self.request.path_url, self.request.POST.items(), e, e.__class__)
-            logging.error("%s %s %s 500 '%s' %s" % msg_info)
+            log_api_error(self, e)
 
 
 class DataSourceListRoute(APIHandler):
@@ -114,7 +117,7 @@ class GoogleSheetsListRoute(APIHandler):
             drive_files = google_api.list_drive_files(self.current_user().credentials, query=query)
             self.response.write(json.dumps(drive_files, ensure_ascii=False))
         except Exception as e:
-            # TODO log error
+            log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
@@ -128,7 +131,7 @@ class GoogleSheetsItemRoute(APIHandler):
                 self.response.set_status(500)
             self.response.write(json.dumps(sheet, ensure_ascii=False))
         except Exception as e:
-            # TODO log error
+            log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
@@ -142,7 +145,7 @@ class GoogleSheetsWorksheetRoute(APIHandler):
                 self.response.set_status(500)
             self.response.write(json.dumps(data, ensure_ascii=False))
         except Exception as e:
-            # TODO log error
+            log_api_error(self, e)
             self.response.write('{"response":"error","body":"Problem connecting to Google Drive"}')
             self.response.set_status(500)
 
