@@ -60,7 +60,7 @@
 {% block templates %}
 {% raw %}
 <script id="tpl-spinner" type="text/html">
-    <div class="spinner">
+    <div class="spinner text-center">
         <img src="/img/spinner.gif">
     </div>
 </script>
@@ -71,24 +71,26 @@
         {{{message}}}
     </div>
 </script>
-
 <script id="tpl-dashboard" type="text/html">
-    <div class="content-wrapper">
-        <h1>Dashboard Home</h1>
+    <h1>Dashboard Home</h1>
+    <div class="content">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, similique, 
+        ex, eius, ut tenetur excepturi eos dolorem dolores quis quas ad sapiente veniam 
+        sequi dicta fugit laudantium laboriosam. Nisi, illo.</p>
     </div>
 </script>
 
 <script id="tpl-help" type="text/html">
-    <div class="content-wrapper">
-        <h1>Oops! Error <strong>:(</strong></h1>
+    <h1>Oops! Error</h1>
+    <div class="content">
         <p>I&apos;m sorry, something has gone wrong.</p>
         <p>TODO: Add help and supprt info.</p>
     </div>
 </script>
 
 <script id="tpl-settings" type="text/x-handlebars-template">
-    <div class="content-wrapper">
-        <h1>Profile Settings</h1>
+    <h1>Profile Settings</h1>
+    <div class="content">
         <form id="form-settings" role="form">
             <div class="form-group">
                 <label for="profile_name">Name</label>
@@ -116,26 +118,67 @@
     </div>
 </script>
 
-<script id="tpl-import" type="text/x-handlebars-template">
-    <div class="content-wrapper">
-        <h1>Spreadsheets on Google Drive</h1>
-        <div>
-            <strong>Choose Spreadsheet </strong> &gt;
-            Choose Worksheet &gt;
-
-        </div>
-        <div class="scroll-box">
-            <div class="list-group">
-            {{#each files}}
-                <a class="list-group-item drive-spreadsheet" data-key="{{this.id}}" data-title="{{this.title}}" href="#">
-                    <h4 class="list-group-item-heading">{{this.title}}</h4>
-                    <p class="list-group-item-text"><strong>Owners:</strong> {{this.ownerNames}}</p>
+<script id="tpl-google-sheets" type="text/x-handlebars-template">
+    <h1>Spreadsheets on Google Drive</h1>
+    <div class="content">
+        <p>Choose a spreadsheet to import</p>
+        <ul>
+        {{#each files}}
+            <li>
+                <a class="drive-spreadsheet" data-key="{{this.id}}" data-title="{{this.title}}" href="#">
+                    <h4>{{this.title}}</h4>
+                    <p><strong>Owners:</strong> {{this.ownerNames}}</p>
+                    <p><img src="{{this.thumbnailLink}}"></p>
                 </a>
-            {{/each}}
-            </div>
-        </div>
+            </li>
+        {{/each}}
+        </ul>
     </div>
 </script>
+
+<script id="tpl-google-worksheets" type="text/x-handlebars-template">
+    <h1>Worksheets in Spreadsheet</h1>
+    <div class="content">
+        <p>Choose a worksheet to import from <strong>{{title}}</strong></p>
+        <ul>
+        {{#each worksheets}}
+            <li><a class="drive-worksheet" data-key="{{../key}}" data-id="{{this.id}}" data-title="{{this.title}}" href="#">{{this.title}}</a></li>
+        {{/each}}
+        </ul>
+    </div>
+</script>
+
+<script id="tpl-google-table" type="text/x-handlebars-template">
+    <h1>Data in Worksheet</h1>
+    <div class="content clearfix">
+        <p>Data in <strong>{{title}}</strong></p>
+        <div class="table-wrapper">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        {{#first 1 data_rows}}
+                            {{#key_value this}}
+                                <td>{{key}}</td>
+                            {{/key_value}}
+                        {{/first}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#first 5 data_rows}}
+                        <tr>
+                            {{#key_value this}}
+                                <td>{{value}}</td>
+                            {{/key_value}}
+                        </tr>
+                    {{/first}}
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <button id="import-data" class="btn btn-primary pull-right" data-title="{{title}}" data-key="{{spreadsheet_key}}" data-id="{{worksheet_key}}">Import Data</button>
+    </div>
+</script>
+
 {% endraw %}
 {% endblock %}
 

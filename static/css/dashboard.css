@@ -15,10 +15,6 @@ html, body {
     padding: 8px 35px;
 }
 
-#messages .spinner {
-    padding-top: 5px;
-}
-
 .navbar {
     margin-bottom: 0;
 }
@@ -49,11 +45,24 @@ html, body {
     bottom: 0;
     right: 0;
     overflow-y: scroll;
-    padding: 10px 30px;
+    background-color: #e5e5e5;
+    padding: 10px 20px;
+}
+
+.content {
+    border: 1px solid #c6c6c6;
+    background-color: #FFF;
+    padding: 20px;
 }
 
 @media (min-width: 1200px) {
-    .content-wrapper{
+    .content{
         max-width: 950px;
     }
+}
+
+.table-wrapper {
+    overflow-x: scroll;
+    border: 1px solid #c9c9c9;
+    padding: 2px;
 }

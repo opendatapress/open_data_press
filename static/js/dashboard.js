@@ -13,9 +13,11 @@
 
 
     /* Handlebars Templates */
-    tpl_settings = Handlebars.compile($('#tpl-settings').html()),
-    tpl_message  = Handlebars.compile($('#tpl-message').html()),
-    tpl_import_1 = Handlebars.compile($('#tpl-import').html()),
+    tpl_settings          = Handlebars.compile($('#tpl-settings').html()),
+    tpl_message           = Handlebars.compile($('#tpl-message').html()),
+    tpl_google_sheets     = Handlebars.compile($('#tpl-google-sheets').html()),
+    tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
+    tpl_google_table      = Handlebars.compile($('#tpl-google-table').html()),
 
 
     /* Show a styled alert message in the navbar */
@@ -41,13 +43,28 @@
         dash_content.html(tpl_help);
     };
 
+    /* Handlebars Helpers */
+
+    /* Iterate key-value pairs in an object */
+    Handlebars.registerHelper('key_value', function(obj, bars){
+        var buffer = '';
+        for(key in obj){
+            buffer += bars.fn({key:key, value:obj[key]});
+        }
+        return buffer;
+    });
+
+    /* Iterate the first n elements in an array */
+    Handlebars.registerHelper('first', function(count, array, bars){
+        var buffer = '';
+        for(var i=0; i<count; i++){
+            buffer += bars.fn(array[0]);
+        }
+        return buffer
+    });
+
     /* URL Route Handlers */
     new Router()
-
-    .before(function(req, next){
-        showSpinner();
-        next();
-    })
 
     // Helper route for testing errors
     .addRoute('#/404', function(req, next){
@@ -56,19 +73,19 @@
     })
 
     .addRoute('#/settings', function(req, next){
+        dash_content.html(tpl_spinner);
         $.ajax('/api/0/user')
         .success(function(res){
-            hideSpinner();
             dash_content.html(tpl_settings(res.body));
         })
         .error(function(res){ showError(res); });
     })
 
     .addRoute('#/import-data', function(req, next){
+        dash_content.html(tpl_spinner);
         $.ajax('/api/0/google/sheets')
         .success(function(res){
-            hideSpinner();
-            dash_content.html(tpl_import_1(res.body));
+            dash_content.html(tpl_google_sheets(res.body));
         })
         .error(function(res){ showError(res); });
     })
@@ -115,8 +132,6 @@
             profile_web_address : $('form #profile_web_address').val()
         }
 
-        showSpinner();
-
         $.ajax({
             url: '/api/0/user',
             type: 'POST',
@@ -130,11 +145,35 @@
         return false;
     })
 
-    // Select spreadsheet from Google Drive
+    // Choose spreadsheet from Google Drive
     .on('click', '.drive-spreadsheet', function(){
-        spreadsheet = $(this);
-        console.log(spreadsheet.attr('data-title'));
-        console.log(spreadsheet.attr('data-key'));
+        dash_content.html(tpl_spinner);
+        $.ajax('/api/0/google/sheets/' + $(this).attr('data-key'))
+        .success(function(res){
+            dash_content.html(tpl_google_worksheets(res.body));
+        })
+        .error(function(res){ showError(res); });
+        return false;
+    })
+
+    // Choose worksheet from Google Drive
+    .on('click', '.drive-worksheet', function(){
+        dash_content.html(tpl_spinner);
+        $.ajax('/api/0/google/sheets/' + $(this).attr('data-key') + '/' + $(this).attr('data-id'))
+        .success(function(res){
+            dash_content.html(tpl_google_table(res.body));
+        })
+        .error(function(res){ showError(res); });
+        return false;
+    })
+
+    // Import data from Drive to Open Data Press
+    .on('click', '#import-data', function(){
+        data = $(this);
+        console.log("TODO Import spreadsheet\n"+
+            "Title: " + data.attr('data-title') + "\n"+
+            "Key: "   + data.attr('data-key') + "\n"+
+            "Id: "    + data.attr('data-id'));
         return false;
     })
 
