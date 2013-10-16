@@ -79,16 +79,16 @@ class GoogleAPITest(unittest.TestCase):
 
         data = google_api.get_cell_data(USER_AUTH_JSON, 'dummy_key', 'dummy_id')
         self.assertIsInstance(data, dict)
-        self.assertTrue('spreadsheet_key' in data)
-        self.assertTrue('worksheet_key'   in data)
-        self.assertTrue('title'           in data)
-        self.assertTrue('updated'         in data)
-        self.assertTrue('total_results'   in data)
-        self.assertTrue('start_index'     in data)
-        self.assertTrue('data_rows'       in data)
-        self.assertTrue('author'          in data)
-        self.assertTrue('name'            in data['author'])
-        self.assertTrue('email'           in data['author'])
+        self.assertTrue('key'           in data)
+        self.assertTrue('id'            in data)
+        self.assertTrue('title'         in data)
+        self.assertTrue('updated'       in data)
+        self.assertTrue('total_results' in data)
+        self.assertTrue('start_index'   in data)
+        self.assertTrue('data_rows'     in data)
+        self.assertTrue('author'        in data)
+        self.assertTrue('name'          in data['author'])
+        self.assertTrue('email'         in data['author'])
 
     def test_get_cell_data_not_found(self):
         google_api.httplib2.Http = MockHttp
