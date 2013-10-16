@@ -158,7 +158,7 @@
                     <tr>
                         {{#first 1 data_rows}}
                             {{#key_value this}}
-                                <td>{{key}}</td>
+                                <th>{{key}}</th>
                             {{/key_value}}
                         {{/first}}
                     </tr>
@@ -175,7 +175,7 @@
             </table>
         </div>
         <hr>
-        <button id="import-data" class="btn btn-primary pull-right" data-title="{{title}}" data-key="{{spreadsheet_key}}" data-id="{{worksheet_key}}">Import Data</button>
+        <button id="import-data" class="btn btn-primary pull-right" data-title="{{title}}" data-key="{{key}}" data-id="{{id}}">Import Data</button>
     </div>
 </script>
 

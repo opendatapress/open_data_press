@@ -165,17 +165,17 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
 
         # Format worksheet data
         data = {
-            'spreadsheet_key': spreadsheet_key,
-            'worksheet_key':   worksheet_key,
-            'title':           _val(feed.find('%stitle' % atom).text),
-            'updated':         _val(feed.find('%supdated' % atom).text),
-            'total_results':   _val(feed.find('%stotalResults' % search).text),
-            'start_index':     _val(feed.find('%sstartIndex' % search).text),
+            'key':           spreadsheet_key,
+            'id':            worksheet_key,
+            'title':         _val(feed.find('%stitle' % atom).text),
+            'updated':       _val(feed.find('%supdated' % atom).text),
+            'total_results': _val(feed.find('%stotalResults' % search).text),
+            'start_index':   _val(feed.find('%sstartIndex' % search).text),
             'author': {
-                'name':        _val(feed.find('.//%sname' % atom).text),
-                'email':       _val(feed.find('.//%semail' % atom).text),
+                'name':      _val(feed.find('.//%sname' % atom).text),
+                'email':     _val(feed.find('.//%semail' % atom).text),
             },
-            'data_rows':       [],
+            'data_rows':     [],
         }
 
         # Format cell data
