@@ -22,7 +22,7 @@ __author__  = "YOUR NAME"
 __website__ = "http://example.com"
 __email__   = "you@example.com"
 __licence__ = "MIT"
-__version__ = "0.1"
+__version__ = "0.1" # Display in view templates with {{VERSION}}
 
 # Map route patterns to controller handlers
 routes = [

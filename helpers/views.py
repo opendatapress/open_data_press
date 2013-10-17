@@ -4,12 +4,14 @@
 #
 import jinja2
 import os
+import main
 
 JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('./views')))
 
 # Render template using data
 def render(template_file, template_data={}, ):
     template = JINJA_ENVIRONMENT.get_template(template_file)
+    template_data['VERSION'] = main.__version__
     return template.render(template_data)
 
 # Read static file contents
