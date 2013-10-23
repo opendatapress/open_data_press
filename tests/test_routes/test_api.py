@@ -210,16 +210,12 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('tbl_stars'          in data)
         self.assertTrue('title'              in data)
 
-        self.assertEqual(data['created_at'],         payload['created_at'])
-        self.assertEqual(data['data_views'],         payload['data_views'])
         self.assertEqual(data['description'],        payload['description'])
         self.assertEqual(data['google_spreadsheet'], payload['google_spreadsheet'])
         self.assertEqual(data['google_worksheet'],   payload['google_worksheet'])
-        self.assertEqual(data['id'],                 payload['id'])
         self.assertEqual(data['licence'],            payload['licence'])
-        self.assertEqual(data['modified_at'],        payload['modified_at'])
         self.assertEqual(data['slug'],               payload['slug'])
-        self.assertEqual(data['tags'],               payload['tags'])
+        self.assertEqual(data['tags'],               payload['tags'].split(', '))
         self.assertEqual(data['tbl_stars'],          payload['tbl_stars'])
         self.assertEqual(data['title'],              payload['title'])
 
