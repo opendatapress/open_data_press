@@ -9,21 +9,21 @@ from oauth2client.anyjson import simplejson as json
 class User(db.Model):
 
     created_at          = db.DateTimeProperty(required=True)
-    credentials         = db.TextProperty()
-    google_birthday     = db.StringProperty()
+    credentials         = db.TextProperty(default=u'')
+    google_birthday     = db.StringProperty(default=u'')
     google_email        = db.EmailProperty()
-    google_gender       = db.StringProperty()
+    google_gender       = db.StringProperty(default=u'')
     google_id           = db.StringProperty(required=True)
-    google_locale       = db.StringProperty()
-    google_name         = db.StringProperty()
+    google_locale       = db.StringProperty(default=u'')
+    google_name         = db.StringProperty(default=u'')
     google_picture_url  = db.LinkProperty()
     last_login_at       = db.DateTimeProperty(required=True)
     modified_at         = db.DateTimeProperty(required=True)
-    profile_description = db.TextProperty()
-    profile_email       = db.TextProperty()
-    profile_name        = db.StringProperty()
+    profile_description = db.TextProperty(default=u'')
+    profile_email       = db.TextProperty(default=u'')
+    profile_name        = db.StringProperty(default=u'')
     profile_slug        = db.StringProperty(required=True)
-    profile_web_address = db.TextProperty()
+    profile_web_address = db.TextProperty(default=u'')
 
     def refresh_token(self):
         if self.credentials:

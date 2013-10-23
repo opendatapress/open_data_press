@@ -10,15 +10,15 @@ class DataSource(db.Model):
 
     # Properties
     created_at         = db.DateTimeProperty(required=True)
-    description        = db.StringProperty()
+    description        = db.StringProperty(default=u'')
     google_spreadsheet = db.StringProperty(required=True)
     google_worksheet   = db.StringProperty(required=True)
-    licence            = db.StringProperty()
+    licence            = db.StringProperty(default=u'')
     modified_at        = db.DateTimeProperty(required=True)
     slug               = db.StringProperty(required=True)
-    tags               = db.StringProperty()
-    tbl_stars          = db.IntegerProperty()
-    title              = db.StringProperty()
+    tags               = db.StringProperty(default=u'')
+    tbl_stars          = db.IntegerProperty(default=0)
+    title              = db.StringProperty(default=u'')
     user               = db.ReferenceProperty(User, collection_name="data_sources")
 
     def to_dict(self):
