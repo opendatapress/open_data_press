@@ -165,6 +165,11 @@ class TestAPIHandler(unittest.TestCase):
         self.assertEqual(data['title'],              payload['title'])
 
 
+    def test_api_0_data_source_get_item_fail(self):
+        response = main.app.get_response('/api/0/data_source/not_found', headers=self.auth_headers)
+        self.response_error(response)
+
+
     def test_api_0_data_source_get_item(self):
         response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers)
         self.response_ok(response)
