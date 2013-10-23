@@ -8,6 +8,7 @@ from tests import dummy
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from helpers import google_api
+from models.data_source import DataSource
 import main # The app
 
 class TestAPIHandler(unittest.TestCase):
@@ -21,6 +22,11 @@ class TestAPIHandler(unittest.TestCase):
         google_api.httplib2.Http = MockHttp
         response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
         self.auth_headers  = {'Cookie': response.headers['Set-Cookie']}
+
+        # Create Data Source to use in tests
+        ds = DataSource(**dummy.data_source)
+        ds.put()
+        self.ds_id = ds.key().id()
 
 
     def tearDown(self):
@@ -129,6 +135,11 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('data_sources'  in data)
 
 
+    def test_api_0_data_source_add_item_fail(self):
+        payload  = {}
+        response = main.app.get_response('/api/0/data_source', headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        self.response_error(response, 500)
+
 
     def test_api_0_data_source_add_item(self):
         payload  = {'key':'dummy_key', 'id':'dummy_id', 'title':'My New Open Data'}
@@ -155,7 +166,7 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_get_item(self):
-        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers)
+        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers)
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -172,12 +183,12 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('tbl_stars'          in data)
         self.assertTrue('title'              in data)
         
-        self.assertEqual(data['id'], 99)
+        self.assertEqual(data['id'], self.ds_id)
 
 
     def test_api_0_data_source_update_item(self):
         payload = dummy.data_source_json
-        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -209,7 +220,7 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_delete_item(self):
-        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers, method='DELETE')
+        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers, method='DELETE')
         self.response_ok(response)
 
 
