@@ -4,6 +4,7 @@
     /* Dynamic page elements */
     dash_content = $('#dash-content'),
     messages     = $('#messages'),
+    title        = $('title'),
 
 
     /* Static Templates */
@@ -19,6 +20,11 @@
     tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
     tpl_google_table      = Handlebars.compile($('#tpl-google-table').html()),
 
+
+    /* Set the page title */
+    pageTitle = function(text){
+        title.html(text);
+    },
 
     /* Show a styled alert message in the navbar */
     alertMsg = function(message, type){
@@ -81,6 +87,7 @@
 
     // Profile settings
     .addRoute('#/settings', function(req, next){
+        pageTitle('Profile Settings');
         $.ajax('/api/0/user')
         .success(function(res){
             dash_content.html(tpl_settings(res.body));
@@ -90,6 +97,7 @@
 
     // Show spreadsheets in Google Drive
     .addRoute('#/drive', function(req, next){
+        pageTitle('Google Drive');
         $.ajax('/api/0/google/sheets')
         .success(function(res){
             dash_content.html(tpl_google_sheets(res.body));
@@ -99,6 +107,7 @@
 
     // Show worksheets in Drive spreadsheet
     .addRoute('#/drive/:key', function(req, next){
+        pageTitle('Google Drive');
         $.ajax('/api/0/google/sheets/' + req.params.key)
         .success(function(res){
             dash_content.html(tpl_google_worksheets(res.body));
@@ -108,6 +117,7 @@
 
     // Show preview of data in Drive worksheet
     .addRoute('#/drive/:key/:id', function(req, next){
+        pageTitle('Google Drive');
         $.ajax('/api/0/google/sheets/' + req.params.key + '/' + req.params.id)
         .success(function(res){
             dash_content.html(tpl_google_table(res.body));
@@ -122,30 +132,35 @@
 
     // Show all data sources
     .addRoute('#/data-source', function(req, next){
+        pageTitle('All Data Sources');
         console.log(req);
         dash_content.html('All data sources');
     })
 
     // View/edit a data source
     .addRoute('#/data-source/:data_source_id', function(req, next){
+        pageTitle('View/Edit Data Source');
         console.log(req);
         dash_content.html('Data Source ' + req.params.data_source_id);
     })
 
     // Show all data views
     .addRoute('#/data-view', function(req, next){
+        pageTitle('All Data Views');
         console.log(req);
         dash_content.html('All data views');
     })
 
     // View/Edit a data view
     .addRoute('#/data-view/:data_view_id', function(req, next){
+        pageTitle('View/Edit Data View');
         console.log(req);
         dash_content.html('Data View ' + req.params.data_view_id);
     })
 
     // Missing routes default to dashboard home page
     .errors(404, function(){
+        pageTitle('Dashboard');
         dash_content.html(tpl_dashboard);
     })
 
