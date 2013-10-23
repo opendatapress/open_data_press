@@ -66,14 +66,21 @@
     /* URL Route Handlers */
     new Router()
 
+    // Reset dashboard before following route
+    .before(function(req, next){
+        messages.html('');
+        dash_content.html(tpl_spinner);
+        next();
+    })
+
     // Helper route for testing errors
     .addRoute('#/404', function(req, next){
         $.ajax('/api/0/404')
         .error(function(res){ showError(res); });
     })
 
+    // Profile settings
     .addRoute('#/settings', function(req, next){
-        dash_content.html(tpl_spinner);
         $.ajax('/api/0/user')
         .success(function(res){
             dash_content.html(tpl_settings(res.body));
@@ -81,8 +88,8 @@
         .error(function(res){ showError(res); });
     })
 
+    // Show spreadsheets in Google Drive
     .addRoute('#/drive', function(req, next){
-        dash_content.html(tpl_spinner);
         $.ajax('/api/0/google/sheets')
         .success(function(res){
             dash_content.html(tpl_google_sheets(res.body));
@@ -90,8 +97,8 @@
         .error(function(res){ showError(res); });
     })
 
+    // Show worksheets in Drive spreadsheet
     .addRoute('#/drive/:key', function(req, next){
-        dash_content.html(tpl_spinner);
         $.ajax('/api/0/google/sheets/' + req.params.key)
         .success(function(res){
             dash_content.html(tpl_google_worksheets(res.body));
@@ -99,8 +106,8 @@
         .error(function(res){ showError(res); });
     })
 
+    // Show preview of data in Drive worksheet
     .addRoute('#/drive/:key/:id', function(req, next){
-        dash_content.html(tpl_spinner);
         $.ajax('/api/0/google/sheets/' + req.params.key + '/' + req.params.id)
         .success(function(res){
             dash_content.html(tpl_google_table(res.body));
@@ -108,31 +115,36 @@
         .error(function(res){ showError(res); });
     })
 
+    // Create new Data Source using Drive worksheet
     .addRoute('#/import/:key/:id', function(req, next){
-        console.log("TODO Import spreadsheet\nKey: " + req.params.key + "\nId: " + req.params.id);
+        dash_content.html("TODO Import worksheet<br>Key: " + req.params.key + "<br>Id: " + req.params.id);
     })
 
+    // Show all data sources
     .addRoute('#/data_source', function(req, next){
         console.log(req);
         dash_content.html('All data sources');
     })
 
+    // View/edit a data source
     .addRoute('#/data_source/:data_source_id', function(req, next){
         console.log(req);
         dash_content.html('Data Source ' + req.params.data_source_id);
     })
 
+    // Show all data views
     .addRoute('#/data_view', function(req, next){
         console.log(req);
         dash_content.html('All data views');
     })
 
+    // View/Edit a data view
     .addRoute('#/data_view/:data_view_id', function(req, next){
         console.log(req);
         dash_content.html('Data View ' + req.params.data_view_id);
     })
 
-    // Catch missing routes
+    // Missing routes default to dashboard home page
     .errors(404, function(){
         dash_content.html(tpl_dashboard);
     })
@@ -143,7 +155,7 @@
     /* Event Handlers */
     $(document)
 
-    // Saveprofile settings
+    // Save profile settings
     .on('submit', 'form#settings', function(){
         payload = {
             google_id           : $('form #google_id').val(),
