@@ -43,6 +43,7 @@ class TestUserModel(unittest.TestCase):
     def test_user_instance_methods_exist(self):
         user = User(**dummy.user)
         self.assertTrue('refresh_token' in dir(user))
+        self.assertTrue('to_dict' in dir(user))
 
 
     def test_user_class_methods_exist(self):
