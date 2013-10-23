@@ -16,8 +16,15 @@ class TestAPIHandler(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
 
+        # Get headers for making authenticated requests
+        google_api.httplib2.Http = MockHttp
+        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
+        self.auth_headers  = {'Cookie': response.headers['Set-Cookie']}
+
+
     def tearDown(self):
         self.testbed.deactivate()
+
 
     # Helper method to test generic error responses
     def denied_authentication(self, response, code=404):
@@ -28,6 +35,7 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('response' in data)
         self.assertTrue('body' in data)
         self.assertEqual('error', data['response'])
+
 
     # Helper method to test successful response
     def response_ok(self, response):
@@ -60,12 +68,8 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_user_get_returns_user_data(self):
-        google_api.httplib2.Http = MockHttp
-
-        # Make authenticated request
-        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
-        headers  = {'Cookie': response.headers['Set-Cookie']}
-        response = main.app.get_response('/api/0/user', headers=headers)
+        
+        response = main.app.get_response('/api/0/user', headers=self.auth_headers)
 
         self.response_ok(response)
         data = json.loads(response.body)
@@ -73,12 +77,8 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_user_post_updates_user_data(self):
-        google_api.httplib2.Http = MockHttp
-        response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
-        headers  = {'Cookie': response.headers['Set-Cookie']}
-
         # Get user data
-        response_a = main.app.get_response('/api/0/user', headers=headers)
+        response_a = main.app.get_response('/api/0/user', headers=self.auth_headers)
         self.response_ok(response_a)
 
         # Modify user
@@ -89,7 +89,7 @@ class TestAPIHandler(unittest.TestCase):
         user_data_a["profile_name"]          = "New Name"
 
         # Attempt to save the modified user
-        response_b = main.app.get_response('/api/0/user', headers=headers, POST={"payload":json.dumps(user_data_a)})
+        response_b = main.app.get_response('/api/0/user', headers=self.auth_headers, POST={"payload":json.dumps(user_data_a)})
         self.response_ok(response_b)
 
         # Assert returned data is correct
