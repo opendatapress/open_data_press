@@ -36,6 +36,11 @@ class TestDataSourceModel(unittest.TestCase):
         self.assertTrue('title'              in dir(ds))
 
 
+    def test_data_source_instance_methods_exist(self):
+        ds = DataSource(**dummy.data_source)
+        self.assertTrue('to_dict' in dir(ds))
+
+
     def test_data_source_required_properties(self):
         with self.assertRaises(db.BadValueError) as cm:
             bad_params = dummy.data_source.copy()
@@ -94,3 +99,20 @@ class TestDataSourceModel(unittest.TestCase):
         ds.put()
         ds_count_b = self.user.data_sources.count()
         self.assertTrue(ds_count_a + 1, ds_count_b)
+
+    def test_data_source_to_dict(self):
+        ds = DataSource(**dummy.data_source)
+        ds.put()
+        data = ds.to_dict()
+        self.assertTrue('created_at'         in data)
+        self.assertTrue('data_views'         in data)
+        self.assertTrue('description'        in data)
+        self.assertTrue('google_spreadsheet' in data)
+        self.assertTrue('google_worksheet'   in data)
+        self.assertTrue('id'                 in data)
+        self.assertTrue('licence'            in data)
+        self.assertTrue('modified_at'        in data)
+        self.assertTrue('slug'               in data)
+        self.assertTrue('tags'               in data)
+        self.assertTrue('tbl_stars'          in data)
+        self.assertTrue('title'              in data)
