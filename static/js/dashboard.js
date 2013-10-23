@@ -58,7 +58,7 @@
     Handlebars.registerHelper('first', function(count, array, bars){
         var buffer = '';
         for(var i=0; i<count; i++){
-            buffer += bars.fn(array[0]);
+            buffer += bars.fn(array[i]);
         }
         return buffer
     });
