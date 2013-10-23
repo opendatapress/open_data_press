@@ -4,6 +4,7 @@ import unittest
 import webapp2
 import simplejson as json
 from tests.utils import MockHttp
+from tests import dummy
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from helpers import google_api
@@ -45,6 +46,7 @@ class TestAPIHandler(unittest.TestCase):
         data = json.loads(response.body)
         self.assertTrue('response' in data)
         self.assertTrue('body' in data)
+        self.assertEqual('success', data['response'])
 
 
 
@@ -119,23 +121,95 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_list_all(self):
-        pass
+        response = main.app.get_response('/api/0/data_source', headers=self.auth_headers)
+        self.response_ok(response)
+
+        data = json.loads(response.body)["body"]
+        self.assertTrue('total_results' in data)
+        self.assertTrue('data_sources'  in data)
+
 
 
     def test_api_0_data_source_add_item(self):
-        pass
+        payload = {'key':'xxx', 'id':'xxx'}
+        response = main.app.get_response('/api/0/data_source', headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        self.response_ok(response)
+        
+        data = json.loads(response.body)["body"]
+        self.assertTrue('created_at'         in data)
+        self.assertTrue('data_views'         in data)
+        self.assertTrue('description'        in data)
+        self.assertTrue('google_spreadsheet' in data)
+        self.assertTrue('google_worksheet'   in data)
+        self.assertTrue('id'                 in data)
+        self.assertTrue('licence'            in data)
+        self.assertTrue('modified_at'        in data)
+        self.assertTrue('slug'               in data)
+        self.assertTrue('tags'               in data)
+        self.assertTrue('tbl_stars'          in data)
+        self.assertTrue('title'              in data)
+
+        self.assertEqual(data['google_spreadsheet'], payload['key'])
+        self.assertEqual(data['google_worksheet'],   payload['id'])
 
 
     def test_api_0_data_source_get_item(self):
-        pass
+        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers)
+        self.response_ok(response)
+        
+        data = json.loads(response.body)["body"]
+        self.assertTrue('created_at'         in data)
+        self.assertTrue('data_views'         in data)
+        self.assertTrue('description'        in data)
+        self.assertTrue('google_spreadsheet' in data)
+        self.assertTrue('google_worksheet'   in data)
+        self.assertTrue('id'                 in data)
+        self.assertTrue('licence'            in data)
+        self.assertTrue('modified_at'        in data)
+        self.assertTrue('slug'               in data)
+        self.assertTrue('tags'               in data)
+        self.assertTrue('tbl_stars'          in data)
+        self.assertTrue('title'              in data)
+        
+        self.assertEqual(data['id'], 99)
 
 
     def test_api_0_data_source_update_item(self):
-        pass
+        payload = dummy.data_source_json
+        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        self.response_ok(response)
+        
+        data = json.loads(response.body)["body"]
+        self.assertTrue('created_at'         in data)
+        self.assertTrue('data_views'         in data)
+        self.assertTrue('description'        in data)
+        self.assertTrue('google_spreadsheet' in data)
+        self.assertTrue('google_worksheet'   in data)
+        self.assertTrue('id'                 in data)
+        self.assertTrue('licence'            in data)
+        self.assertTrue('modified_at'        in data)
+        self.assertTrue('slug'               in data)
+        self.assertTrue('tags'               in data)
+        self.assertTrue('tbl_stars'          in data)
+        self.assertTrue('title'              in data)
+
+        self.assertEqual(data['created_at'],         payload['created_at'])
+        self.assertEqual(data['data_views'],         payload['data_views'])
+        self.assertEqual(data['description'],        payload['description'])
+        self.assertEqual(data['google_spreadsheet'], payload['google_spreadsheet'])
+        self.assertEqual(data['google_worksheet'],   payload['google_worksheet'])
+        self.assertEqual(data['id'],                 payload['id'])
+        self.assertEqual(data['licence'],            payload['licence'])
+        self.assertEqual(data['modified_at'],        payload['modified_at'])
+        self.assertEqual(data['slug'],               payload['slug'])
+        self.assertEqual(data['tags'],               payload['tags'])
+        self.assertEqual(data['tbl_stars'],          payload['tbl_stars'])
+        self.assertEqual(data['title'],              payload['title'])
 
 
     def test_api_0_data_source_delete_item(self):
-        pass
+        response = main.app.get_response('/api/0/data_source/99', headers=self.auth_headers, method='DELETE')
+        self.response_ok(response)
 
 
     def test_api_0_data_view_path_denies_unauthenticated_requests(self):
