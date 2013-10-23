@@ -121,25 +121,25 @@
     })
 
     // Show all data sources
-    .addRoute('#/data_source', function(req, next){
+    .addRoute('#/data-source', function(req, next){
         console.log(req);
         dash_content.html('All data sources');
     })
 
     // View/edit a data source
-    .addRoute('#/data_source/:data_source_id', function(req, next){
+    .addRoute('#/data-source/:data_source_id', function(req, next){
         console.log(req);
         dash_content.html('Data Source ' + req.params.data_source_id);
     })
 
     // Show all data views
-    .addRoute('#/data_view', function(req, next){
+    .addRoute('#/data-view', function(req, next){
         console.log(req);
         dash_content.html('All data views');
     })
 
     // View/Edit a data view
-    .addRoute('#/data_view/:data_view_id', function(req, next){
+    .addRoute('#/data-view/:data_view_id', function(req, next){
         console.log(req);
         dash_content.html('Data View ' + req.params.data_view_id);
     })
