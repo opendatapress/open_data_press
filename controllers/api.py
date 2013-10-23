@@ -2,15 +2,18 @@
 #
 # Session route handlers
 #
+from datetime import datetime as DT
 
 from webapp2 import RequestHandler
 from webapp2_extras.sessions import get_store
 from oauth2client.client import OAuth2Credentials
 from oauth2client.anyjson import simplejson as json
 
-from helpers import google_api
+from helpers import google_api, slug
 from helpers.sessions import SessionHandler
 from models.user import User
+from models.data_source import DataSource
+from models.data_view import DataView
 
 import logging
 
@@ -76,22 +79,113 @@ class UserRoute(APIHandler):
 class DataSourceListRoute(APIHandler):
 
     def get(self):
-        self.response.write('{"response":"success","body":"data source list"}')
+        try:
+            current_user = User.get_by_google_id(self.session['current_user'])
+            data_sources = current_user.data_sources.fetch(limit=None)
+            response = {
+                'total_results': len(data_sources),
+                'data_sources': [ds.to_dict() for ds in data_sources]
+            }
+            self.response.write('{"response":"success","body":%s}' % json.dumps(response))
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem fetching data sources"}')
+            self.response.set_status(500)
 
     def post(self):
-        self.response.write('{"response":"success","body":"data source list"}')
+        try:
+            current_user = User.get_by_google_id(self.session['current_user'])
+            post_data    = json.loads(self.request.POST["payload"])
+            data_source  = DataSource(
+                                google_spreadsheet = post_data['key'],
+                                google_worksheet   = post_data['id'],
+                                title              = post_data['title'],
+                                slug               = slug.create(post_data['title']),
+                                created_at         = DT.now(),
+                                modified_at        = DT.now())
+            data_source.user = current_user.key()
+            data_source.put()
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+
+        except slug.SlugError as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem creating slug for data source"}')
+            self.response.set_status(500)
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem creating data source"}')
+            self.response.set_status(500)
 
 
 class DataSourceItemRoute(APIHandler):
 
     def get(self, data_source_id):
-        self.response.write('{"response":"success","body":"data source item"}')
+        try:
+            data_source = DataSource.get_by_id(int(data_source_id))
+            if data_source is None:
+                raise ValueError("No Data Source with id %s" % data_source_id)
+
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+
+        except ValueError as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.set_status(500)
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem creating data source"}')
+            self.response.set_status(500)
 
     def post(self, data_source_id):
-        self.response.write('{"response":"success","body":"data source item"}')
+        try:
+            payload = json.loads(self.request.POST["payload"])
+            data_source = DataSource.get_by_id(int(data_source_id))
+            if data_source is None:
+                raise ValueError("No Data Source with id %s" % data_source_id)
+
+            data_source.description        = payload['description']
+            data_source.google_spreadsheet = payload['google_spreadsheet']
+            data_source.google_worksheet   = payload['google_worksheet']
+            data_source.licence            = payload['licence']
+            data_source.slug               = payload['slug']
+            data_source.tags               = payload['tags']
+            data_source.tbl_stars          = payload['tbl_stars']
+            data_source.title              = payload['title']
+            data_source.put()
+
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+
+        except ValueError as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.set_status(500)
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem updating data source"}')
+            self.response.set_status(500)
 
     def delete(self, data_source_id):
-        self.response.write('{"response":"success","body":"data source item"}')
+        try:
+            data_source = DataSource.get_by_id(int(data_source_id))
+            if data_source is None:
+                raise ValueError("No Data Source with id %s" % data_source_id)
+
+            data_source.delete()
+            self.response.write('{"response":"success","body":"Data source deleted"}')
+
+        except ValueError as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.set_status(500)
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"Problem deleting data source"}')
+            self.response.set_status(500)
 
 
 class DataViewListRoute(APIHandler):
