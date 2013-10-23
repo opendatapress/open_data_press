@@ -41,12 +41,10 @@ data_source = {
 }
 
 data_source_json = {
-    'created_at':         datetime.now().strftime('%Y-%M-%d %H:%m:%s'),
     'description':        u'A Dummy Data Source',
     'google_spreadsheet': u'dummy_key',
     'google_worksheet':   u'dummy_id',
     'licence':            u'Do What You Like',
-    'modified_at':        datetime.now().strftime('%Y-%M-%d %H:%m:%s'),
     'slug':               u'data-1',
     'tags':               u'Apples, Oranges, Pears',
     'tbl_stars':          5,
