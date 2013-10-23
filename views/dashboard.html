@@ -37,7 +37,7 @@
 <div class="left-fixed">
     <div class="list-group" role="navigation">
         <a class="list-group-item" href="/dashboard">Dashboard</a>
-        <a class="list-group-item" href="#/import-data">Import Data from Drive</a>
+        <a class="list-group-item" href="#/drive">Import Data from Drive</a>
         <a class="list-group-item" href="#/data-source">All Data Sources</a>
         <a class="list-group-item" href="#/data-source/10">Data Source 10</a>
         <a class="list-group-item" href="#/data-view">All Data Views</a>
@@ -125,7 +125,7 @@
         <ul>
         {{#each files}}
             <li>
-                <a class="drive-spreadsheet" data-key="{{this.id}}" data-title="{{this.title}}" href="#">
+                <a class="drive-spreadsheet" href="#/drive/{{this.id}}">
                     <h4>{{this.title}}</h4>
                     <p><strong>Owners:</strong> {{this.ownerNames}}</p>
                     <p><img src="{{this.thumbnailLink}}"></p>
@@ -142,7 +142,7 @@
         <p>Choose a worksheet to import from <strong>{{title}}</strong></p>
         <ul>
         {{#each worksheets}}
-            <li><a class="drive-worksheet" data-key="{{../key}}" data-id="{{this.id}}" data-title="{{this.title}}" href="#">{{this.title}}</a></li>
+            <li><a class="drive-worksheet" href="#/drive/{{../key}}/{{this.id}}">{{this.title}}</a></li>
         {{/each}}
         </ul>
     </div>
@@ -175,7 +175,7 @@
             </table>
         </div>
         <hr>
-        <button id="import-data" class="btn btn-primary pull-right" data-title="{{title}}" data-key="{{key}}" data-id="{{id}}">Import Data</button>
+        <a id="import-data" class="btn btn-primary pull-right" href="#/import/{{key}}/{{id}}">Import Data</a>
     </div>
 </script>
 

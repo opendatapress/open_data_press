@@ -81,13 +81,35 @@
         .error(function(res){ showError(res); });
     })
 
-    .addRoute('#/import-data', function(req, next){
+    .addRoute('#/drive', function(req, next){
         dash_content.html(tpl_spinner);
         $.ajax('/api/0/google/sheets')
         .success(function(res){
             dash_content.html(tpl_google_sheets(res.body));
         })
         .error(function(res){ showError(res); });
+    })
+
+    .addRoute('#/drive/:key', function(req, next){
+        dash_content.html(tpl_spinner);
+        $.ajax('/api/0/google/sheets/' + req.params.key)
+        .success(function(res){
+            dash_content.html(tpl_google_worksheets(res.body));
+        })
+        .error(function(res){ showError(res); });
+    })
+
+    .addRoute('#/drive/:key/:id', function(req, next){
+        dash_content.html(tpl_spinner);
+        $.ajax('/api/0/google/sheets/' + req.params.key + '/' + req.params.id)
+        .success(function(res){
+            dash_content.html(tpl_google_table(res.body));
+        })
+        .error(function(res){ showError(res); });
+    })
+
+    .addRoute('#/import/:key/:id', function(req, next){
+        console.log("TODO Import spreadsheet\nKey: " + req.params.key + "\nId: " + req.params.id);
     })
 
     .addRoute('#/data_source', function(req, next){
@@ -142,38 +164,6 @@
         })
         .error(function(res){ showError(res); });
 
-        return false;
-    })
-
-    // Choose spreadsheet from Google Drive
-    .on('click', '.drive-spreadsheet', function(){
-        dash_content.html(tpl_spinner);
-        $.ajax('/api/0/google/sheets/' + $(this).attr('data-key'))
-        .success(function(res){
-            dash_content.html(tpl_google_worksheets(res.body));
-        })
-        .error(function(res){ showError(res); });
-        return false;
-    })
-
-    // Choose worksheet from Google Drive
-    .on('click', '.drive-worksheet', function(){
-        dash_content.html(tpl_spinner);
-        $.ajax('/api/0/google/sheets/' + $(this).attr('data-key') + '/' + $(this).attr('data-id'))
-        .success(function(res){
-            dash_content.html(tpl_google_table(res.body));
-        })
-        .error(function(res){ showError(res); });
-        return false;
-    })
-
-    // Import data from Drive to Open Data Press
-    .on('click', '#import-data', function(){
-        data = $(this);
-        console.log("TODO Import spreadsheet\n"+
-            "Title: " + data.attr('data-title') + "\n"+
-            "Key: "   + data.attr('data-key') + "\n"+
-            "Id: "    + data.attr('data-id'));
         return false;
     })
 
