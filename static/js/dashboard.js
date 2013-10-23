@@ -144,7 +144,7 @@
     $(document)
 
     // Saveprofile settings
-    .on('click', '#form-settings #submit', function(){
+    .on('submit', 'form#settings', function(){
         payload = {
             google_id           : $('form #google_id').val(),
             profile_name        : $('form #profile_name').val(),
