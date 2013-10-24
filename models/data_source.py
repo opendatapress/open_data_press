@@ -32,7 +32,7 @@ class DataSource(db.Model):
             'licence':            self.licence,
             'modified_at':        self.modified_at.strftime('%Y-%M-%d %H:%m:%s'),
             'slug':               self.slug,
-            'tags':               self.tags.split(', '),
+            'tags':               self.tags.split(','),
             'tbl_stars':          self.tbl_stars,
             'title':              self.title,
             'public_url':         self.public_url(),

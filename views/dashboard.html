@@ -116,6 +116,45 @@
     {{/if}}
 </script>
 
+<script id="tpl-data-view-edit" type="text/x-handlebars-template">
+    <h1>Edit Data Source</h1>
+    <div class="content">
+        <form id="data-source-edit" role="form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" value="{{title}}">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" value="{{description}}">
+            </div>
+            <div class="form-group">
+                <label for="licence">Licence</label>
+                <input type="text" class="form-control" id="licence" value="{{licence}}">
+            </div>
+            <div class="form-group">
+                <label for="slug">Vanity URL</label>
+                <input type="text" class="form-control" id="slug" value="{{slug}}">
+            </div>
+            <div class="form-group">
+                <label for="tags">Tags (comma seperated)</label>
+                <input type="text" class="form-control" id="tags" value="{{tags}}">
+            </div>
+            <div class="form-group">
+                <label for="tbl_stars">TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></label>
+                <input type="text" class="form-control" id="tbl_stars" value="{{tbl_stars}}">
+            </div>
+            <hr>
+            <div class="form-group">
+                <input type="hidden" id="id" value="{{id}}"><!-- TODO Fix this abomination -->
+                <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
+                <a href="#/data-source" class="btn btn-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</script>
+
+
 <script id="tpl-dashboard" type="text/html">
     <h1>Dashboard Home</h1>
     <div class="content">
@@ -155,7 +194,7 @@
             </div>
             <hr>
             <div class="form-group">
-                <input type="hidden" id="google_id" value="{{google_id}}">
+                <input type="hidden" id="google_id" value="{{google_id}}"><!-- TODO Fix this abomination -->
                 <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
                 <a href="#" class="btn btn-link">Cancel</a>
             </div>

@@ -146,14 +146,12 @@ class DataSourceItemRoute(APIHandler):
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
 
-            data_source.description        = payload['description']
-            data_source.google_spreadsheet = payload['google_spreadsheet']
-            data_source.google_worksheet   = payload['google_worksheet']
-            data_source.licence            = payload['licence']
-            data_source.slug               = payload['slug']
-            data_source.tags               = payload['tags']
-            data_source.tbl_stars          = payload['tbl_stars']
-            data_source.title              = payload['title']
+            if "description" in payload.keys(): data_source.description = payload['description']
+            if "licence"     in payload.keys(): data_source.licence     = payload['licence']
+            if "slug"        in payload.keys(): data_source.slug        = payload['slug']
+            if "tags"        in payload.keys(): data_source.tags        = payload['tags']
+            if "tbl_stars"   in payload.keys(): data_source.tbl_stars   = int(payload['tbl_stars'])
+            if "title"       in payload.keys(): data_source.title       = payload['title']
             data_source.put()
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))

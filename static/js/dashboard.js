@@ -17,6 +17,7 @@
     tpl_settings          = Handlebars.compile($('#tpl-settings').html()),
     tpl_message           = Handlebars.compile($('#tpl-message').html()),
     tpl_data_view_list    = Handlebars.compile($('#tpl-data-view-list').html()),
+    tpl_data_view_edit    = Handlebars.compile($('#tpl-data-view-edit').html()),
     tpl_google_sheets     = Handlebars.compile($('#tpl-google-sheets').html()),
     tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
     tpl_google_table      = Handlebars.compile($('#tpl-google-table').html()),
@@ -131,7 +132,6 @@
         pageTitle('All Data Sources');
         $.ajax('/api/0/data_source')
         .success(function(res){
-            console.log(res.body);
             dash_content.html(tpl_data_view_list(res.body));
         })
         .error(function(res){ showError(res); });
@@ -139,9 +139,12 @@
 
     // View/edit a data source
     .addRoute('#/data-source/:data_source_id', function(req, next){
-        pageTitle('View/Edit Data Source');
-        console.log(req);
-        dash_content.html('Data Source ' + req.params.data_source_id);
+        pageTitle('Edit Data Source');
+        $.ajax('/api/0/data_source/'+req.params.data_source_id)
+        .success(function(res){
+            dash_content.html(tpl_data_view_edit(res.body));
+        })
+        .error(function(res){ showError(res); });
     })
 
     // Show all data views
@@ -172,16 +175,14 @@
 
     // Save profile settings
     .on('submit', 'form#settings', function(){
-        messages.html('');
-        dash_content.html(tpl_spinner);
 
         payload = {
-            google_id           : $('form #google_id').val(),
-            profile_name        : $('form #profile_name').val(),
-            profile_slug        : $('form #profile_slug').val(),
-            profile_description : $('form #profile_description').val(),
-            profile_email       : $('form #profile_email').val(),
-            profile_web_address : $('form #profile_web_address').val()
+            google_id           : $('form#settings #google_id').val(),
+            profile_name        : $('form#settings #profile_name').val(),
+            profile_slug        : $('form#settings #profile_slug').val(),
+            profile_description : $('form#settings #profile_description').val(),
+            profile_email       : $('form#settings #profile_email').val(),
+            profile_web_address : $('form#settings #profile_web_address').val()
         }
 
         $.ajax({
@@ -197,16 +198,16 @@
         return false;
     })
 
-    // Create Data View from Google Drive Worksheet
+    // Create Data Source from Google Drive Worksheet
     .on('click', 'button#create-data-source', function(){
-        messages.html('');
-        dash_content.html(tpl_spinner);
-
         payload = {
             key   : $(this).attr('data-key'),
             id    : $(this).attr('data-id'),
             title : $(this).attr('data-title')
         };
+
+        messages.html('');
+        dash_content.html(tpl_spinner);
 
         $.ajax({
             url: '/api/0/data_source/',
@@ -218,6 +219,32 @@
             window.location = '#/data-source/' + res.body.id;
         })
         .error(function(res){ showError(res); });
+
+        return false;
+    })
+
+    // Save changes to Data Source
+    .on('submit', 'form#data-source-edit', function(){
+        payload = {
+            id          : $('form#data-source-edit #id').val(),
+            title       : $('form#data-source-edit #title').val(),
+            description : $('form#data-source-edit #description').val(),
+            licence     : $('form#data-source-edit #licence').val(),
+            slug        : $('form#data-source-edit #slug').val(),
+            tags        : $('form#data-source-edit #tags').val(),
+            tbl_stars   : $('form#data-source-edit #tbl_stars').val()
+        }
+
+        $.ajax({
+            url: '/api/0/data_source/' + $('form#data-source-edit #id').val(),
+            type: 'POST',
+            data: {payload: JSON.stringify(payload)}
+        })
+        .success(function(res){
+            alertMsg('Changes Saved!', 'success');
+            window.location = '#/data-source/';
+        })
+        .error(function(res){ console.log(res); showError(res); });
 
         return false;
     })
