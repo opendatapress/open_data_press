@@ -16,6 +16,7 @@
     /* Handlebars Templates */
     tpl_settings          = Handlebars.compile($('#tpl-settings').html()),
     tpl_message           = Handlebars.compile($('#tpl-message').html()),
+    tpl_data_view_list    = Handlebars.compile($('#tpl-data-view-list').html()),
     tpl_google_sheets     = Handlebars.compile($('#tpl-google-sheets').html()),
     tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
     tpl_google_table      = Handlebars.compile($('#tpl-google-table').html()),
@@ -125,16 +126,15 @@
         .error(function(res){ showError(res); });
     })
 
-    // Create new Data Source using Drive worksheet
-    .addRoute('#/import/:key/:id', function(req, next){
-        dash_content.html("TODO Import worksheet<br>Key: " + req.params.key + "<br>Id: " + req.params.id);
-    })
-
     // Show all data sources
     .addRoute('#/data-source', function(req, next){
         pageTitle('All Data Sources');
-        console.log(req);
-        dash_content.html('All data sources');
+        $.ajax('/api/0/data_source')
+        .success(function(res){
+            console.log(res.body);
+            dash_content.html(tpl_data_view_list(res.body));
+        })
+        .error(function(res){ showError(res); });
     })
 
     // View/edit a data source
@@ -172,6 +172,9 @@
 
     // Save profile settings
     .on('submit', 'form#settings', function(){
+        messages.html('');
+        dash_content.html(tpl_spinner);
+
         payload = {
             google_id           : $('form #google_id').val(),
             profile_name        : $('form #profile_name').val(),
@@ -188,6 +191,31 @@
         })
         .success(function(res){
             alertMsg('Changes Saved!', 'success');
+        })
+        .error(function(res){ showError(res); });
+
+        return false;
+    })
+
+    // Create Data View from Google Drive Worksheet
+    .on('click', 'button#create-data-source', function(){
+        messages.html('');
+        dash_content.html(tpl_spinner);
+
+        payload = {
+            key   : $(this).attr('data-key'),
+            id    : $(this).attr('data-id'),
+            title : $(this).attr('data-title')
+        };
+
+        $.ajax({
+            url: '/api/0/data_source/',
+            type: 'POST',
+            data: {payload: JSON.stringify(payload)}
+        })
+        .success(function(res){
+            // View/Edit newly created data source
+            window.location = '#/data-source/' + res.body.id;
         })
         .error(function(res){ showError(res); });
 

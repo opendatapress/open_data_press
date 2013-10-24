@@ -53,6 +53,7 @@ html, body {
     border: 1px solid #c6c6c6;
     background-color: #FFF;
     padding: 20px;
+    margin-bottom: 20px;
 }
 
 @media (min-width: 1200px) {

@@ -37,11 +37,8 @@
 <div class="left-fixed">
     <div class="list-group" role="navigation">
         <a class="list-group-item" href="/dashboard">Dashboard</a>
-        <a class="list-group-item" href="#/drive">Import Data from Drive</a>
+        <a class="list-group-item" href="#/drive">New Data Source from Google Drive</a>
         <a class="list-group-item" href="#/data-source">All Data Sources</a>
-        <a class="list-group-item" href="#/data-source/10">Data Source 10</a>
-        <a class="list-group-item" href="#/data-view">All Data Views</a>
-        <a class="list-group-item" href="#/data-view/10">Data View 10</a>
     </div>
     <div class="left-footer">
         <hr>
@@ -71,6 +68,54 @@
         {{{message}}}
     </div>
 </script>
+
+<script id="tpl-data-view-list" type="text/x-handlebars-template">
+    <h1>All Data Sources</h1>
+    {{#if this.data_sources}}
+        {{#each data_sources}}
+            <div class="content card">
+                <h3>{{this.title}}</h3>
+                <p>description: <strong>{{this.description}}</strong></p>
+                <p>created_at: <strong>{{this.created_at}}</strong></p>
+                <p>google_spreadsheet: <strong>{{this.google_spreadsheet}}</strong></p>
+                <p>google_worksheet: <strong>{{this.google_worksheet}}</strong></p>
+                <p>id: <strong>{{this.id}}</strong></p>
+                <p>licence: <strong>{{this.licence}}</strong></p>
+                <p>modified_at: <strong>{{this.modified_at}}</strong></p>
+                <p>slug: <strong>{{this.slug}}</strong></p>
+                <p>tags: <strong>{{this.tags}}</strong></p>
+                <p>tbl_stars: <strong>{{this.tbl_stars}}</strong></p>
+                <p>Profile URL: <a href="{{this.public_url}}" target="_blank">{{this.public_url}}</a></p>
+                <p>Spreadsheet URL: <a href="{{this.spreadsheet_url}}" target="_blank">{{this.spreadsheet_url}}</a></p>
+                <hr>
+                <h4>Data Views</h4>
+                {{#if this.data_views}}
+                    <ul>
+                        {{#each this.data_views}}
+                            <li>this.title</li>
+                        {{/each}}
+                    </ul>
+                {{else}}
+                    <p>
+                        There are no Views for this Data Source.
+                        <a href="#/data-source/{{this.id}}/data-view">Create one now!</a>
+                    </p>
+                {{/if}}
+                <hr>
+                <p>
+                    <a class="btn btn-default btn-sm" href="#/data-source/{{this.id}}/data-view">Create View for this Data</a>
+                    <a class="btn btn-default btn-sm" href="#/data-source/{{this.id}}">Edit Data Source</a>
+                </p>
+            </div>
+        {{/each}}
+    {{else}}
+        <div class="content">
+        <p>You have not yet created any Data Sources from your Google Worksheets.</p>
+        <p><a class="btn btn-primary" href="#/drive">Create one Now!</a></p>
+        </div>
+    {{/if}}
+</script>
+
 <script id="tpl-dashboard" type="text/html">
     <h1>Dashboard Home</h1>
     <div class="content">
@@ -175,7 +220,7 @@
             </table>
         </div>
         <hr>
-        <a id="import-data" class="btn btn-primary pull-right" href="#/import/{{key}}/{{id}}">Import Data</a>
+        <button id="create-data-source" class="btn btn-primary pull-right" data-key="{{key}}" data-id="{{id}}" data-title="{{title}}">Import Data</button>
     </div>
 </script>
 

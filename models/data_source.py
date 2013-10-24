@@ -35,7 +35,15 @@ class DataSource(db.Model):
             'tags':               self.tags.split(', '),
             'tbl_stars':          self.tbl_stars,
             'title':              self.title,
+            'public_url':         self.public_url(),
+            'spreadsheet_url':    self.spreadsheet_url(),
         }
+
+    def public_url(self):
+        return "/%s/%s/" % (self.user.profile_slug, self.slug)
+
+    def spreadsheet_url(self):
+        return "https://docs.google.com/spreadsheet/ccc?key=%s" % self.google_spreadsheet
 
     def get_data(self):
         """ Fetch worksheet data from Google """
