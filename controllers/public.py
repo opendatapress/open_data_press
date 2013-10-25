@@ -11,10 +11,11 @@ from helpers.sessions import SessionHandler
 class ProfileRoute(SessionHandler):
 
     def get(self, profile_slug):
-        user = User.get_by_slug(profile_slug)
+        user         = User.get_by_slug(profile_slug)
+        current_user = self.current_user().to_dict() if self.current_user() else {}
         # TODO get list of data sources
         if user:
-            data = {'user': user.to_dict()}
+            data = {'user': user.to_dict(), 'current_user': current_user}
             body = render('user_profile.html', data)
             self.response.write(body)
         else:
@@ -25,14 +26,15 @@ class ProfileRoute(SessionHandler):
 class DataSourceRoute(SessionHandler):
 
     def get(self, profile_slug, data_source_slug):
-        user = User.get_by_slug(profile_slug)
-        data_source = DataSource.get_by_slug(data_source_slug)
+        user         = User.get_by_slug(profile_slug)
+        data_source  = DataSource.get_by_slug(data_source_slug)
+        current_user = self.current_user().to_dict() if self.current_user() else {}
         if user and data_source:
             if 'copy' in self.request.GET.keys():
                 # TODO handler to duplicate data source in current_user profile
                 self.response.write('copy data source')
             else:
-                data = {'user': user.to_dict(), 'data_source': data_source.to_dict()}
+                data = {'user': user.to_dict(), 'data_source': data_source.to_dict(), 'current_user': current_user}
                 body = render('data_source.html', data)
                 self.response.write(body)
         else:
