@@ -53,6 +53,7 @@
         dash_content.html(tpl_help);
     };
 
+
     /* Handlebars Helpers */
 
     /* Iterate key-value pairs in an object */
@@ -72,6 +73,7 @@
         }
         return buffer
     });
+
 
     /* URL Route Handlers */
     new Router()
