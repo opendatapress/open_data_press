@@ -62,3 +62,11 @@ html, body {
 .text-muted a:focus {
     color: #666;
 }
+
+.spinner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: -15px;
+}
