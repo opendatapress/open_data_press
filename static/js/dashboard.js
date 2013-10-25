@@ -28,21 +28,22 @@
         title.html(text);
     },
 
+    /* Redirect to URL */
+    redirectTo = function(url){
+        // Brief delay allows DB operations to complete before refreshing display
+        setTimeout(function(){
+            window.location = url;
+        }, 100); 
+    },
+
     /* Show a styled alert message in the navbar */
     alertMsg = function(message, type){
         message  = message || '';
         type     = type    || 'info';
         messages.html(tpl_message({message: message, type: type}));
-    },
-
-    /* Show spinner in navbar */
-    showSpinner = function(){
-        messages.html(tpl_spinner);
-    },
-
-    /* Hide spinner in navbar */
-    hideSpinner = function(){
-        messages.html('');
+        setTimeout(function(){
+            messages.html('');
+        }, 5000);
     },
 
     /* Show error in nav */
@@ -76,7 +77,6 @@
 
     // Reset dashboard before following route
     .before(function(req, next){
-        messages.html('');
         dash_content.html(tpl_spinner);
         next();
     })
@@ -206,7 +206,6 @@
             title : $(this).attr('data-title')
         };
 
-        messages.html('');
         dash_content.html(tpl_spinner);
 
         $.ajax({
@@ -215,8 +214,7 @@
             data: {payload: JSON.stringify(payload)}
         })
         .success(function(res){
-            // View/Edit newly created data source
-            window.location = '#/data-source/' + res.body.id;
+            redirectTo('#/data-source/' + res.body.id);
         })
         .error(function(res){ showError(res); });
 
@@ -241,8 +239,23 @@
             data: {payload: JSON.stringify(payload)}
         })
         .success(function(res){
+            redirectTo('#/data-source/');
             alertMsg('Changes Saved!', 'success');
-            window.location = '#/data-source/';
+        })
+        .error(function(res){ showError(res); });
+
+        return false;
+    })
+
+    // Delete Data Source
+    .on('click', 'form#data-source-edit button#delete', function(){
+        $.ajax({
+            url: '/api/0/data_source/' + $('form#data-source-edit #id').val(),
+            type: 'DELETE'
+        })
+        .success(function(res){
+            redirectTo('#/data-source');
+            alertMsg('Data Source Deleted', 'success');
         })
         .error(function(res){ console.log(res); showError(res); });
 
