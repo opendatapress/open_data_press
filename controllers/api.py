@@ -131,7 +131,7 @@ class DataSourceItemRoute(APIHandler):
 
         except ValueError as e:
             log_api_error(self, e)
-            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.write('{"response":"error","body":"No Data Source with id %s"}' % data_source_id)
             self.response.set_status(404)
 
         except Exception as e:
@@ -158,7 +158,7 @@ class DataSourceItemRoute(APIHandler):
 
         except ValueError as e:
             log_api_error(self, e)
-            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.write('{"response":"error","body":"No Data Source with id %s"}' % data_source_id)
             self.response.set_status(404)
 
         except Exception as e:
@@ -177,7 +177,7 @@ class DataSourceItemRoute(APIHandler):
 
         except ValueError as e:
             log_api_error(self, e)
-            self.response.write('{"response":"error","body":"Unknown data source with id %s"}' % data_source_id)
+            self.response.write('{"response":"error","body":"No Data Source with id %s"}' % data_source_id)
             self.response.set_status(404)
 
         except Exception as e:
