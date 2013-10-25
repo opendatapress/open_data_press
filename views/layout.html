@@ -13,64 +13,46 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-  {% block container %}
-  <a href="#content" class="sr-only">Skip to content</a>
-  <div class="container">
-    
-    <div class="header">
-      <nav>
-        <strong><a href="/">Open Data Press</a></strong>
-        {% if current_user %}
-        | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
-        | <a href="/dashboard">Dashboard</a>
-        | <a href="/auth/logout">Logout</a>
-        {% else %}
-        | <a href="/auth/login">Login</a>
-        | <a href="/auth/login?approval_prompt">Login (Force Approval Prompt)</a>
-        {% endif %}
-      </nav>
-    </div>
+    {% block container %}
+    <a href="#content" class="sr-only">Skip to content</a>
+    <div class="container">
 
-    <div id="content">
-      {% block content %}{% endblock %}
-    </div>
+        <div class="header">
+            <nav>
+                <strong><a href="/">Open Data Press</a></strong>
+                {% if current_user %}
+                | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
+                | <a href="/dashboard">Dashboard</a>
+                | <a href="/auth/logout">Logout</a>
+                {% else %}
+                | <a href="/auth/login">Login</a>
+                | <a href="/auth/login?approval_prompt">Login (Force Approval Prompt)</a>
+                {% endif %}
+            </nav>
+        </div>
+        
+        <hr>
 
-    <div class="footer">
-      Open Data Press v{{VERSION}}
-      | <a href="#" id="debug-toggle">Debug Info</a>
-    </div>
-    
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
 
-    <div id="debug-block" class="debug" style="display:none">
-      <hr>
-      <p><strong>Debug Information</strong></p>
-      Session Data: <pre><code>{{ session|e }}</code></pre>
-      Current User: <pre><code>{{ current_user|e }}</code></pre>
-    </div>
+        <hr>
 
-    <script type="text/javascript">
-      (function(d){
-        var t = d.getElementById('debug-toggle'),
-            b = d.getElementById('debug-block');
-        t.onclick = function(){
-          b.style.display = (b.style.display == "none") ? "block" : "none";
-          return false;
-        }
-      })(document)
+        <div class="footer"> Open Data Press v{{VERSION}} </div>
+
+    </div><!-- .container -->
+    {% endblock %}
+
+    {% block templates %}{% endblock %}
+
+    {% block javascripts %}{% endblock %}
+
+    <script>
+        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src='//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
     </script>
-
-  </div><!-- .container -->
-  {% endblock %}
-
-  {% block templates %}{% endblock %}
-
-  {% block javascripts %}{% endblock %}
-
-  <script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src='//www.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  </script>
 </body>
 </html>

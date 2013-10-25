@@ -14,7 +14,7 @@ class ProfileRoute(SessionHandler):
         user = User.get_by_slug(profile_slug)
         # TODO get list of data sources
         if user:
-            data = {'user': user.to_dict(), 'current_user': user.to_dict(), 'session': self.session}
+            data = {'user': user.to_dict()}
             body = render('user_profile.html', data)
             self.response.write(body)
         else:
@@ -32,7 +32,7 @@ class DataSourceRoute(SessionHandler):
                 # TODO handler to duplicate data source in current_user profile
                 self.response.write('copy data source')
             else:
-                data = {'user': user.to_dict(), 'data_source': data_source.to_dict(), 'current_user': user.to_dict(), 'session': self.session}
+                data = {'user': user.to_dict(), 'data_source': data_source.to_dict()}
                 body = render('data_source.html', data)
                 self.response.write(body)
         else:
