@@ -33,17 +33,18 @@
         // Brief delay allows DB operations to complete before refreshing display
         setTimeout(function(){
             window.location = url;
-        }, 100); 
+        }, 101);
     },
 
     /* Show a styled alert message in the navbar */
-    alertMsg = function(message, type){
-        message  = message || '';
-        type     = type    || 'info';
+    alertMsg = function(message, type, delay){
+        message = message || '';
+        type    = type    || 'info';
+        delay   = delay   || 5003;
         messages.html(tpl_message({message: message, type: type}));
-        setTimeout(function(){
-            messages.html('');
-        }, 5000);
+        var alert = messages.children('.alert');
+        alert.fadeIn(149);
+        setTimeout(function(){ alert.fadeOut(211); }, delay);
     },
 
     /* Show error in nav */
