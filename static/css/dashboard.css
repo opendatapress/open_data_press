@@ -67,6 +67,12 @@ html, body {
     position: absolute;
     left: 0;
     right: 0;
-    top: 50%;
-    margin-top: -15px;
+    bottom: 50%;
+}
+
+.spinner i.icon-spinner {
+    display: inline-block;
+    width: 31px;
+    height: 31px;
+    background-image: url('/img/spinner.gif');
 }

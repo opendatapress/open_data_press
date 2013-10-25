@@ -85,10 +85,13 @@
     })
 
     // Helper route for testing errors
-    .addRoute('#/404', function(req, next){
+    .addRoute('#/test/404', function(req, next){
         $.ajax('/api/0/404')
         .error(function(res){ showError(res); });
     })
+
+    // Helper route for testing spinner
+    .addRoute('#/test/spinner', function(){})
 
     // Profile settings
     .addRoute('#/settings', function(req, next){
