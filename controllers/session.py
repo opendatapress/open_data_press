@@ -88,7 +88,7 @@ class OAuth2CallbackRoute(SessionHandler):
             user.google_gender      = google_user.get('gender')
             user.google_locale      = google_user.get('locale')
             user.google_name        = google_user.get('name')
-            user.google_picture_url = google_user.get('picture')
+            user.google_picture_url = google_user.get('picture') # TODO or default if None
             user.last_login_at      = now
             user.put()
 
