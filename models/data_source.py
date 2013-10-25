@@ -24,7 +24,7 @@ class DataSource(db.Model):
     def to_dict(self):
         return {
             'created_at':         self.created_at.strftime('%Y-%M-%d %H:%m:%s'),
-            'data_views':         self.data_views.fetch(limit=None),
+            'data_views':         [dv.to_dict() for dv in self.data_views.fetch(limit=None)],
             'description':        self.description,
             'google_spreadsheet': self.google_spreadsheet,
             'google_worksheet':   self.google_worksheet,
@@ -47,4 +47,10 @@ class DataSource(db.Model):
 
     def get_data(self):
         """ Fetch worksheet data from Google """
+        # TODO
         return {}
+
+    @classmethod
+    def get_by_slug(self, slug):
+        """ Find a user with the specified profile slug """
+        return DataSource.gql("WHERE slug = :1", slug).get()

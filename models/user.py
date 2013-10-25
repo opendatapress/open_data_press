@@ -35,6 +35,7 @@ class User(db.Model):
         return {
             'created_at':          self.created_at.strftime('%Y-%M-%d %H:%m:%s'),
             'credentials':         self.credentials,
+            'data_sources':        [ds.to_dict() for ds in self.data_sources.fetch(limit=None)],
             'google_birthday':     self.google_birthday,
             'google_email':        self.google_email,
             'google_gender':       self.google_gender,

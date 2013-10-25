@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}{{data_source.title|e}}{% endblock %}
+
+{% block content %}
+    <h1>{{data_source.title|e}}</h1>
+        <dl class="dl-horizontal">
+        <dt>created_at</dt>          <dd>{{ data_source.created_at|e }}</dd>
+        <dt>description</dt>         <dd>{{ data_source.description|e }}</dd>
+        <dt>google_spreadsheet</dt>  <dd>{{ data_source.google_spreadsheet|e }}</dd>
+        <dt>google_worksheet</dt>    <dd>{{ data_source.google_worksheet|e }}</dd>
+        <dt>id</dt>                  <dd>{{ data_source.id|e }}</dd>
+        <dt>licence</dt>             <dd>{{ data_source.licence|e }}</dd>
+        <dt>modified_at</dt>         <dd>{{ data_source.modified_at|e }}</dd>
+        <dt>slug</dt>                <dd>{{ data_source.slug|e }}</dd>
+        <dt>tags</dt>                <dd>{% for tag in data_source.tags %} {{tag}} {% endfor %}</dd>
+        <dt>tbl_stars</dt>           <dd>{{ data_source.tbl_stars|e }}</dd>
+        <dt>title</dt>               <dd>{{ data_source.title|e }}</dd>
+        <dt>public_url</dt>          <dd>{{ data_source.public_url|e }}</dd>
+        <dt>spreadsheet_url</dt>     <dd>{{ data_source.spreadsheet_url|e }}</dd>
+    </dl>
+
+    <h2>Download This Data</h2>
+    {% if data_source.data_views %}
+      <ul>
+        {% for view in data_source.data_views %}
+            <li>{{ view.filetype|e }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+        <p>This Open Data is not yet available in a downloadable format.</p>
+        <p>You may be able to view the <a href="{{ data_source.spreadsheet_url|e }}">Google Spreadsheet</a> if this user has chosen to publish it.</p>
+    {% endif %}
+{% endblock %}
