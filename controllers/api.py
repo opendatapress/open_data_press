@@ -123,9 +123,13 @@ class DataSourceItemRoute(APIHandler):
 
     def get(self, data_source_id):
         try:
-            data_source = DataSource.get_by_id(int(data_source_id))
+            current_user = User.get_by_google_id(self.session['current_user'])
+            data_source  = DataSource.get_by_id(int(data_source_id))
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
+
+            if not data_source.user == current_user.key():
+                raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
 
@@ -141,10 +145,15 @@ class DataSourceItemRoute(APIHandler):
 
     def post(self, data_source_id):
         try:
-            payload = json.loads(self.request.POST["payload"])
-            data_source = DataSource.get_by_id(int(data_source_id))
+            payload      = json.loads(self.request.POST["payload"])
+            current_user = User.get_by_google_id(self.session['current_user'])
+            data_source  = DataSource.get_by_id(int(data_source_id))
+
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
+
+            if not data_source.user == current_user.key():
+                raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             if "description" in payload.keys(): data_source.description = payload['description']
             if "licence"     in payload.keys(): data_source.licence     = payload['licence']
@@ -168,9 +177,14 @@ class DataSourceItemRoute(APIHandler):
 
     def delete(self, data_source_id):
         try:
-            data_source = DataSource.get_by_id(int(data_source_id))
+            current_user = User.get_by_google_id(self.session['current_user'])
+            data_source  = DataSource.get_by_id(int(data_source_id))
+
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
+
+            if not data_source.user == current_user.key():
+                raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             data_source.delete()
             self.response.write('{"response":"success","body":"Data source deleted"}')
