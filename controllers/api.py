@@ -58,7 +58,7 @@ class UserRoute(APIHandler):
     def post(self):
         try:
             data = json.loads(self.request.POST["payload"])
-            user = User.get_by_google_id(data["google_id"])
+            user = User.get_by_google_id(self.session['current_user'])
             if None == user:
                 self.response.write('{"response":"error","body":"Unknown User"}')
                 self.response.set_status(500)
