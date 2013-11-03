@@ -102,6 +102,9 @@ class TestDataSourceModel(unittest.TestCase):
 
     def test_data_source_to_dict(self):
         ds = DataSource(**dummy.data_source)
+        user = User(**dummy.user)
+        user.put()
+        ds.user = user.key()
         ds.put()
         data = ds.to_dict()
         self.assertTrue('created_at'         in data)

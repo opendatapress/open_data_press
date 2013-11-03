@@ -8,6 +8,7 @@ from tests import dummy
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from helpers import google_api
+from models.user import User
 from models.data_source import DataSource
 import main # The app
 
@@ -21,13 +22,11 @@ class TestAPIHandler(unittest.TestCase):
         # Get headers for making authenticated requests
         google_api.httplib2.Http = MockHttp
         response = main.app.get_response('/auth/oauth2callback?code=dummy_code')
-        self.auth_headers  = {'Cookie': response.headers['Set-Cookie']}
+        self.auth_headers = {'Cookie': response.headers['Set-Cookie']}
 
-        # Create Data Source to use in tests
-        ds = DataSource(**dummy.data_source)
-        ds.put()
-        self.ds_id = ds.key().id()
-
+        # Get the authenticated user
+        response = main.app.get_response('/api/0/user', headers=self.auth_headers)
+        self.current_user = User.get_by_google_id(json.loads(response.body)['body']['google_id'])
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -54,6 +53,14 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('body' in data)
         self.assertEqual('success', data['response'])
 
+
+    # Create a Data Source to use in tests
+    # Return data source id
+    def make_data_source(self):
+        ds = DataSource(**dummy.data_source)
+        ds.user = self.current_user.key()
+        ds.put()
+        return ds.key().id()
 
 
     def test_api_path_denies_unauthenticated_requests(self):
@@ -171,7 +178,9 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_get_item(self):
-        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers)
+        ds_id = self.make_data_source()
+        response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers)
+        print ">>> %s" % response.body
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -188,12 +197,14 @@ class TestAPIHandler(unittest.TestCase):
         self.assertTrue('tbl_stars'          in data)
         self.assertTrue('title'              in data)
         
-        self.assertEqual(data['id'], self.ds_id)
+        self.assertEqual(data['id'], ds_id)
 
 
     def test_api_0_data_source_update_item(self):
+        ds_id = self.make_data_source()
         payload = dummy.data_source_json
-        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        print ">>> %s" % response.body
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -215,13 +226,15 @@ class TestAPIHandler(unittest.TestCase):
         self.assertEqual(data['google_worksheet'],   payload['google_worksheet'])
         self.assertEqual(data['licence'],            payload['licence'])
         self.assertEqual(data['slug'],               payload['slug'])
-        self.assertEqual(data['tags'],               payload['tags'].split(', '))
+        self.assertEqual(data['tags'],               payload['tags'].split(','))
         self.assertEqual(data['tbl_stars'],          payload['tbl_stars'])
         self.assertEqual(data['title'],              payload['title'])
 
 
     def test_api_0_data_source_delete_item(self):
-        response = main.app.get_response('/api/0/data_source/%s' % self.ds_id, headers=self.auth_headers, method='DELETE')
+        ds_id = self.make_data_source()
+        response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers, method='DELETE')
+        print ">>> %s" % response.body
         self.response_ok(response)
 
 

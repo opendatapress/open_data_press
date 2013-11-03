@@ -128,7 +128,7 @@ class DataSourceItemRoute(APIHandler):
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
 
-            if not data_source.user == current_user.key():
+            if not data_source.user.key() == current_user.key():
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
@@ -152,7 +152,7 @@ class DataSourceItemRoute(APIHandler):
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
 
-            if not data_source.user == current_user.key():
+            if not data_source.user.key() == current_user.key():
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             if "description" in payload.keys(): data_source.description = payload['description']
@@ -183,7 +183,7 @@ class DataSourceItemRoute(APIHandler):
             if data_source is None:
                 raise ValueError("No Data Source with id %s" % data_source_id)
 
-            if not data_source.user == current_user.key():
+            if not data_source.user.key() == current_user.key():
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             data_source.delete()
