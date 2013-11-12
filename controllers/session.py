@@ -79,6 +79,7 @@ class OAuth2CallbackRoute(SessionHandler):
     
             # Go get a refresh token if we need one
             else:
+                # TODO BUG This causes occasional problems with double authentications causing an invalid grant error
                 return self.redirect('/auth/login?approval_prompt')
 
             # Update user account
