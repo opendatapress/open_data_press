@@ -220,7 +220,7 @@
             data: {payload: JSON.stringify(payload)}
         })
         .success(function(res){
-            redirectTo('#/data-source/' + res.body.id);
+            redirectTo('#/data-source/');
         })
         .error(function(res){ showError(res); });
 
