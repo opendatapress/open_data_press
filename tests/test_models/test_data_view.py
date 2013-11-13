@@ -86,3 +86,9 @@ class TestDataViewModel(unittest.TestCase):
         self.assertTrue('mimetype'    in data)
         self.assertTrue('modified_at' in data)
         self.assertTrue('template'    in data)
+
+
+    def test_data_view_method_download_url(self):
+        dv  = self.make_data_view()
+        url = "/%s/%s.%s" % (dv.data_source.user.profile_slug, dv.data_source.slug, dv.extension)
+        self.assertEqual(url, dv.download_url())
