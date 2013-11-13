@@ -54,6 +54,8 @@ data_source_json = {
 
 # Params for valid data view model
 data_view = {
-    'created_at':         datetime.now(),
-    'modified_at':        datetime.now(),
+    'created_at':  datetime.now(),
+    'modified_at': datetime.now(),
+    'extension':   u'txt',
+    'mimetype':    u'text/plain'
 }

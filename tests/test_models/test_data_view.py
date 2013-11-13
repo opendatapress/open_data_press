@@ -50,17 +50,54 @@ class TestDataViewModel(unittest.TestCase):
 
 
     def test_data_view_required_properties(self):
-        with self.assertRaises(db.BadValueError) as cm:
-            bad_params = dummy.data_view.copy()
-            del bad_params['created_at']
-            DataView(**bad_params)
-        self.assertTrue('created_at' in cm.exception.message)
 
-        with self.assertRaises(db.BadValueError) as cm:
+        def create_data_view_with_missing_param(param):
             bad_params = dummy.data_view.copy()
-            del bad_params['modified_at']
+            del bad_params[param]
             DataView(**bad_params)
-        self.assertTrue('modified_at' in cm.exception.message)
+
+        with self.assertRaisesRegexp(db.BadValueError, 'created_at') as cm:
+            create_data_view_with_missing_param('created_at')
+
+        with self.assertRaisesRegexp(db.BadValueError, 'modified_at') as cm:
+            create_data_view_with_missing_param('modified_at')
+
+        with self.assertRaisesRegexp(db.BadValueError, 'extension') as cm:
+            create_data_view_with_missing_param('extension')
+
+        with self.assertRaisesRegexp(db.BadValueError, 'mimetype') as cm:
+            create_data_view_with_missing_param('mimetype')
+
+
+    def test_data_view_required_values(self):
+
+        def create_data_view_with_type(extension, mimetype):
+            params = dummy.data_view.copy()
+            params['extension'] = extension
+            params['mimetype']  = mimetype
+            dv = DataView(**params)
+            dv.data_source = self.data_source.key()
+            dv.put()
+            return dv
+
+        dv = create_data_view_with_type('txt', 'text/plain')
+        self.assertTrue(dv.is_saved())
+
+        dv = create_data_view_with_type('csv', 'text/csv')
+        self.assertTrue(dv.is_saved())
+
+        dv = create_data_view_with_type('xml', 'application/xml')
+        self.assertTrue(dv.is_saved())
+
+        dv = create_data_view_with_type('json', 'application/json')
+        self.assertTrue(dv.is_saved())
+
+        with self.assertRaisesRegexp(db.BadValueError, 'extension') as cm:
+            create_data_view_with_type('bad_extension', 'text/plain')
+
+        with self.assertRaisesRegexp(db.BadValueError, 'mimetype') as cm:
+            create_data_view_with_type('txt', 'bad_mimetype')
+
 
 
     def test_data_view_create(self):

@@ -8,12 +8,16 @@ from models.data_source import DataSource
 
 class DataView(db.Model):
 
+    # Valid file types
+    valid_extensions = ['txt',        'csv',      'xml',             'json',            ]
+    valid_mimetypes  = ['text/plain', 'text/csv', 'application/xml', 'application/json',]
+
     # Properties
     created_at  = db.DateTimeProperty(required=True)
     data_source = db.ReferenceProperty(DataSource, collection_name="data_views")
-    extension   = db.StringProperty(default=u'') # TODO restrict extension to approved list
-    filetype    = db.StringProperty(default=u'') # TODO restrict filetype to approved list
-    mimetype    = db.StringProperty(default=u'') # TODO restrict mimetype to approved list
+    extension   = db.StringProperty(choices=valid_extensions, required=True)
+    filetype    = db.StringProperty(default=u'')
+    mimetype    = db.StringProperty(choices=valid_mimetypes, required=True)
     modified_at = db.DateTimeProperty(required=True)
     template    = db.TextProperty(default=u'')
 
