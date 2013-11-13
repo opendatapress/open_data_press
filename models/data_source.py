@@ -10,10 +10,10 @@ class DataSource(db.Model):
 
     # Properties
     created_at         = db.DateTimeProperty(required=True)
-    description        = db.StringProperty(default=u'')
+    description        = db.TextProperty(default=u'')
     google_spreadsheet = db.StringProperty(required=True)
     google_worksheet   = db.StringProperty(required=True)
-    licence            = db.StringProperty(default=u'')
+    licence            = db.TextProperty(default=u'')
     modified_at        = db.DateTimeProperty(required=True)
     slug               = db.StringProperty(required=True)
     tags               = db.StringProperty(default=u'')

@@ -15,7 +15,7 @@ class DataView(db.Model):
     filetype    = db.StringProperty(default=u'') # TODO restrict filetype to approved list
     mimetype    = db.StringProperty(default=u'') # TODO restrict mimetype to approved list
     modified_at = db.DateTimeProperty(required=True)
-    template    = db.StringProperty(default=u'')
+    template    = db.TextProperty(default=u'')
 
     def to_dict(self):
         return {
