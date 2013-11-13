@@ -33,7 +33,7 @@ class User(db.Model):
 
     def to_dict(self):
         return {
-            'created_at':          self.created_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'created_at':          self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
             'credentials':         self.credentials,
             'data_sources':        [ds.to_dict() for ds in self.data_sources.fetch(limit=None)],
             'google_birthday':     self.google_birthday,
@@ -43,8 +43,8 @@ class User(db.Model):
             'google_locale':       self.google_locale,
             'google_name':         self.google_name,
             'google_picture_url':  self.google_picture_url,
-            'last_login_at':       self.last_login_at.strftime('%Y-%M-%d %H:%m:%s'),
-            'modified_at':         self.modified_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'last_login_at':       self.last_login_at.strftime('%Y-%m-%d %H:%M:%s'),
+            'modified_at':         self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
             'profile_description': self.profile_description,
             'profile_email':       self.profile_email,
             'profile_name':        self.profile_name,

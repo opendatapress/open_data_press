@@ -23,14 +23,14 @@ class DataSource(db.Model):
 
     def to_dict(self):
         return {
-            'created_at':         self.created_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'created_at':         self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
             'data_views':         [dv.to_dict() for dv in self.data_views.fetch(limit=None)],
             'description':        self.description,
             'google_spreadsheet': self.google_spreadsheet,
             'google_worksheet':   self.google_worksheet,
             'id':                 self.key().id(),
             'licence':            self.licence,
-            'modified_at':        self.modified_at.strftime('%Y-%M-%d %H:%m:%s'),
+            'modified_at':        self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
             'slug':               self.slug,
             'tags':               self.tags.split(','),
             'tbl_stars':          self.tbl_stars,
