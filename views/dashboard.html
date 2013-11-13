@@ -117,27 +117,28 @@
         <form id="data-source-edit" role="form">
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" value="{{title}}">
+                <input type="text" class="form-control" id="title" value="{{title}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" class="form-control" id="description" value="{{description}}">
+                <textarea class="form-control" id="description" rows="5">{{description}}</textarea>
             </div>
             <div class="form-group">
                 <label for="licence">Licence</label>
-                <input type="text" class="form-control" id="licence" value="{{licence}}">
+                <textarea class="form-control" id="licence" rows="5">{{licence}}</textarea>
             </div>
             <div class="form-group">
                 <label for="slug">Vanity URL</label>
-                <input type="text" class="form-control" id="slug" value="{{slug}}">
+                <input type="text" class="form-control" id="slug" value="{{slug}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="tags">Tags (comma seperated)</label>
-                <input type="text" class="form-control" id="tags" value="{{tags}}">
+                <input type="text" class="form-control" id="tags" value="{{tags}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="tbl_stars">TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></label>
-                <input type="text" class="form-control" id="tbl_stars" value="{{tbl_stars}}">
+                <!-- TODO Replace with nicer 5-star selector -->
+                <input type="number" class="form-control" id="tbl_stars" value="{{tbl_stars}}" min="0" max="5" maxlength="1">
             </div>
             <hr>
             <div class="form-group">
@@ -176,19 +177,19 @@
         <form id="settings" role="form">
             <div class="form-group">
                 <label for="profile_name">Name</label>
-                <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
+                <input type="text" class="form-control" id="profile_name" value="{{profile_name}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="profile_description">Description</label>
-                <textarea class="form-control" id="profile_description">{{profile_description}}</textarea>
+                <textarea class="form-control" id="profile_description" rows="5">{{profile_description}}</textarea>
             </div>
             <div class="form-group">
                 <label for="profile_email">Email</label>
-                <input type="email" class="form-control" id="profile_email" value="{{profile_email}}">
+                <input type="email" class="form-control" id="profile_email" value="{{profile_email}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="profile_web_address">Web Address</label>
-                <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}">
+                <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}" maxlength="500">
             </div>
             <hr>
             <div class="form-group">
