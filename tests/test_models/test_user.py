@@ -19,6 +19,12 @@ class TestUserModel(unittest.TestCase):
         self.testbed.deactivate()
 
 
+    def make_user(self):
+        user = User(**dummy.user)
+        user.put()
+        return user
+
+
     def test_user_properties_exist(self):
         user = User(**dummy.user)
         self.assertTrue('created_at'          in dir(user))
@@ -51,41 +57,17 @@ class TestUserModel(unittest.TestCase):
         self.assertTrue('get_by_google_id' in dir(User))
 
 
-    def test_get_by_slug(self):
-        user = User(**dummy.user)
-        user.put()
-        self.assertEqual(user.key(), User.get_by_slug('test-user').key())
-
-
-    def test_get_by_google_id(self):
-        user = User(**dummy.user)
-        user.put()
-        self.assertEqual(user.key(), User.get_by_google_id('123456789').key())
-
-
-    def test_user_create_success(self):
+    def test_user_create(self):
         num_users = User.all().count()
-        user = User(**dummy.user)
-        user.put()
+        user = self.make_user()
         self.assertEqual(num_users + 1, User.all().count())
 
-        user_b = User.get(user.key())
-        self.assertEqual(user_b.created_at,          user.created_at)
-        self.assertEqual(user_b.credentials,         user.credentials)
-        self.assertEqual(user_b.google_birthday,     user.google_birthday)
-        self.assertEqual(user_b.google_email,        user.google_email)
-        self.assertEqual(user_b.google_gender,       user.google_gender)
-        self.assertEqual(user_b.google_id,           user.google_id)
-        self.assertEqual(user_b.google_locale,       user.google_locale)
-        self.assertEqual(user_b.google_name,         user.google_name)
-        self.assertEqual(user_b.google_picture_url,  user.google_picture_url)
-        self.assertEqual(user_b.last_login_at,       user.last_login_at)
-        self.assertEqual(user_b.modified_at,         user.modified_at)
-        self.assertEqual(user_b.profile_email,       user.profile_email)
-        self.assertEqual(user_b.profile_description, user.profile_description)
-        self.assertEqual(user_b.profile_name,        user.profile_name)
-        self.assertEqual(user_b.profile_slug,        user.profile_slug)
-        self.assertEqual(user_b.profile_web_address, user.profile_web_address)
+
+    def test_user_delete(self):
+        user = self.make_user()
+        num_users = User.all().count()
+        user.delete()
+        self.assertEqual(num_users - 1, User.all().count())
 
 
     def test_user_required_properties(self):
@@ -120,3 +102,34 @@ class TestUserModel(unittest.TestCase):
             User(**bad_params)
         self.assertTrue('profile_slug' in cm.exception.message)
 
+
+    def test_user_method_get_by_slug(self):
+        user = self.make_user()
+        self.assertEqual(user.key(), User.get_by_slug(dummy.user['profile_slug']).key())
+
+
+    def test_user_method_get_by_google_id(self):
+        user = self.make_user()
+        self.assertEqual(user.key(), User.get_by_google_id(dummy.user['google_id']).key())
+
+
+    def test_user_method_to_dict(self):
+        user = self.make_user()
+        data = user.to_dict()
+        self.assertTrue('created_at'          in data)
+        self.assertTrue('credentials'         in data)
+        self.assertTrue('google_birthday'     in data)
+        self.assertTrue('google_email'        in data)
+        self.assertTrue('google_gender'       in data)
+        self.assertTrue('google_id'           in data)
+        self.assertTrue('google_locale'       in data)
+        self.assertTrue('google_name'         in data)
+        self.assertTrue('google_picture_url'  in data)
+        self.assertTrue('last_login_at'       in data)
+        self.assertTrue('modified_at'         in data)
+        self.assertTrue('profile_email'       in data)
+        self.assertTrue('profile_description' in data)
+        self.assertTrue('profile_name'        in data)
+        self.assertTrue('profile_slug'        in data)
+        self.assertTrue('profile_web_address' in data)
+        self.assertTrue('data_sources'        in data)

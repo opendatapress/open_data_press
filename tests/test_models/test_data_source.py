@@ -22,6 +22,13 @@ class TestDataSourceModel(unittest.TestCase):
         self.testbed.deactivate()
 
 
+    def make_data_source(self):
+        ds = DataSource(**dummy.data_source)
+        ds.user = self.user.key()
+        ds.put()
+        return ds
+
+
     def test_data_source_properties_exist(self):
         ds = DataSource(**dummy.data_source)
         self.assertTrue('created_at'         in dir(ds))
@@ -75,29 +82,19 @@ class TestDataSourceModel(unittest.TestCase):
 
     def test_data_source_create(self):
         ds_count_a = DataSource.all().count()
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
-        ds_count_b = DataSource.all().count()
-        self.assertEqual(ds_count_a + 1, ds_count_b)
+        ds = self.make_data_source()
+        self.assertEqual(ds_count_a + 1, DataSource.all().count())
 
 
     def test_data_source_delete(self):
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
+        ds = self.make_data_source()
         ds_count_a = DataSource.all().count()
         ds.delete()
-        ds_count_b = DataSource.all().count()
-        self.assertEqual(ds_count_a -1, ds_count_b)
+        self.assertEqual(ds_count_a -1, DataSource.all().count())
 
 
-    def test_data_source_to_dict(self):
-        ds = DataSource(**dummy.data_source)
-        user = User(**dummy.user)
-        user.put()
-        ds.user = user.key()
-        ds.put()
+    def test_data_source_method_to_dict(self):
+        ds = self.make_data_source()
         data = ds.to_dict()
         self.assertTrue('created_at'         in data)
         self.assertTrue('data_views'         in data)
