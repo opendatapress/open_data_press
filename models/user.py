@@ -31,11 +31,14 @@ class User(db.Model):
         else:
             None
 
+    def fetch_data_sources(self):
+        return self.data_sources.order('-modified_at').fetch(limit=None)
+
     def to_dict(self):
         return {
             'created_at':          self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
             'credentials':         self.credentials,
-            'data_sources':        [ds.to_dict() for ds in self.data_sources.fetch(limit=None)],
+            'data_sources':        [ds.to_dict() for ds in self.fetch_data_sources()],
             'google_birthday':     self.google_birthday,
             'google_email':        self.google_email,
             'google_gender':       self.google_gender,

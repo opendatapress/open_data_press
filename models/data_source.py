@@ -21,10 +21,13 @@ class DataSource(db.Model):
     title              = db.StringProperty(default=u'')
     user               = db.ReferenceProperty(User, collection_name="data_sources")
 
+    def fetch_data_views(self):
+        return self.data_views.order('-modified_at').fetch(limit=None)
+
     def to_dict(self):
         return {
             'created_at':         self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
-            'data_views':         [dv.to_dict() for dv in self.data_views.fetch(limit=None)],
+            'data_views':         [dv.to_dict() for dv in self.fetch_data_views()],
             'description':        self.description,
             'google_spreadsheet': self.google_spreadsheet,
             'google_worksheet':   self.google_worksheet,

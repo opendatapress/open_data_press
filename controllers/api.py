@@ -22,6 +22,7 @@ def log_api_error(obj,error):
     msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), error, error.__class__)
     logging.error("%s %s %s 500 '%s' %s" % msg_info)
 
+
 #
 # A request handler that denies any unauthenticated requests
 #
@@ -43,6 +44,7 @@ class APIHandler(SessionHandler):
 
 class UserRoute(APIHandler):
 
+    # Get the current user profile
     def get(self):
         try:
             # NB we have to decode "credentials" as it is stored as a string in the DB
@@ -55,6 +57,7 @@ class UserRoute(APIHandler):
             self.response.write('{"response":"error","body":"Problem fetching user profile"}')
             self.response.set_status(500)
 
+    # Update the current user profile
     def post(self):
         try:
             data = json.loads(self.request.POST["payload"])
@@ -67,6 +70,7 @@ class UserRoute(APIHandler):
             if "profile_email"       in data.keys(): user.profile_email       = data["profile_email"]
             if "profile_description" in data.keys(): user.profile_description = data["profile_description"]
             if "profile_web_address" in data.keys(): user.profile_web_address = data["profile_web_address"]
+            user.modified_at = DT.now()
             user.put()
             self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict()))
 
@@ -78,10 +82,11 @@ class UserRoute(APIHandler):
 
 class DataSourceListRoute(APIHandler):
 
+    # Get all data sources owned by the current user
     def get(self):
         try:
             current_user = User.get_by_google_id(self.session['current_user'])
-            data_sources = current_user.data_sources.fetch(limit=None)
+            data_sources = current_user.fetch_data_sources()
             response = {
                 'total_results': len(data_sources),
                 'data_sources': [ds.to_dict() for ds in data_sources]
@@ -93,6 +98,7 @@ class DataSourceListRoute(APIHandler):
             self.response.write('{"response":"error","body":"Problem fetching data sources"}')
             self.response.set_status(500)
 
+    # Create a new data source for the current user
     def post(self):
         try:
             current_user = User.get_by_google_id(self.session['current_user'])
@@ -121,6 +127,7 @@ class DataSourceListRoute(APIHandler):
 
 class DataSourceItemRoute(APIHandler):
 
+    # Get a single data source owned by the current user
     def get(self, data_source_id):
         try:
             current_user = User.get_by_google_id(self.session['current_user'])
@@ -143,6 +150,7 @@ class DataSourceItemRoute(APIHandler):
             self.response.write('{"response":"error","body":"Problem creating data source"}')
             self.response.set_status(500)
 
+    # Update a single data source ownened by the current user
     def post(self, data_source_id):
         try:
             payload      = json.loads(self.request.POST["payload"])
@@ -161,6 +169,7 @@ class DataSourceItemRoute(APIHandler):
             if "tags"        in payload.keys(): data_source.tags        = payload['tags']
             if "tbl_stars"   in payload.keys(): data_source.tbl_stars   = int(payload['tbl_stars'])
             if "title"       in payload.keys(): data_source.title       = payload['title']
+            data_source.modified_at = DT.now()
             data_source.put()
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
@@ -175,6 +184,7 @@ class DataSourceItemRoute(APIHandler):
             self.response.write('{"response":"error","body":"Problem updating data source"}')
             self.response.set_status(500)
 
+    # Delete a single data source owned by the current user
     def delete(self, data_source_id):
         try:
             current_user = User.get_by_google_id(self.session['current_user'])
@@ -202,27 +212,33 @@ class DataSourceItemRoute(APIHandler):
 
 class DataViewListRoute(APIHandler):
 
+    # List all data views of a single data source belonging to the current user
     def get(self, data_source_id):
         self.response.write('{"response":"success","body":"data view list"}')
 
+    # Create a new data view for a single data source belonging to the current user
     def post(self, data_source_id):
         self.response.write('{"response":"success","body":"data view list"}')
 
 
 class DataViewItemRoute(APIHandler):
 
+    # Get a data view for a single data source belonging to the current user
     def get(self, data_source_id, data_view_id):
         self.response.write('{"response":"success","body":"data view item"}')
 
+    # Update a data view of a single data source belonging to the current user
     def post(self, data_source_id, data_view_id):
         self.response.write('{"response":"success","body":"data view item"}')
 
+    # Delete a data view of a single data source belonging to the current user
     def delete(self, data_source_id, data_view_id):
         self.response.write('{"response":"success","body":"data view item"}')
 
 
 class GoogleSheetsListRoute(APIHandler):
 
+    # Get all Drive Spreadsheets accessible to the current user
     def get(self):
         try:
             query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
@@ -242,6 +258,7 @@ class GoogleSheetsListRoute(APIHandler):
 
 class GoogleSheetsItemRoute(APIHandler):
 
+    # Get info about a single spreadsheet (including all worksheets) accessible to the current user
     def get(self, google_sheets_id):
         try:
             data = google_api.get_worksheets(self.current_user().credentials, google_sheets_id)
@@ -260,6 +277,7 @@ class GoogleSheetsItemRoute(APIHandler):
 
 class GoogleSheetsWorksheetRoute(APIHandler):
 
+    # Get the data held in a single worksheet ina a single spreadsheet visible to the current user
     def get(self, google_sheets_id, worksheet_key):
         try:
             data = google_api.get_cell_data(self.current_user().credentials, google_sheets_id, worksheet_key)
@@ -278,6 +296,7 @@ class GoogleSheetsWorksheetRoute(APIHandler):
 
 class Error404Route(RequestHandler):
 
+    # 404 handler for API namespace
     def get(self):
         self.response.set_status(404)
         self.response.content_type = 'application/json'
