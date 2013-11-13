@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 # Usage: runtests.py SDK_PATH TEST_PATH
