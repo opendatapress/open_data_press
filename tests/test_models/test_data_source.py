@@ -79,7 +79,7 @@ class TestDataSourceModel(unittest.TestCase):
         ds.user = self.user.key()
         ds.put()
         ds_count_b = DataSource.all().count()
-        self.assertTrue(ds_count_a + 1, ds_count_b)
+        self.assertEqual(ds_count_a + 1, ds_count_b)
 
 
     def test_data_source_delete(self):
@@ -89,16 +89,8 @@ class TestDataSourceModel(unittest.TestCase):
         ds_count_a = DataSource.all().count()
         ds.delete()
         ds_count_b = DataSource.all().count()
-        self.assertTrue(ds_count_a, ds_count_b + 1)
+        self.assertEqual(ds_count_a -1, ds_count_b)
 
-
-    def test_data_sources_list(self):
-        ds_count_a = self.user.data_sources.count()
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
-        ds_count_b = self.user.data_sources.count()
-        self.assertTrue(ds_count_a + 1, ds_count_b)
 
     def test_data_source_to_dict(self):
         ds = DataSource(**dummy.data_source)
