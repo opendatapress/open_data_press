@@ -10,6 +10,7 @@ from google.appengine.ext import testbed
 from helpers import google_api
 from models.user import User
 from models.data_source import DataSource
+from models.data_view import DataView
 import main # The app
 
 class TestAPIHandler(unittest.TestCase):
@@ -55,12 +56,19 @@ class TestAPIHandler(unittest.TestCase):
 
 
     # Create a Data Source to use in tests
-    # Return data source id
     def make_data_source(self):
         ds = DataSource(**dummy.data_source)
         ds.user = self.current_user.key()
         ds.put()
-        return ds.key().id()
+        return ds
+
+
+    # Create a data view to use in tests
+    def make_data_view(self):
+        dv = DataView(**dummy.data_view)
+        dv.data_source = self.make_data_source().key()
+        dv.put()
+        return dv
 
 
     def test_api_path_denies_unauthenticated_requests(self):
@@ -74,7 +82,6 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_user_path_denies_unauthenticated_requests(self):
-        
         response = main.app.get_response('/api/0/user')
         self.response_error(response, 403)
         
@@ -83,7 +90,6 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_user_get_returns_user_data(self):
-        
         response = main.app.get_response('/api/0/user', headers=self.auth_headers)
 
         self.response_ok(response)
@@ -178,9 +184,8 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_get_item(self):
-        ds_id = self.make_data_source()
+        ds_id = self.make_data_source().key().id()
         response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers)
-        print ">>> %s" % response.body
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -201,10 +206,9 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_update_item(self):
-        ds_id = self.make_data_source()
+        ds_id = self.make_data_source().key().id()
         payload = dummy.data_source_json
         response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
-        print ">>> %s" % response.body
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
@@ -232,9 +236,8 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_source_delete_item(self):
-        ds_id = self.make_data_source()
+        ds_id = self.make_data_source().key().id()
         response = main.app.get_response('/api/0/data_source/%s' % ds_id, headers=self.auth_headers, method='DELETE')
-        print ">>> %s" % response.body
         self.response_ok(response)
 
 
@@ -257,23 +260,74 @@ class TestAPIHandler(unittest.TestCase):
 
 
     def test_api_0_data_view_list_all(self):
-        pass
+        ds       = self.make_data_source()
+        url      = "/api/0/data_source/%s/view" % ds.key().id()
+        response = main.app.get_response(url, headers=self.auth_headers)
+        self.response_ok(response)
+
+        data = json.loads(response.body)["body"]
+        self.assertTrue('total_results' in data)
+        self.assertTrue('data_views'  in data)
 
 
     def test_api_0_data_view_add_item(self):
-        pass
+        ds       = self.make_data_source()
+        url      = "/api/0/data_source/%s/view" % ds.key().id()
+        payload  = {'extension':'txt', 'mimetype':'text/plain'}
+        response = main.app.get_response(url, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        self.response_ok(response)
+
+        data = json.loads(response.body)["body"]
+        self.assertTrue('created_at'  in data)
+        self.assertTrue('extension'   in data)
+        self.assertTrue('filetype'    in data)
+        self.assertTrue('id'          in data)
+        self.assertTrue('mimetype'    in data)
+        self.assertTrue('modified_at' in data)
+        self.assertTrue('template'    in data)
 
 
     def test_api_0_data_view_get_item(self):
-        pass
+        dv       = self.make_data_view()
+        url      = "/api/0/data_source/%s/view/%s" % (dv.data_source.key().id(), dv.key().id())
+        response = main.app.get_response(url, headers=self.auth_headers)
+        self.response_ok(response)
+
+        data = json.loads(response.body)["body"]
+        self.assertTrue('created_at'  in data)
+        self.assertTrue('extension'   in data)
+        self.assertTrue('filetype'    in data)
+        self.assertTrue('id'          in data)
+        self.assertTrue('mimetype'    in data)
+        self.assertTrue('modified_at' in data)
+        self.assertTrue('template'    in data)
+
 
 
     def test_api_0_data_view_update_item(self):
-        pass
+        dv       = self.make_data_view()
+        url      = "/api/0/data_source/%s/view/%s" % (dv.data_source.key().id(), dv.key().id())
+        payload  = {
+                'mimetype': 'text/csv',
+                'extension': 'csv',
+                'template': '<!-- Some template -->',
+                'filetype': 'CSV',
+        }
+        response = main.app.get_response(url, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
+        self.response_ok(response)
+        
+        data = json.loads(response.body)["body"]
+        self.assertEqual(payload['mimetype'],  data['mimetype'])
+        self.assertEqual(payload['extension'], data['extension'])
+        self.assertEqual(payload['template'],  data['template'])
+        self.assertEqual(payload['filetype'],  data['filetype'])
 
 
     def test_api_0_data_view_delete_item(self):
-        pass
+        dv       = self.make_data_view()
+        url      = "/api/0/data_source/%s/view/%s" % (dv.data_source.key().id(), dv.key().id())
+        response = main.app.get_response(url, headers=self.auth_headers, method="DELETE")
+        self.response_ok(response)
 
 
     def test_api_0_google_sheets_path_denies_unauthenticated_requests(self):
