@@ -26,6 +26,7 @@ class DataSource(db.Model):
 
     def to_dict(self):
         return {
+            'available_types':    self.available_types(),
             'created_at':         self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
             'data_views':         [dv.to_dict() for dv in self.fetch_data_views()],
             'description':        self.description,
@@ -47,6 +48,19 @@ class DataSource(db.Model):
 
     def spreadsheet_url(self):
         return "https://docs.google.com/spreadsheet/ccc?key=%s" % self.google_spreadsheet
+
+    def available_types(self):
+        # Returns a list of dicts, showing which data view types this data source does not yet have
+        types = [
+            {'ext':'csv',  'mime':'text/csv',         'name':'CSV'},
+            {'ext':'txt',  'mime':'text/plain',       'name':'Plain Text'},
+            {'ext':'xml',  'mime':'application/xml',  'name':'XML'},
+            {'ext':'json', 'mime':'application/json', 'name':'JSON'},
+        ]
+
+        for dv in self.fetch_data_views():
+            types = [t for t in types if not t['ext'] == 'txt']
+        return types
 
     def get_data(self):
         """ Fetch worksheet data from Google """
