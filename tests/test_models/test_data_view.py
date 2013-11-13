@@ -2,12 +2,13 @@
 
 import unittest
 from models.data_view import DataView
+from tests import dummy
 
 
 class TestDataViewModel(unittest.TestCase):
 
     def setUp(self):
-        self.dv = DataView()
+        self.dv = DataView(**dummy.data_view)
 
     def test_data_view_template(self):
         self.assertTrue('template' in dir(self.dv))

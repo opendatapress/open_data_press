@@ -50,3 +50,10 @@ data_source_json = {
     'tbl_stars':          5,
     'title':              u'Dummy Data',
 }
+
+
+# Params for valid data view model
+data_view = {
+    'created_at':         datetime.now(),
+    'modified_at':        datetime.now(),
+}
