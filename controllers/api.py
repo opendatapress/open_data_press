@@ -254,11 +254,15 @@ class DataViewListRoute(APIHandler):
             if not data_source.user.key() == current_user.key():
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
+            if payload['extension'] in data_source.used_extensions():
+                raise ValueError("This Data Source already has a Data View of that type")
+
             data_view  = DataView(
                                 extension   = payload['extension'],
                                 mimetype    = payload['mimetype'],
                                 created_at  = DT.now(),
                                 modified_at = DT.now())
+            if "filetype"  in payload.keys(): data_view.filetype = payload['filetype']
             data_view.data_source = data_source.key()
             data_view.put()
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict()))
