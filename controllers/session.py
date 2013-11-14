@@ -26,7 +26,9 @@ class LoginRoute(SessionHandler):
         else:
             flow = google_api.oauth2_flow()
 
-        self.redirect(flow.step1_get_authorize_url())
+        url = flow.step1_get_authorize_url()
+        logging.debug("Redirect to: %s" % url)
+        self.redirect(url)
 
 
 # Clear user session and return to home page
@@ -43,6 +45,10 @@ class OAuth2CallbackRoute(SessionHandler):
     def get(self):
         
         code = self.request.GET.get('code')
+
+        logging.debug("Auth Code: %s" % code)
+        logging.debug("Session (at start): %s" % self.session)
+
         if None == code:
             # TODO Display cancelled login page
             return self.response.write('No authentication code returned')
@@ -69,17 +75,25 @@ class OAuth2CallbackRoute(SessionHandler):
                     modified_at   = now, 
                     last_login_at = now)
 
+            # TODO BUG The following may be causing occasional invalid grant errors
+            # https://github.com/opendatapress/open_data_press/issues/22
+
+            logging.debug("User Refresh Token: %s" % user.refresh_token())
+
             # Do nothing if we have a refresh token
             if user.refresh_token():
+                logging.debug("User has existing Refresh Token")
                 pass
         
             # Store refresh token if we can
             elif None == user.refresh_token() and auth.refresh_token:
+                logging.debug("Storing Refresh Token for User")
                 user.credentials = auth.to_json()
     
             # Go get a refresh token if we need one
             else:
-                # TODO BUG This causes occasional problems with double authentications causing an invalid grant error
+                logging.debug("Fetching Refresh Token")
+                logging.debug("Redirect to: /auth/login?approval_prompt")
                 return self.redirect('/auth/login?approval_prompt')
 
             # Update user account
@@ -103,10 +117,9 @@ class OAuth2CallbackRoute(SessionHandler):
                 return self.redirect(url)
 
             # Redirect to dashboard instead
+            logging.debug("Session (at end): %s" % self.session)
+            logging.debug("Redirect to: /dashboard")
             self.redirect('/dashboard')
 
         except Exception as e:
             error_500(self.request, self.response, e)
-
-        finally:
-            pass
