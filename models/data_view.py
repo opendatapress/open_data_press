@@ -5,6 +5,7 @@
 
 from google.appengine.ext import db
 from models.data_source import DataSource
+from helpers.views import render_data
 
 class DataView(db.Model):
 
@@ -37,11 +38,10 @@ class DataView(db.Model):
     def download_url(self):
         return "/%s/%s.%s" % (self.data_source.user.profile_slug, self.data_source.slug, self.extension)
 
-    def render(self):
-        data     = self.data_source.get_data
+    def render(self, limit=None):
+        data     = self.data_source.get_data(limit=limit)
         template = self.template
-        # TODO render view tempate with source data issue#30
-        return template
+        return render_data(template, data)
 
     @classmethod
     def get_by_extension(self, data_source, extension):

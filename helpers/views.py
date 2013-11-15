@@ -5,16 +5,55 @@
 import jinja2
 import os
 import main
+import logging
 
-JINJA_ENVIRONMENT = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('./views')))
+
+# Application renderer configured to load templates from the file system
+APP_RENDER = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('./views')))
+
+
+# Data renderer configured to use non-standard template tags
+# https://github.com/opendatapress/open_data_press/issues/12
+#
+# <h1><%= title %></h1>
+# <! This is a comment !>
+# <% for row in data_rows %>
+#     <p><%= row.code %> <%= row.title %></p>
+# <% endfor %>
+#
+DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<!', '!>', '#', '##')
+
 
 # Render template using data
 def render(template_file, template_data={}, ):
-    template = JINJA_ENVIRONMENT.get_template(template_file)
+    template = APP_RENDER.get_template(template_file)
     template_data['VERSION'] = main.__version__
     return template.render(template_data)
+
 
 # Read static file contents
 def static(file_path):
     file_path = os.path.join(os.path.abspath('./static'), file_path)
     return open(file_path, 'r').read()
+
+
+# Render a data template
+# template : unicode string
+# data : structrued data
+def render_data(template, data={}):
+    try:
+        return DATA_RENDER.from_string(template).render(data)
+
+    # TODO Consider allow execptions to surface to the request handler for issue#31
+
+    except jinja2.exceptions.TemplateSyntaxError as e:
+        logging.error("TEMPLATE\n%s" % template)
+        logging.error("DATA\n%s" % data)
+        logging.error("ERROR <%s> line %s, %s" % (e.__class__, e.lineno, e.message))
+        return "Problem rendering template.\nline: %s, %s" % (e.lineno, e.message)
+
+    except Exception as e:
+        logging.error("TEMPLATE %s" % template)
+        logging.error("DATA %s" % data)
+        logging.error("ERROR <%s> %s" % (e.__class__, e))
+        return "Unknown Problem rendering template"
