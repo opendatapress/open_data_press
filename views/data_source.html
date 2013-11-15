@@ -16,15 +16,15 @@
         <dt>tags</dt>                <dd>{% for tag in data_source.tags %} {{tag}} {% endfor %}</dd>
         <dt>tbl_stars</dt>           <dd>{{ data_source.tbl_stars|e }}</dd>
         <dt>title</dt>               <dd>{{ data_source.title|e }}</dd>
-        <dt>public_url</dt>          <dd>{{ data_source.public_url|e }}</dd>
-        <dt>spreadsheet_url</dt>     <dd>{{ data_source.spreadsheet_url|e }}</dd>
+        <dt>public_url</dt>          <dd><a href="{{ data_source.public_url|e }}">{{ data_source.public_url|e }}</a></dd>
+        <dt>spreadsheet_url</dt>     <dd><a href="{{ data_source.spreadsheet_url|e }}" target="_blank">{{ data_source.spreadsheet_url|e }}</a></dd>
     </dl>
 
     <h2>Download This Data</h2>
     {% if data_source.data_views %}
       <ul>
         {% for view in data_source.data_views %}
-            <li>{{ view.filetype|e }}</li>
+            <li><a href="{{view.download_url|e}}" target="_blank">{{ view.filetype|e }}</a></li>
         {% endfor %}
       </ul>
     {% else %}
