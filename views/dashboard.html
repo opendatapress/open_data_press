@@ -179,22 +179,21 @@
 </script>
 
 <script id="tpl-data-view-add" type="text/x-handlebars-template">
-    <h1>Create Data View</h1>
+    <h1>Create Data View for &quot;{{title}}&quot;</h1>
     <div class="card">
         <p>Select the type of data view your want to create.</p>
-        <!-- TODO disable buttons for existing view types -->
         <form class="row" id="data-view-add">
             <div class="col-sm-3" style="margin-bottom:10px">
-                <button class="data-view-type btn btn-primary btn-disabled btn-lg btn-block" data-source-id="{{id}}" data-ext="txt"  data-mime="text/plain">Plain Text</button>
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'txt' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="txt"  data-mime="text/plain">Plain Text</button>
             </div>
             <div class="col-sm-3" style="margin-bottom:10px">
-                <button class="data-view-type btn btn-primary btn-disabled btn-lg btn-block" data-source-id="{{id}}" data-ext="csv"  data-mime="text/csv">CSV</button>
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'csv' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="csv"  data-mime="text/csv">CSV</button>
             </div>
             <div class="col-sm-3" style="margin-bottom:10px">
-                <button class="data-view-type btn btn-primary btn-disabled btn-lg btn-block" data-source-id="{{id}}" data-ext="json" data-mime="application/json">JSON</button>
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'json' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="json" data-mime="application/json">JSON</button>
             </div>
             <div class="col-sm-3" style="margin-bottom:10px">
-                <button class="data-view-type btn btn-primary btn-disabled btn-lg btn-block" data-source-id="{{id}}" data-ext="xml"  data-mime="application/xml">XML</button>
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'xml' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="xml"  data-mime="application/xml">XML</button>
             </div>
         </form>
         <p><span class="text-muted">Data sources can have multiple views, but ony one of each type.</span></p>

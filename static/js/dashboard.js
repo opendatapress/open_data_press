@@ -75,6 +75,19 @@
         return buffer
     });
 
+    /* Test if element is in array */
+    Handlebars.registerHelper('if_in_array', function(element, array, bars){
+        if(array.indexOf(element) >= 0){
+            return bars.fn(this);
+        }
+    });
+
+    /* Test if element is not in array */
+    Handlebars.registerHelper('if_not_in_array', function(element, array, bars){
+        if(array.indexOf(element) < 0){
+            return bars.fn(this);
+        }
+    });
 
     /* URL Route Handlers */
     new Router()
