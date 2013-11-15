@@ -47,6 +47,7 @@ class TestDataViewModel(unittest.TestCase):
         dv = DataView(**dummy.data_view)
         self.assertTrue('to_dict'      in dir(dv))
         self.assertTrue('download_url' in dir(dv))
+        self.assertTrue('render'       in dir(dv))
 
 
     def test_data_view_required_properties(self):
