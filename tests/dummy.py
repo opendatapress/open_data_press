@@ -5,10 +5,21 @@
 
 from datetime import datetime
 
+credentials = '''{
+  "invalid": false,
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "refresh_token": "",
+  "client_id": "351298984682.apps.googleusercontent.com",
+  "token_expiry": "2050-11-14T11:26:32Z",
+  "user_agent": null,
+  "access_token": "ya29.1.AADtN_VSDGUctyiNf8Ls6ZAHvLlmti1OIYbxAUalbUWN7N0ooFMeSl03AqlC8SeoacLgNA",
+  "client_secret": "m_QLqYSZHe_GqlqS22rEtwDq"
+}'''
+
 # Params for a valid user record
 user = {
         'created_at':          datetime.now(),
-        'credentials':         '{"token":"XXX"}',
+        'credentials':         credentials,
         'google_birthday':     u'0000-01-01',
         'google_email':        u'test.user@gmail.com',
         'google_gender':       u'male',

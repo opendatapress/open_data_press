@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import datetime
 import webapp2
+import datetime
+from tests.utils import MockHttp
+from tests import dummy
 from google.appengine.ext import db
 from google.appengine.ext import testbed
+from helpers import google_api
 from models.user import User
 from models.data_source import DataSource
 from models.data_view import DataView
-from tests import dummy
 import main # The app
 
 class TestSessionHandler(unittest.TestCase):
@@ -18,6 +20,8 @@ class TestSessionHandler(unittest.TestCase):
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
 
+        google_api.httplib2.Http = MockHttp
+        
         now = datetime.datetime.now()
         user = User(**dummy.user)
         user.put()

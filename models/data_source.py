@@ -5,6 +5,7 @@
 
 from google.appengine.ext import db
 from models.user import User
+from helpers import google_api
 
 class DataSource(db.Model):
 
@@ -54,9 +55,9 @@ class DataSource(db.Model):
         """A list of the extensions already in use by the data views of this data source"""
         return [dv.extension for dv in self.fetch_data_views()]
 
-    def get_data(self):
-        """ TODO Fetch worksheet data from Google issue#29"""
-        return {}
+    def get_data(self, limit=None):
+        """Fetch worksheet data from Google"""
+        return google_api.get_cell_data(self.user.credentials, self.google_spreadsheet, self.google_worksheet, limit=limit)
 
     @classmethod
     def get_by_slug(self, user, slug):

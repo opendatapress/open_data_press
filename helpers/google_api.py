@@ -137,14 +137,17 @@ def get_worksheets(auth_json, spreadsheet_key):
 
 
 # Get all the data in a worksheet
-#  auth_json      : a JSON object of valid credentials
-#  spreadsheet_key : Identifier for the spreadsheet 
-#  worksheet_key  : Identifier for the worksheet
+#  auth_json        A JSON object of valid credentials
+#  spreadsheet_key  Identifier for the spreadsheet 
+#  worksheet_key    Identifier for the worksheet
+#  limit            The maximum number of data rows to return
 # 
-def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
+def get_cell_data(auth_json, spreadsheet_key, worksheet_key, limit=None):
     http = http_from_oauth2(auth_json)
     uri = 'https://spreadsheets.google.com/feeds/list/%s/%s/private/full' % (spreadsheet_key, worksheet_key)
     response = http.request(uri)
+
+    limit = limit if isinstance(limit, int) else 200000
 
     if "The spreadsheet at this URL could not be found" in response[1]:
         msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
@@ -169,7 +172,6 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
             'id':            worksheet_key,
             'title':         _val(feed.find('%stitle' % atom).text),
             'updated':       _val(feed.find('%supdated' % atom).text),
-            'total_results': _val(feed.find('%stotalResults' % search).text),
             'start_index':   _val(feed.find('%sstartIndex' % search).text),
             'author': {
                 'name':      _val(feed.find('.//%sname' % atom).text),
@@ -180,11 +182,14 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
 
         # Format cell data
         for entry in feed.findall('%sentry' % atom):
-            row = {}
-            for field in entry:
-                if gsx in field.tag:
-                    row[_key(field.tag)] = _val(field.text)
-            data['data_rows'].append(row)
+            if len(data['data_rows']) < limit:
+                row = {}
+                for field in entry:
+                    if gsx in field.tag:
+                        row[_key(field.tag)] = _val(field.text)
+                data['data_rows'].append(row)
+
+        data['total_results'] = len(data['data_rows'])
         return data
 
     except Exception as e:
