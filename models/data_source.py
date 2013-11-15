@@ -59,6 +59,6 @@ class DataSource(db.Model):
         return {}
 
     @classmethod
-    def get_by_slug(self, slug):
-        """ Find a user with the specified profile slug """
-        return DataSource.gql("WHERE slug = :1", slug).get()
+    def get_by_slug(self, user, slug):
+        """ Find a data source, belonging to the user, with the specified profile slug """
+        return user.data_sources.filter('slug =', slug).get()

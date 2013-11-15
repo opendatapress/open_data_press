@@ -36,3 +36,8 @@ class DataView(db.Model):
 
     def download_url(self):
         return "/%s/%s.%s" % (self.data_source.user.profile_slug, self.data_source.slug, self.extension)
+
+    @classmethod
+    def get_by_extension(self, data_source, extension):
+        """ Find a data view with the specified extension """
+        return data_source.data_views.filter('extension =', extension).get()
