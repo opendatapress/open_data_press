@@ -116,14 +116,15 @@ class TestDataViewModel(unittest.TestCase):
     def test_data_view_method_to_dict(self):
         dv = self.make_data_view()
         data = dv.to_dict()
-        self.assertTrue('created_at'  in data)
-        self.assertTrue('extension'   in data)
-        self.assertTrue('filetype'    in data)
-        self.assertTrue('id'          in data)
-        self.assertTrue('mimetype'    in data)
-        self.assertTrue('modified_at' in data)
-        self.assertTrue('source_id'   in data)
-        self.assertTrue('template'    in data)
+        self.assertTrue('created_at'   in data)
+        self.assertTrue('extension'    in data)
+        self.assertTrue('filetype'     in data)
+        self.assertTrue('id'           in data)
+        self.assertTrue('mimetype'     in data)
+        self.assertTrue('modified_at'  in data)
+        self.assertTrue('source_id'    in data)
+        self.assertTrue('template'     in data)
+        self.assertTrue('download_url' in data)
 
 
     def test_data_view_method_download_url(self):

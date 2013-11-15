@@ -23,14 +23,15 @@ class DataView(db.Model):
 
     def to_dict(self):
         return {
-            'created_at':  self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
-            'extension':   self.extension,
-            'filetype':    self.filetype,
-            'id':          self.key().id(),
-            'mimetype':    self.mimetype,
-            'modified_at': self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
-            'source_id':   self.data_source.key().id(),
-            'template':    self.template,
+            'created_at':   self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
+            'download_url': self.download_url(),
+            'extension':    self.extension,
+            'filetype':     self.filetype,
+            'id':           self.key().id(),
+            'mimetype':     self.mimetype,
+            'modified_at':  self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
+            'source_id':    self.data_source.key().id(),
+            'template':     self.template,
         }
 
     def download_url(self):
