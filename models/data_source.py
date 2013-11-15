@@ -39,6 +39,7 @@ class DataSource(db.Model):
             'tbl_stars':          self.tbl_stars,
             'title':              self.title,
             'used_extensions':    self.used_extensions(),
+            'user_id':            self.user.key().id(),
             'public_url':         self.public_url(),
             'spreadsheet_url':    self.spreadsheet_url(),
         }

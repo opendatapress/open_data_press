@@ -122,6 +122,7 @@ class TestDataViewModel(unittest.TestCase):
         self.assertTrue('id'          in data)
         self.assertTrue('mimetype'    in data)
         self.assertTrue('modified_at' in data)
+        self.assertTrue('source_id'   in data)
         self.assertTrue('template'    in data)
 
 

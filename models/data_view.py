@@ -29,6 +29,7 @@ class DataView(db.Model):
             'id':          self.key().id(),
             'mimetype':    self.mimetype,
             'modified_at': self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
+            'source_id':   self.data_source.key().id(),
             'template':    self.template,
         }
 

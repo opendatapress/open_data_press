@@ -108,3 +108,4 @@ class TestDataSourceModel(unittest.TestCase):
         self.assertTrue('tags'               in data)
         self.assertTrue('tbl_stars'          in data)
         self.assertTrue('title'              in data)
+        self.assertTrue('user_id'            in data)
