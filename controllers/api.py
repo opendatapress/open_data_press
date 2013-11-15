@@ -331,12 +331,10 @@ class DataViewItemRoute(APIHandler):
             if not data_view.data_source.key() == data_source.key():
                 raise ValueError("Data View with id %s does not belong to Data Source with id %s" % (data_view_id, data_source_id))
 
-            if "extension" in payload.keys(): data_view.extension = payload['extension']
-            if "filetype"  in payload.keys(): data_view.filetype  = payload['filetype']
-            if "mimetype"  in payload.keys(): data_view.mimetype  = payload['mimetype']
-            if "template"  in payload.keys(): data_view.template  = payload['template']
-            data_view.modified_at = DT.now()
-            data_view.put()
+            if "template" in payload.keys(): 
+                data_view.template = payload['template']
+                data_view.modified_at = DT.now()
+                data_view.put()
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict()))
 

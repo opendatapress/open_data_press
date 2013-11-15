@@ -307,20 +307,12 @@ class TestAPIHandler(unittest.TestCase):
     def test_api_0_data_view_update_item(self):
         dv       = self.make_data_view()
         url      = "/api/0/data_source/%s/view/%s" % (dv.data_source.key().id(), dv.key().id())
-        payload  = {
-                'mimetype': 'text/csv',
-                'extension': 'csv',
-                'template': '<!-- Some template -->',
-                'filetype': 'CSV',
-        }
+        payload  = {'template': '<!-- Some template -->'}
         response = main.app.get_response(url, headers=self.auth_headers, POST={"payload": json.dumps(payload)})
         self.response_ok(response)
         
         data = json.loads(response.body)["body"]
-        self.assertEqual(payload['mimetype'],  data['mimetype'])
-        self.assertEqual(payload['extension'], data['extension'])
         self.assertEqual(payload['template'],  data['template'])
-        self.assertEqual(payload['filetype'],  data['filetype'])
 
 
     def test_api_0_data_view_delete_item(self):
