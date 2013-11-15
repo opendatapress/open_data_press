@@ -398,7 +398,7 @@
         var
         template = $('form#data-view-edit textarea#template'),
         preview  = $('form#data-view-edit textarea#preview');
-        // TODO Fetch first 10 rows of data from source, parse through template, present
+        // TODO Fetch first 10 rows of data from source, parse through template, present issue#23
         preview.val(template.val());
         return false;
     })

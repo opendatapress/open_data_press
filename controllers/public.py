@@ -43,7 +43,7 @@ class DataSourceRoute(SessionHandler):
                 raise ValueError("No data source exists with the slug %s" % data_source_slug)
 
             if 'copy' in self.request.GET.keys():
-                # TODO handler to duplicate data source in current_user profile
+                # TODO handler to duplicate data source in current_user profile issue#17
                 self.response.write('copy data source')
             else:
                 current_user = self.current_user().to_dict() if self.current_user() else {}

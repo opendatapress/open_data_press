@@ -40,7 +40,7 @@ class DataView(db.Model):
     def render(self):
         data     = self.data_source.get_data
         template = self.template
-        # TODO render view tempate with source data
+        # TODO render view tempate with source data issue#30
         return template
 
     @classmethod

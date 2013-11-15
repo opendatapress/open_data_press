@@ -55,7 +55,7 @@ class DataSource(db.Model):
         return [dv.extension for dv in self.fetch_data_views()]
 
     def get_data(self):
-        """ TODO Fetch worksheet data from Google """
+        """ TODO Fetch worksheet data from Google issue#29"""
         return {}
 
     @classmethod

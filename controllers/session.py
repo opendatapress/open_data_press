@@ -50,7 +50,7 @@ class OAuth2CallbackRoute(SessionHandler):
         logging.debug("Session (at start): %s" % self.session)
 
         if None == code:
-            # TODO Display cancelled login page
+            # TODO Display cancelled login page issue#27
             return self.response.write('No authentication code returned')
 
         try:
@@ -75,8 +75,7 @@ class OAuth2CallbackRoute(SessionHandler):
                     modified_at   = now, 
                     last_login_at = now)
 
-            # TODO BUG The following may be causing occasional invalid grant errors
-            # https://github.com/opendatapress/open_data_press/issues/22
+            # TODO The following may be causing occasional invalid grant errors issue#22
 
             logging.debug("User Refresh Token: %s" % user.refresh_token())
 
@@ -103,7 +102,7 @@ class OAuth2CallbackRoute(SessionHandler):
             user.google_gender      = google_user.get('gender')
             user.google_locale      = google_user.get('locale')
             user.google_name        = google_user.get('name')
-            user.google_picture_url = google_user.get('picture') # TODO or default if None
+            user.google_picture_url = google_user.get('picture') # TODO or default if None issue#28
             user.last_login_at      = now
             user.put()
 
