@@ -77,6 +77,8 @@ class DataViewRoute(SessionHandler):
             self.response.content_type = str(data_view.mimetype)
             self.response.write(data_view.render())
 
+        # TODO Consider context specific error messages (xml, json &c.) issue#31
+
         except ValueError as e:
             error_404(self.request, self.response, e)
 
