@@ -8,15 +8,17 @@
 
 
     /* Static Templates */
-    tpl_spinner   = $('#tpl-spinner').html(),
-    tpl_dashboard = $('#tpl-dashboard').html(),
-    tpl_help      = $('#tpl-help').html(),
+    tpl_spinner       = $('#tpl-spinner').html(),
+    tpl_dashboard     = $('#tpl-dashboard').html(),
+    tpl_help          = $('#tpl-help').html(),
 
 
     /* Handlebars Templates */
     tpl_settings          = Handlebars.compile($('#tpl-settings').html()),
     tpl_message           = Handlebars.compile($('#tpl-message').html()),
-    tpl_data_view_list    = Handlebars.compile($('#tpl-data-view-list').html()),
+    tpl_data_source_list  = Handlebars.compile($('#tpl-data-source-list').html()),
+    tpl_data_source_edit  = Handlebars.compile($('#tpl-data-source-edit').html()),
+    tpl_data_view_add     = Handlebars.compile($('#tpl-data-view-add').html()),
     tpl_data_view_edit    = Handlebars.compile($('#tpl-data-view-edit').html()),
     tpl_google_sheets     = Handlebars.compile($('#tpl-google-sheets').html()),
     tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
@@ -50,7 +52,6 @@
     /* Show error in nav */
     showError = function(response){
         alertMsg('<strong>Error:</strong> ' + response.responseJSON.body, 'danger');
-        dash_content.html(tpl_help);
     };
 
 
@@ -87,7 +88,10 @@
     // Helper route for testing errors
     .addRoute('#/test/404', function(req, next){
         $.ajax('/api/0/404')
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Helper route for testing spinner
@@ -100,7 +104,10 @@
         .success(function(res){
             dash_content.html(tpl_settings(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Show spreadsheets in Google Drive
@@ -110,7 +117,10 @@
         .success(function(res){
             dash_content.html(tpl_google_sheets(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Show worksheets in Drive spreadsheet
@@ -120,7 +130,10 @@
         .success(function(res){
             dash_content.html(tpl_google_worksheets(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Show preview of data in Drive worksheet
@@ -130,7 +143,10 @@
         .success(function(res){
             dash_content.html(tpl_google_table(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Show all data sources
@@ -138,9 +154,12 @@
         pageTitle('All Data Sources');
         $.ajax('/api/0/data_source')
         .success(function(res){
-            dash_content.html(tpl_data_view_list(res.body));
+            dash_content.html(tpl_data_source_list(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // View/edit a data source
@@ -148,23 +167,38 @@
         pageTitle('Edit Data Source');
         $.ajax('/api/0/data_source/'+req.params.data_source_id)
         .success(function(res){
-            dash_content.html(tpl_data_view_edit(res.body));
+            dash_content.html(tpl_data_source_edit(res.body));
         })
-        .error(function(res){ showError(res); });
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
-    // Show all data views
-    .addRoute('#/data-view', function(req, next){
-        pageTitle('All Data Views');
-        console.log(req);
-        dash_content.html('All data views');
+    // Add a data view
+    .addRoute('#/data-source/:data_source_id/add-data-view', function(req, next){
+        pageTitle('Add a Data Views');
+        $.ajax('/api/0/data_source/'+req.params.data_source_id)
+        .success(function(res){
+            dash_content.html(tpl_data_view_add(res.body));
+        })
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // View/Edit a data view
-    .addRoute('#/data-view/:data_view_id', function(req, next){
+    .addRoute('#/data-source/:data_source_id/:data_view_id', function(req, next){
         pageTitle('View/Edit Data View');
-        console.log(req);
-        dash_content.html('Data View ' + req.params.data_view_id);
+        $.ajax('/api/0/data_source/'+req.params.data_source_id+'/view/'+req.params.data_view_id)
+        .success(function(res){
+            dash_content.html(tpl_data_view_edit(res.body));
+        })
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
     })
 
     // Missing routes default to dashboard home page
@@ -181,8 +215,7 @@
 
     // Save profile settings
     .on('submit', 'form#settings', function(){
-
-        payload = {
+        var payload = {
             google_id           : $('form#settings #google_id').val(),
             profile_name        : $('form#settings #profile_name').val(),
             profile_slug        : $('form#settings #profile_slug').val(),
@@ -190,7 +223,6 @@
             profile_email       : $('form#settings #profile_email').val(),
             profile_web_address : $('form#settings #profile_web_address').val()
         }
-
         $.ajax({
             url: '/api/0/user',
             type: 'POST',
@@ -199,21 +231,23 @@
         .success(function(res){
             alertMsg('Changes Saved!', 'success');
         })
-        .error(function(res){ showError(res); });
-
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
         return false;
     })
 
     // Create Data Source from Google Drive Worksheet
     .on('click', 'button#create-data-source', function(){
+        var 
+        button  = $(this),
         payload = {
-            key   : $(this).attr('data-key'),
-            id    : $(this).attr('data-id'),
-            title : $(this).attr('data-title')
+            key   : button.attr('data-key'),
+            id    : button.attr('data-id'),
+            title : button.attr('data-title')
         };
-
         dash_content.html(tpl_spinner);
-
         $.ajax({
             url: '/api/0/data_source/',
             type: 'POST',
@@ -222,14 +256,16 @@
         .success(function(res){
             redirectTo('#/data-source/');
         })
-        .error(function(res){ showError(res); });
-
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
         return false;
     })
 
     // Save changes to Data Source
     .on('submit', 'form#data-source-edit', function(){
-        payload = {
+        var payload = {
             id          : $('form#data-source-edit #id').val(),
             title       : $('form#data-source-edit #title').val(),
             description : $('form#data-source-edit #description').val(),
@@ -237,10 +273,11 @@
             slug        : $('form#data-source-edit #slug').val(),
             tags        : $('form#data-source-edit #tags').val(),
             tbl_stars   : $('form#data-source-edit #tbl_stars').val()
-        }
-
+        },
+        source_id = $('form#data-source-edit #id').val();
+        dash_content.html(tpl_spinner);
         $.ajax({
-            url: '/api/0/data_source/' + $('form#data-source-edit #id').val(),
+            url: '/api/0/data_source/' + source_id,
             type: 'POST',
             data: {payload: JSON.stringify(payload)}
         })
@@ -248,24 +285,108 @@
             redirectTo('#/data-source/');
             alertMsg('Changes Saved!', 'success');
         })
-        .error(function(res){ showError(res); });
-
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
         return false;
     })
 
     // Delete Data Source
     .on('click', 'form#data-source-edit button#delete', function(){
+        var source_id = $('form#data-source-edit #id').val();
+        dash_content.html(tpl_spinner);
         $.ajax({
-            url: '/api/0/data_source/' + $('form#data-source-edit #id').val(),
+            url: '/api/0/data_source/' + source_id,
             type: 'DELETE'
         })
         .success(function(res){
             redirectTo('#/data-source');
             alertMsg('Data Source Deleted', 'success');
         })
-        .error(function(res){ console.log(res); showError(res); });
-
+        .error(function(res){
+            showError(res);
+            dash_content.html(tpl_help);
+        });
         return false;
     })
 
+    // Create Data View for a Data Source
+    .on('click', 'form#data-view-add button.data-view-type', function(){
+        var
+        button    = $(this),
+        source_id = button.attr('data-source-id');
+        payload   = {
+            extension: button.attr('data-ext'),
+            mimetype:  button.attr('data-mime'),
+            filetype:  button.html(),
+        };
+        dash_content.html(tpl_spinner);
+        $.ajax({
+            url: '/api/0/data_source/' + source_id + '/view',
+            type: 'POST',
+            data: {payload: JSON.stringify(payload)}
+        })
+        .success(function(res){
+            redirectTo('#/data-source/');
+        })
+        .error(function(res){ 
+            showError(res);
+        });
+        return false;
+    })
+
+    // Save changes to Data View
+    .on('submit', 'form#data-view-edit', function(){
+        var
+        payload   = {template: $('form#data-view-edit #template').val()},
+        source_id = $('form#data-view-edit #source-id').val(),
+        view_id   = $('form#data-view-edit #view-id').val();
+        dash_content.html(tpl_spinner);
+        $.ajax({
+            url: '/api/0/data_source/' + source_id + '/view/' + view_id,
+            type: 'POST',
+            data: {payload: JSON.stringify(payload)}
+        })
+        .success(function(res){
+            redirectTo('#/data-source/');
+            alertMsg('Changes Saved!', 'success');
+        })
+        .error(function(res){ 
+            showError(res);
+            dash_content.html(tpl_help);
+        });
+        return false;
+    })
+
+    // Delete Data View
+    .on('click', 'form#data-view-edit button#delete', function(){
+        var
+        source_id = $('form#data-view-edit #source-id').val(),
+        view_id   = $('form#data-view-edit #view-id').val();
+        dash_content.html(tpl_spinner);
+        $.ajax({
+            url: '/api/0/data_source/' + source_id + '/view/' + view_id,
+            type: 'DELETE'
+        })
+        .success(function(res){
+            redirectTo('#/data-source');
+            alertMsg('Data View Deleted', 'success');
+        })
+        .error(function(res){
+            showError(res);
+            dash_content.html(tpl_help);
+        });
+        return false;
+    })
+
+    // Preview Data View Template
+    .on('click', 'form#data-view-edit a#tab-preview', function(){
+        var
+        template = $('form#data-view-edit textarea#template'),
+        preview  = $('form#data-view-edit textarea#preview');
+        // TODO Fetch first 10 rows of data from source, parse through template, present
+        preview.val(template.val());
+        return false;
+    })
 })()

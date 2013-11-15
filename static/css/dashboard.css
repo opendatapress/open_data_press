@@ -76,3 +76,11 @@ html, body {
     height: 31px;
     background-image: url('/img/spinner.gif');
 }
+
+.nav-tabs {
+    margin-bottom: 15px;
+}
+
+form#data-view-edit textarea {
+    font-family: monospace;
+}
