@@ -51,7 +51,7 @@ class UserRoute(APIHandler):
             # NB we have to decode "credentials" as it is stored as a string in the DB
             current_user = User.get_by_google_id(self.session['current_user']).to_dict()
             current_user["credentials"] = json.loads(current_user["credentials"])
-            self.response.write('{"response":"success","body":%s}' % json.dumps(current_user))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(current_user, ensure_ascii=False))
 
         except Exception as e:
             log_api_error(self, e)
@@ -73,7 +73,7 @@ class UserRoute(APIHandler):
             if "profile_web_address" in data.keys(): user.profile_web_address = data["profile_web_address"]
             user.modified_at = DT.now()
             user.put()
-            self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict(), ensure_ascii=False))
 
         except Exception as e:
             log_api_error(self, e)
@@ -92,7 +92,7 @@ class DataSourceListRoute(APIHandler):
                 'total_results': len(data_sources),
                 'data_sources': [ds.to_dict() for ds in data_sources]
             }
-            self.response.write('{"response":"success","body":%s}' % json.dumps(response))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(response, ensure_ascii=False))
 
         except Exception as e:
             log_api_error(self, e)
@@ -113,7 +113,7 @@ class DataSourceListRoute(APIHandler):
                                 modified_at        = DT.now())
             data_source.user = current_user.key()
             data_source.put()
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict(), ensure_ascii=False))
 
         except slug.SlugError as e:
             log_api_error(self, e)
@@ -139,7 +139,7 @@ class DataSourceItemRoute(APIHandler):
             if not data_source.user.key() == current_user.key():
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
@@ -173,7 +173,7 @@ class DataSourceItemRoute(APIHandler):
             data_source.modified_at = DT.now()
             data_source.put()
 
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
@@ -230,7 +230,7 @@ class DataViewListRoute(APIHandler):
                 'total_results': len(data_views),
                 'data_views': [ds.to_dict() for ds in data_views]
             }
-            self.response.write('{"response":"success","body":%s}' % json.dumps(response))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(response, ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
@@ -266,7 +266,7 @@ class DataViewListRoute(APIHandler):
             if "filetype"  in payload.keys(): data_view.filetype = payload['filetype']
             data_view.data_source = data_source.key()
             data_view.put()
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
@@ -300,7 +300,7 @@ class DataViewItemRoute(APIHandler):
             if not data_view.data_source.key() == data_source.key():
                 raise ValueError("Data View with id %s does not belong to Data Source with id %s" % (data_view_id, data_source_id))
 
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(default_template=True)))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(default_template=True), ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
@@ -337,7 +337,7 @@ class DataViewItemRoute(APIHandler):
                 data_view.modified_at = DT.now()
                 data_view.put()
 
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
             log_api_error(self, e)
