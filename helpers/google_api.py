@@ -178,6 +178,7 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key, limit=None):
                 'email':     _val(feed.find('.//%semail' % atom).text),
             },
             'data_rows':     [],
+            'headings':      [],
         }
 
         # Format cell data
@@ -190,6 +191,7 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key, limit=None):
                 data['data_rows'].append(row)
 
         data['total_results'] = len(data['data_rows'])
+        data['headings'] = [h for h in data['data_rows'][1].keys() if data['total_results']]
         return data
 
     except Exception as e:

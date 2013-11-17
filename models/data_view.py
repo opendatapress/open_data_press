@@ -22,8 +22,8 @@ class DataView(db.Model):
     modified_at = db.DateTimeProperty(required=True)
     template    = db.TextProperty(default=u'')
 
-    def to_dict(self):
-        return {
+    def to_dict(self, default_template=False):
+        data = {
             'created_at':   self.created_at.strftime('%Y-%m-%d %H:%M:%s'),
             'download_url': self.download_url(),
             'extension':    self.extension,
@@ -35,6 +35,12 @@ class DataView(db.Model):
             'template':     self.template,
         }
 
+        if default_template:
+            data['data_preview']     = self.data_source.get_data(limit=5)
+            data['default_template'] = self.default_template(data['data_preview']['headings'])
+
+        return data
+
     def download_url(self):
         return "/%s/%s.%s" % (self.data_source.user.profile_slug, self.data_source.slug, self.extension)
 
@@ -42,6 +48,10 @@ class DataView(db.Model):
         data     = self.data_source.get_data(limit=limit)
         template = self.template
         return render_data(template, data)
+
+    def default_template(self, data_headings):
+        """Return a generated default template for this view type"""
+        return ""
 
     @classmethod
     def get_by_extension(self, data_source, extension):

@@ -299,7 +299,7 @@ class DataViewItemRoute(APIHandler):
             if not data_view.data_source.key() == data_source.key():
                 raise ValueError("Data View with id %s does not belong to Data Source with id %s" % (data_view_id, data_source_id))
 
-            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict()))
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(default_template=True)))
 
         except ValueError as e:
             log_api_error(self, e)
