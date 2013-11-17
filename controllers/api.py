@@ -11,6 +11,7 @@ from oauth2client.anyjson import simplejson as json
 
 from helpers import google_api, slug
 from helpers.sessions import SessionHandler
+from helpers.views import render_data
 from models.user import User
 from models.data_source import DataSource
 from models.data_view import DataView
@@ -443,7 +444,25 @@ class GoogleSheetsWorksheetRoute(APIHandler):
 class TemplatePreviewRoute(APIHandler):
     # Render a preview of the supplied template and data
     def post(self):
-        self.response.write('{"response":"success","body":"ok"}')
+        try:
+            payload = json.loads(self.request.POST["payload"])
+            preview = render_data(payload['template'], payload['data'])
+            data = {
+                'data': payload['data'],
+                'template': payload['template'],
+                'preview': preview
+            }
+            self.response.write('{"response":"success","body":%s}' % json.dumps(data, ensure_ascii=False))
+
+        except ValueError as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"%s"}' % e)
+            self.response.set_status(404)
+
+        except Exception as e:
+            log_api_error(self, e)
+            self.response.write('{"response":"error","body":"A probelm occured when generating the preview"}')
+            self.response.set_status(500)
 
 
 class Error404Route(RequestHandler):

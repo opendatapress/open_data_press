@@ -371,6 +371,14 @@ class TestAPIHandler(unittest.TestCase):
         self.response_error(response)
 
     def test_api_0_template_preview(self):
-        data = {'data_rows'}
-        response = main.app.get_response('/api/0/template/preview', headers=self.auth_headers, method='POST')
+        payload = {
+            'data':     {"key": "0AvmGs2D9eZgxdDdVVTc3Qk1oOGtQR2lGQ3I1NFM0alE", "title": "Google data types", "headings": ["currency", "floats", "stringdates", "integers", "dates", "times", "datetimes"], "updated": "2013-08-12 13:43:25.704000", "VERSION": "0.1", "data_rows": [{"currency": "£100.45", "floats": 3.14, "stringdates": "1999-01-01 12:23:45", "integers": 1, "dates": "1999-03-31 00:00:00", "times": "1900-01-01 12:33:45", "datetimes": "1999-01-01 12:23:45"}, {"currency": "£100.45", "floats": 3.14, "stringdates": "1999-01-01 12:23:45", "integers": 2, "dates": "1999-03-31 00:00:00", "times": "1900-01-01 12:33:45", "datetimes": "1999-01-01 12:23:45"}, {"currency": "£100.45", "floats": 3.14, "stringdates": "1999-01-01 12:23:45", "integers": 3, "dates": "1999-03-31 00:00:00", "times": "1900-01-01 12:33:45", "datetimes": "1999-01-01 12:23:45"}, {"currency": "£100.45", "floats": 3.14, "stringdates": "1999-01-01 12:23:45", "integers": 4, "dates": "1999-03-31 00:00:00", "times": "1900-01-01 12:33:45", "datetimes": "1999-01-01 12:23:45"}, {"currency": "£100.45", "floats": 3.14, "stringdates": "1999-01-01 12:23:45", "integers": 5, "dates": "1999-03-31 00:00:00", "times": "1900-01-01 12:33:45", "datetimes": "1999-01-01 12:23:45"} ], "author": {"name": "craig552uk", "email": "craig552uk@gmail.com"}, "start_index": 1, "id": "od7", "total_results": 5 },
+            'template': '"times","dates","integers","floats","stringdates","currency","datetimes" <% for row in data_rows %>"<%= row.times %>","<%= row.dates %>","<%= row.integers %>","<%= row.floats %>","<%= row.stringdates %>","<%= row.currency %>","<%= row.datetimes %>" <% endfor %>'
+        }
+        response = main.app.get_response('/api/0/template/preview', headers=self.auth_headers, POST={"payload": json.dumps(payload)})
         self.response_ok(response)
+
+        data = json.loads(response.body)["body"]
+        self.assertTrue('data'     in data)
+        self.assertTrue('template' in data)
+        self.assertTrue('preview'  in data)
