@@ -68,7 +68,7 @@
 
     /* Iterate the first n elements in an array */
     Handlebars.registerHelper('first', function(count, array, bars){
-        var buffer = '';
+        var buffer = '';n
         for(var i=0; i<count; i++){
             buffer += bars.fn(array[i]);
         }
@@ -206,6 +206,7 @@
         pageTitle('View/Edit Data View');
         $.ajax('/api/0/data_source/'+req.params.data_source_id+'/view/'+req.params.data_view_id)
         .success(function(res){
+            res.body['sample-data'] = JSON.stringify(res.body);
             dash_content.html(tpl_data_view_edit(res.body));
         })
         .error(function(res){ 
@@ -396,10 +397,25 @@
     // Preview Data View Template
     .on('click', 'form#data-view-edit a#tab-preview', function(){
         var
-        template = $('form#data-view-edit textarea#template'),
-        preview  = $('form#data-view-edit textarea#preview');
-        // TODO Fetch first 10 rows of data from source, parse through template, present issue#23
-        preview.val(template.val());
+        template    = $('form#data-view-edit textarea#template'),
+        sample_data = $('form#data-view-edit input#sample-data'),
+        preview     = $('form#data-view-edit textarea#preview'),
+        payload     = {
+            data:     JSON.parse(sample_data.val())['data_preview'],
+            template: template.val()
+        };
+        preview.val("Generating preview...");
+        $.ajax({
+            url: '/api/0/template/preview/',
+            type: 'POST',
+            data: {payload: JSON.stringify(payload)}
+        })
+        .success(function(res){
+            preview.val(res.body.preview);
+        })
+        .error(function(res){ 
+            showError(res);
+        });
         return false;
     })
 })()
