@@ -3,6 +3,8 @@
 import unittest
 import webapp2
 import simplejson as json
+import main # The app
+
 from tests.utils import MockHttp
 from tests import dummy
 from google.appengine.ext import db
@@ -11,7 +13,6 @@ from helpers import google_api
 from models.user import User
 from models.data_source import DataSource
 from models.data_view import DataView
-import main # The app
 
 class TestAPIHandler(unittest.TestCase):
 
@@ -364,3 +365,12 @@ class TestAPIHandler(unittest.TestCase):
     def test_api_0_get_google_sheets_cells_bad_format(self):
         response = main.app.get_response('/api/0/google/sheets/dummy_key/bad_format', headers=self.auth_headers)
         self.response_error(response, 500)
+
+    def test_api_0_template_fails(self):
+        response = main.app.get_response('/api/0/template', headers=self.auth_headers)
+        self.response_error(response)
+
+    def test_api_0_template_preview(self):
+        data = {'data_rows'}
+        response = main.app.get_response('/api/0/template/preview', headers=self.auth_headers, method='POST')
+        self.response_ok(response)

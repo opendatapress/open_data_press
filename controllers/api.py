@@ -440,6 +440,12 @@ class GoogleSheetsWorksheetRoute(APIHandler):
             self.response.set_status(500)
 
 
+class TemplatePreviewRoute(APIHandler):
+    # Render a preview of the supplied template and data
+    def post(self):
+        self.response.write('{"response":"success","body":"ok"}')
+
+
 class Error404Route(RequestHandler):
 
     # 404 handler for API namespace

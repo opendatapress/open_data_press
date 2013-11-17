@@ -47,6 +47,7 @@ routes = [
     (r'/api/0/data_source/(\d+)/?',             api.DataSourceItemRoute),
     (r'/api/0/data_source/(\d+)/view/?',        api.DataViewListRoute),
     (r'/api/0/data_source/(\d+)/view/(\d+)/?',  api.DataViewItemRoute),
+    (r'/api/0/template/preview/?',              api.TemplatePreviewRoute),
     (r'/api/.*',                                api.Error404Route),
     (r'/api/?',                                 api.Error404Route),
 
