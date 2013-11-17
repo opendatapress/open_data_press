@@ -21,7 +21,7 @@ APP_RENDER = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('
 #     <p><%= row.code %> <%= row.title %></p>
 # <% endfor %>
 #
-DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<!', '!>', '#', '##')
+DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<#', '#>', '~', '~~')
 
 
 # Render template using data
