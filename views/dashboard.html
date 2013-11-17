@@ -183,6 +183,9 @@
         <p>Select the type of data view your want to create.</p>
         <form class="row" id="data-view-add">
             <div class="col-sm-3" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'html' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="html"  data-mime="text/html">HTML</button>
+            </div>
+            <div class="col-sm-3" style="margin-bottom:10px">
                 <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'txt' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="txt"  data-mime="text/plain">Plain Text</button>
             </div>
             <div class="col-sm-3" style="margin-bottom:10px">

@@ -10,8 +10,8 @@ from helpers.views import render_data, render
 class DataView(db.Model):
 
     # Valid file types
-    valid_extensions = ['txt',        'csv',      'xml',             'json',            ]
-    valid_mimetypes  = ['text/plain', 'text/csv', 'application/xml', 'application/json',]
+    valid_extensions = ['txt',        'csv',      'xml',             'json',             'html',     ]
+    valid_mimetypes  = ['text/plain', 'text/csv', 'application/xml', 'application/json', 'text/html',]
 
     # Properties
     created_at  = db.DateTimeProperty(required=True)
