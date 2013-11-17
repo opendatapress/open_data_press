@@ -50,10 +50,17 @@ def render_data(template, data={}):
         logging.error("TEMPLATE\n%s" % template)
         logging.error("DATA\n%s" % data)
         logging.error("ERROR <%s> line %s, %s" % (e.__class__, e.lineno, e.message))
-        return "Problem rendering template.\nline: %s, %s" % (e.lineno, e.message)
+        return "Syntax error in template [line %s] %s" % (e.lineno, e.message)
+
+    except jinja2.exceptions.TemplateError as e:
+        logging.error("TEMPLATE\n%s" % template)
+        logging.error("DATA\n%s" % data)
+        logging.error("ERROR <%s> %s" % (e.__class__, e))
+        return "Error in template - %s" % e
 
     except Exception as e:
         logging.error("TEMPLATE %s" % template)
         logging.error("DATA %s" % data)
         logging.error("ERROR <%s> %s" % (e.__class__, e))
-        return "Unknown Problem rendering template"
+        # Is this dangerous?
+        return "Error in template - %s" % e
