@@ -2,10 +2,10 @@
 #
 # A data view
 #
-
+import logging
 from google.appengine.ext import db
 from models.data_source import DataSource
-from helpers.views import render_data
+from helpers.views import render_data, render
 
 class DataView(db.Model):
 
@@ -37,7 +37,10 @@ class DataView(db.Model):
 
         if default_template:
             data['data_preview']     = self.data_source.get_data(limit=5)
-            data['default_template'] = self.default_template(data['data_preview']['headings'])
+            data['default_template'] = self.default_template(data['data_preview'])
+            # Use the default template, if one is not already set
+            if not data['template']:
+                data['template'] = data['default_template'] 
 
         return data
 
@@ -49,9 +52,14 @@ class DataView(db.Model):
         template = self.template
         return render_data(template, data)
 
-    def default_template(self, data_headings):
+    def default_template(self, source_data):
         """Return a generated default template for this view type"""
-        return ""
+        try: 
+            return render('default_template.%s' % self.extension, source_data)
+
+        except Exception as e:
+            logging.error("ERROR %s, %s" % (e.__class__, e))
+            return u"Sorry, I couldn't generate a default template for %s" % self.filetype
 
     @classmethod
     def get_by_extension(self, data_source, extension):
