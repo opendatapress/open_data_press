@@ -68,7 +68,7 @@
 
     /* Iterate the first n elements in an array */
     Handlebars.registerHelper('first', function(count, array, bars){
-        var buffer = '';n
+        var buffer = '';
         for(var i=0; i<count; i++){
             buffer += bars.fn(array[i]);
         }
