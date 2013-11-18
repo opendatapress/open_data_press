@@ -342,7 +342,7 @@
             data: {payload: JSON.stringify(payload)}
         })
         .success(function(res){
-            redirectTo('#/data-source/');
+            redirectTo('#/data-source/' + res.body.source_id + '/' + res.body.id);
         })
         .error(function(res){ 
             showError(res);
