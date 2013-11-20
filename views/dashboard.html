@@ -67,11 +67,33 @@
 <script id="tpl-dashboard" type="text/html">
     <h1>Dashboard Home</h1>
     <div class="card text-center">
-        <a href="#/drive" class="btn btn-default">Import Data From Google Drive</a> &nbsp; &nbsp;
-        <a href="#/data-source" class="btn btn-default">View All Imported Data Sources</a>
+        <a href="#/data-source" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;View All My Data Sources&nbsp;&nbsp;&nbsp;</a>
     </div>
     <div class="card">
-        <p>TODO: Welcome message etc. issue#24</p>
+        <h2>Hello!</h2>
+        <p>Thank you for trying out <strong>Open Data Press</strong> v0.1.</p>
+        <p>Open Data Press makes it easy to publish Open Data from your Google Spreadsheets.</p>
+        <ol>
+            <li><strong>Create a spreadsheet in Google Drive.</strong><br>
+                Share, collaborate and refine your data as usual.</li>
+            <li><strong>Design a custom template in OpenDataPress.</strong><br>
+                Format your data the way you want it - any mark-up, any schema.</li>
+            <li><strong>Publish your Open Data.</strong><br>
+                Your Open Data is automatically updated whenever your Google Spreadsheet is changed.</li>
+        </ol>
+        <p>This first release is a bit rough around the edges, but hopefully clear enough to demonstrate the concept.</p>
+        <p>To find out more, <a href="https://github.com/opendatapress/open_data_press/wiki">check out the wiki</a>.</p>
+        <hr>
+        <h3>Getting  Started</h3>
+        <p>You can get started by <a href="#/drive">creating a Data Source from a Google Drive Spreadsheet</a>.</p>
+        <p>If you have already created some Data Sources, hit the big button above to see them.</p>
+        <hr>
+        <h3>Reporting Problems</h3>
+        <p>If you have any suggestions for improvements or encounter any problems, please <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">log an issue</a> on the GitHub repository.</p>
+        <p>For everything else, you can get in touch with me on <a href="mailto:craig@craig-russell.co.uk" target="_blank">email</a> and <a href="http://twitter.com/craig552uk" target="_blank">twitter</a>.</p>
+        <hr>
+        <p>Thanks again!<p>
+        <p style="margin-left:40px;">&mdash; Craig</p>
     </div>
 </script>
 
@@ -80,57 +102,51 @@
     {{#if this.data_sources}}
         {{#each data_sources}}
             <div class="card">
-                <h3>{{this.title}}</h3>
-                <p>description: <strong>{{this.description}}</strong></p>
-                <p>created_at: <strong>{{this.created_at}}</strong></p>
-                <p>google_spreadsheet: <strong>{{this.google_spreadsheet}}</strong></p>
-                <p>google_worksheet: <strong>{{this.google_worksheet}}</strong></p>
-                <p>id: <strong>{{this.id}}</strong></p>
-                <p>licence: <strong>{{this.licence}}</strong></p>
-                <p>modified_at: <strong>{{this.modified_at}}</strong></p>
-                <p>slug: <strong>{{this.slug}}</strong></p>
-                <p>tags: <strong>{{this.tags}}</strong></p>
-                <p>tbl_stars: <strong>{{this.tbl_stars}}</strong></p>
+                <h3>
+                    {{this.title}}
+                    <a class="btn btn-info btn-xs" href="#/data-source/{{this.id}}">Edit</a>
+                </h3>
+                <p>Created at: <strong>{{this.created_at}}</strong></p>
+                <p>Last modified at: <strong>{{this.modified_at}}</strong></p>
+                <p>Tags: <strong>{{this.tags}}</strong></p>
+                <p>TBL Stars: <strong>{{this.tbl_stars}}</strong> <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></p>
+                <p>Description: <strong>{{this.description}}</strong></p>
+                <p>Licence: <strong>{{this.licence}}</strong></p>
+
                 <p>Public URL: <a href="{{this.public_url}}" target="_blank">{{this.public_url}}</a></p>
                 <p>Spreadsheet URL: <a href="{{this.spreadsheet_url}}" target="_blank">{{this.spreadsheet_url}}</a></p>
                 <p>
-                    <a class="btn btn-default btn-sm" href="#/data-source/{{this.id}}">Edit Data Source</a>
                 </p>
                 <hr>
-                <h4>Data Views</h4>
+                <h4>Published As&hellip;</h4>
                 {{#if this.data_views}}
-                    <p>
-                        <a class="btn btn-default btn-sm" href="#/data-source/{{this.id}}/add-data-view">Create View for this Data</a>
-                    </p>
                     <ul>
                         {{#each this.data_views}}
                             <li>
-                                <p>id: <strong>{{this.id}}</strong></p>
-                                <p>extension: <strong>{{this.extension}}</strong></p>
-                                <p>filetype: <strong>{{this.filetype}}</strong></p>
-                                <p>mimetype: <strong>{{this.mimetype}}</strong></p>
-                                <p>created_at: <strong>{{this.created_at}}</strong></p>
-                                <p>modified_at: <strong>{{this.modified_at}}</strong></p>
-                                <p>template: <strong>{{this.template}}</strong></p>
-                                <p>Download URL: <a href="{{this.download_url}}" target="_blank">{{this.download_url}}</a></p>
-                                <p>
-                                    <a class="btn btn-default btn-sm" href="#/data-source/{{../id}}/{{this.id}}">Edit Data View</a>
-                                </p>
+                                <strong>{{this.filetype}}</strong> - 
+                                <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
+                                <a class="btn btn-success btn-xs" href="{{this.download_url}}">Download</a>
                             </li>
                         {{/each}}
                     </ul>
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Add another View</a>
+                    </p>
                 {{else}}
                     <p>
-                        There are no Views for this Data Source.
+                        This data is not yet published. To publish it you must create a View.
                     </p>
                     <p>
-                        <a class="btn btn-default btn-sm" href="#/data-source/{{this.id}}/add-data-view">Create View for this Data</a>
+                        <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Create View for this Data</a>
                     </p>
                 {{/if}}
             </div>
         {{/each}}
+        <div class="card text-center">
+            <a href="#/drive" class="btn btn-primary">Add Another Data Source from Google Drive</a>
+        </div>
     {{else}}
-        <div class="card">
+        <div class="card text-center">
         <p>You have not yet created any Data Sources from your Google Worksheets.</p>
         <p><a class="btn btn-primary" href="#/drive">Create one Now!</a></p>
         </div>
