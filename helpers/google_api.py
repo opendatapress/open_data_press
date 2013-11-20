@@ -206,7 +206,7 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key, limit=None):
                 data['data_rows'].append(row)
 
         data['total_results'] = len(data['data_rows'])
-        data['headings'] = [h for h in data['data_rows'][1].keys() if data['total_results']]
+        data['headings'] = [h for h in data['data_rows'][0].keys() if len(data['data_rows'])]
         return data
 
     except Exception as e:
