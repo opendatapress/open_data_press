@@ -304,17 +304,24 @@
     <h1>Spreadsheets on Google Drive</h1>
     <div class="card">
         <p>Choose a spreadsheet to import</p>
-        <ul>
-        {{#each files}}
-            <li>
-                <a class="drive-spreadsheet" href="#/drive/{{this.id}}">
-                    <h4>{{this.title}}</h4>
-                    <p><strong>Owners:</strong> {{this.ownerNames}}</p>
-                    <p><img src="{{this.thumbnailLink}}"></p>
-                </a>
-            </li>
-        {{/each}}
-        </ul>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Owners</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each files}}
+                    <tr>
+                        <td>{{this.title}}</td>
+                        <td>{{this.ownerNames}}</td>
+                        <td><a class="drive-spreadsheet btn btn-primary btn-sm" href="#/drive/{{this.id}}">Import</a></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
     </div>
 </script>
 
