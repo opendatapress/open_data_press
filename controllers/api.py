@@ -388,8 +388,9 @@ class GoogleSheetsListRoute(APIHandler):
     # Get all Drive Spreadsheets accessible to the current user
     def get(self):
         try:
+            page_token = self.request.GET["page_token"] if 'page_token' in self.request.GET.keys() else None
             query = "trashed = false and hidden = false and mimeType = 'application/vnd.google-apps.spreadsheet'"
-            data  = google_api.list_drive_files(self.current_user().credentials, query=query)
+            data  = google_api.list_drive_files(self.current_user().credentials, query=query, page_token=page_token)
             self.response.write('{"response":"success","body":%s}' % json.dumps(data, ensure_ascii=False))
         
         except google_api.GoogleAPIException as e:
