@@ -119,7 +119,7 @@
                             <li>
                                 <strong>{{this.filetype}}</strong> - 
                                 <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
-                                <a class="btn btn-success btn-xs" href="{{this.download_url}}">Download</a>
+                                <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
                             </li>
                         {{/each}}
                     </ul>
@@ -335,11 +335,14 @@
     <h1>Worksheets in Spreadsheet</h1>
     <div class="card">
         <p>Choose a worksheet to import from <strong>{{title}}</strong></p>
-        <ul>
         {{#each worksheets}}
-            <li><a class="drive-worksheet" href="#/drive/{{../key}}/{{this.id}}">{{this.title}}</a></li>
+            <p><a class="drive-worksheet btn btn-primary" href="#/drive/{{../key}}/{{this.id}}">{{this.title}}</a></p>
         {{/each}}
-        </ul>
+        <hr>
+        <p>
+            <a class="btn btn-default" href="#/drive/">Go Back</a>
+            <a class="btn btn-link" href="#/">Cancel</a>
+        </p>
     </div>
 </script>
 
@@ -370,6 +373,8 @@
             </table>
         </div>
         <hr>
+        <a class="btn btn-default" href="#/drive/{{key}}">Go Back</a>
+        <a class="btn btn-link" href="#/">Cancel</a>
         <button id="create-data-source" class="btn btn-primary pull-right" data-key="{{key}}" data-id="{{id}}" data-title="{{title}}">Import Data</button>
     </div>
 </script>
