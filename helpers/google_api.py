@@ -7,6 +7,7 @@ import httplib2
 import re
 import logging
 import unicodedata
+import base64
 from datetime import datetime as dt
 import xml.etree.ElementTree as ET
 from helpers.config import load_config, ConfigurationError
@@ -62,23 +63,37 @@ def drive_service():
 #
 #  auth_json : a JSON object of valid credentials
 #  query     : A search query string for the files API
+#  page_token: a b64 encoded token to fetch the next page in the file sequence
 #
-def list_drive_files(auth_json, query=""):
+def list_drive_files(auth_json, query="", page_token=None):
     try:
         http = http_from_oauth2(auth_json)
         service = drive_service()
         file_list = []
-        page_token = None
-        while True:
-            param = {'q': query}
-            if page_token:
-                param['pageToken'] = page_token
-            files = service.files().list(**param).execute(http=http)
-            file_list.extend(files['items'])
-            page_token = files.get('nextPageToken')
-            if not page_token:
-                break
-        return {'num_files': len(file_list), 'files':file_list}
+        param = {'q': query}
+        if page_token:
+            param['pageToken'] = base64.b64decode(page_token)
+
+        files = service.files().list(**param).execute(http=http)
+
+        file_list.extend(files['items'])
+        next_page_token = files.get('nextPageToken')
+        next_page_url = None
+
+        if next_page_token:
+            next_page_token = base64.b64encode(next_page_token)
+            next_page_url   = "/api/0/google/sheets?page_token=%s" % next_page_token
+
+        return {
+            'files':           file_list,
+            'num_files':       len(file_list), 
+            'next_page_url':   next_page_url, 
+            'next_page_token': next_page_token
+        }
+
+    except UnicodeDecodeError as e:
+        raise GoogleAPIException('Could not fetch file list from Google Drive - Invalid Page Token')
+
     except Exception as e:
         raise GoogleAPIException('Could not fetch file list from Google Drive.')
 
@@ -137,14 +152,17 @@ def get_worksheets(auth_json, spreadsheet_key):
 
 
 # Get all the data in a worksheet
-#  auth_json      : a JSON object of valid credentials
-#  spreadsheet_key : Identifier for the spreadsheet 
-#  worksheet_key  : Identifier for the worksheet
+#  auth_json        A JSON object of valid credentials
+#  spreadsheet_key  Identifier for the spreadsheet 
+#  worksheet_key    Identifier for the worksheet
+#  limit            The maximum number of data rows to return
 # 
-def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
+def get_cell_data(auth_json, spreadsheet_key, worksheet_key, limit=None):
     http = http_from_oauth2(auth_json)
     uri = 'https://spreadsheets.google.com/feeds/list/%s/%s/private/full' % (spreadsheet_key, worksheet_key)
     response = http.request(uri)
+
+    limit = limit if isinstance(limit, int) else 200000
 
     if "The spreadsheet at this URL could not be found" in response[1]:
         msg = "The worksheet with this id <%s> cannot be found. Make sure the owner of the spreadsheet hasn't deleted it." % spreadsheet_key
@@ -169,22 +187,29 @@ def get_cell_data(auth_json, spreadsheet_key, worksheet_key):
             'id':            worksheet_key,
             'title':         _val(feed.find('%stitle' % atom).text),
             'updated':       _val(feed.find('%supdated' % atom).text),
-            'total_results': _val(feed.find('%stotalResults' % search).text),
             'start_index':   _val(feed.find('%sstartIndex' % search).text),
             'author': {
                 'name':      _val(feed.find('.//%sname' % atom).text),
                 'email':     _val(feed.find('.//%semail' % atom).text),
             },
             'data_rows':     [],
+            'headings':      [],
         }
 
         # Format cell data
         for entry in feed.findall('%sentry' % atom):
-            row = {}
-            for field in entry:
-                if gsx in field.tag:
-                    row[_key(field.tag)] = _val(field.text)
-            data['data_rows'].append(row)
+            if len(data['data_rows']) < limit:
+                row = {}
+                for field in entry:
+                    if gsx in field.tag:
+                        row[_key(field.tag)] = _val(field.text)
+                data['data_rows'].append(row)
+
+        data['total_results'] = len(data['data_rows'])
+
+        if len(data['data_rows']):
+            data['headings'] = [h for h in data['data_rows'][0].keys()]
+            
         return data
 
     except Exception as e:

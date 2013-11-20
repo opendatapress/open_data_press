@@ -18,11 +18,11 @@ from controllers import dashboard
 from controllers import api
 
 
-__author__  = "YOUR NAME"
-__website__ = "http://example.com"
-__email__   = "you@example.com"
+__author__  = "Craig Russell"
+__website__ = "http://opendatapress.org"
+__email__   = "craig@craig-russell.co.uk"
 __licence__ = "MIT"
-__version__ = "0.1"
+__version__ = "0.1" # Display in view templates with {{VERSION}}
 
 # Map route patterns to controller handlers
 routes = [
@@ -47,6 +47,7 @@ routes = [
     (r'/api/0/data_source/(\d+)/?',             api.DataSourceItemRoute),
     (r'/api/0/data_source/(\d+)/view/?',        api.DataViewListRoute),
     (r'/api/0/data_source/(\d+)/view/(\d+)/?',  api.DataViewItemRoute),
+    (r'/api/0/template/preview/?',              api.TemplatePreviewRoute),
     (r'/api/.*',                                api.Error404Route),
     (r'/api/?',                                 api.Error404Route),
 

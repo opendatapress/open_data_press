@@ -22,6 +22,13 @@ class TestDataSourceModel(unittest.TestCase):
         self.testbed.deactivate()
 
 
+    def make_data_source(self):
+        ds = DataSource(**dummy.data_source)
+        ds.user = self.user.key()
+        ds.put()
+        return ds
+
+
     def test_data_source_properties_exist(self):
         ds = DataSource(**dummy.data_source)
         self.assertTrue('created_at'         in dir(ds))
@@ -34,6 +41,11 @@ class TestDataSourceModel(unittest.TestCase):
         self.assertTrue('tags'               in dir(ds))
         self.assertTrue('tbl_stars'          in dir(ds))
         self.assertTrue('title'              in dir(ds))
+
+
+    def test_data_source_instance_methods_exist(self):
+        ds = DataSource(**dummy.data_source)
+        self.assertTrue('to_dict' in dir(ds))
 
 
     def test_data_source_required_properties(self):
@@ -70,27 +82,30 @@ class TestDataSourceModel(unittest.TestCase):
 
     def test_data_source_create(self):
         ds_count_a = DataSource.all().count()
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
-        ds_count_b = DataSource.all().count()
-        self.assertTrue(ds_count_a + 1, ds_count_b)
+        ds = self.make_data_source()
+        self.assertEqual(ds_count_a + 1, DataSource.all().count())
 
 
     def test_data_source_delete(self):
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
+        ds = self.make_data_source()
         ds_count_a = DataSource.all().count()
         ds.delete()
-        ds_count_b = DataSource.all().count()
-        self.assertTrue(ds_count_a, ds_count_b + 1)
+        self.assertEqual(ds_count_a -1, DataSource.all().count())
 
 
-    def test_data_sources_list(self):
-        ds_count_a = self.user.data_sources.count()
-        ds = DataSource(**dummy.data_source)
-        ds.user = self.user.key()
-        ds.put()
-        ds_count_b = self.user.data_sources.count()
-        self.assertTrue(ds_count_a + 1, ds_count_b)
+    def test_data_source_method_to_dict(self):
+        ds = self.make_data_source()
+        data = ds.to_dict()
+        self.assertTrue('created_at'         in data)
+        self.assertTrue('data_views'         in data)
+        self.assertTrue('description'        in data)
+        self.assertTrue('google_spreadsheet' in data)
+        self.assertTrue('google_worksheet'   in data)
+        self.assertTrue('id'                 in data)
+        self.assertTrue('licence'            in data)
+        self.assertTrue('modified_at'        in data)
+        self.assertTrue('slug'               in data)
+        self.assertTrue('tags'               in data)
+        self.assertTrue('tbl_stars'          in data)
+        self.assertTrue('title'              in data)
+        self.assertTrue('user_id'            in data)

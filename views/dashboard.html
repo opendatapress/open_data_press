@@ -14,7 +14,6 @@
     <!-- Alert Messages -->
 </div>
 <div class="navbar navbar-default navbar-static-top" role="navigation">
-
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -27,90 +26,265 @@
 
     <div class="collapse navbar-collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
+            <li><a class="navbar-link" href="/dashboard">Dashboard</a></li>
             <li><a class="navbar-link" href="/{{current_user.profile_slug|e}}" target="_blank">My Profile</a></li>
             <li><a class="navbar-link" href="#/settings">Settings</a></li>
             <li><a class="navbar-link" href="/auth/logout">Logout</a></li>
         </ul>
     </div>
-
 </div>
-<div class="left-fixed">
-    <div class="list-group" role="navigation">
-        <a class="list-group-item" href="/dashboard">Dashboard</a>
-        <a class="list-group-item" href="#/import-data">Import Data from Drive</a>
-        <a class="list-group-item" href="#/data-source">All Data Sources</a>
-        <a class="list-group-item" href="#/data-source/10">Data Source 10</a>
-        <a class="list-group-item" href="#/data-view">All Data Views</a>
-        <a class="list-group-item" href="#/data-view/10">Data View 10</a>
-    </div>
-    <div class="left-footer">
-        <hr>
-        Open Data Press v0.1 <br>
-        <a href="#">Help</a> -
-        <a href="#">About</a> -
-        <a href="#">Contact</a>
-    </div>
-</div>
-<div class="right-fluid" id="dash-content">
+<div id="dash-panel" >
+    <div class="container" id="dash-content">
     <!-- Dashboard Content -->
+    </div>
+</div>
+<div id="dash-footer" class="text-muted">
+    <a href="#/help">Help</a> - 
+    <a href="#/about">About</a> - 
+    <a href="#/contact">Contact</a> - 
+    <a href="https://github.com/opendatapress/open_data_press/" target="_blank">Source</a> -
+    Open Data Press v{{VERSION}}
 </div>
 {% endblock %}
 
 
 {% block templates %}
-{% raw %}
 <script id="tpl-spinner" type="text/html">
-    <div class="spinner text-center">
-        <img src="/img/spinner.gif">
+    <div class="spinner text-center text-muted">
+        <h1>Working&hellip; Please wait.</h1>
+        <i class="icon-spinner"></i>
     </div>
 </script>
 
+<script id="tpl-dashboard" type="text/html">
+    <h1>Dashboard Home</h1>
+    <div class="card text-center">
+        <a href="#/data-source" class="btn btn-primary btn-lg">&nbsp;&nbsp;&nbsp;View All My Data Sources&nbsp;&nbsp;&nbsp;</a>
+    </div>
+    <div class="card">
+        <h2>Hello!</h2>
+        <p>Thank you for trying out <strong>Open Data Press</strong> v0.1.</p>
+        <p>Open Data Press makes it easy to publish Open Data from your Google Spreadsheets.</p>
+        <p>To find out more, <a href="https://github.com/opendatapress/open_data_press/wiki">check out the wiki</a>.</p>
+        <hr>
+        <h3>Getting  Started</h3>
+        <p>You can get started by <a href="#/drive">creating a Data Source from a Google Drive Spreadsheet</a>.</p>
+        <p>If you have already created some Data Sources, hit the big button above to see them.</p>
+        <p>Once you&apos;ve published some Open Data, it&apos;ll be listed on your <a href="/{{current_user.profile_slug|e}}">public profile</a>.</p>
+        <p>You can edit your public profile in the <a href="#/settings">settings</a>.</p>
+        <hr>
+        <h3>Reporting Problems</h3>
+        <p>If you have any suggestions for improvements or encounter any problems, please <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">log an issue</a> on the GitHub repository.</p>
+        <p>For everything else, you can get in touch with me on <a href="mailto:craig@craig-russell.co.uk" target="_blank">email</a> and <a href="http://twitter.com/craig552uk" target="_blank">twitter</a>.</p>
+        <hr>
+        <p>Thanks again!<p>
+        <p style="margin-left:40px;">&mdash; Craig</p>
+    </div>
+</script>
+
+{% raw %}
 <script id="tpl-message" type="text/x-handlebars-template">
-    <div class="alert alert-dismissable alert-{{type}}">
+    <div class="alert alert-dismissable alert-{{type}}" style="display:none;">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         {{{message}}}
     </div>
 </script>
-<script id="tpl-dashboard" type="text/html">
-    <h1>Dashboard Home</h1>
-    <div class="content">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, similique, 
-        ex, eius, ut tenetur excepturi eos dolorem dolores quis quas ad sapiente veniam 
-        sequi dicta fugit laudantium laboriosam. Nisi, illo.</p>
+
+
+<script id="tpl-data-source-list" type="text/x-handlebars-template">
+    <h1>All Data Sources</h1>
+    {{#if this.data_sources}}
+        {{#each data_sources}}
+            <div class="card">
+                <h3>
+                    {{this.title}}
+                    <a class="btn btn-info btn-xs" href="#/data-source/{{this.id}}">Edit</a>
+                </h3>
+                <p>Created at: <strong>{{this.created_at}}</strong></p>
+                <p>Last modified at: <strong>{{this.modified_at}}</strong></p>
+                <p>Tags: <strong>{{this.tags}}</strong></p>
+                <p>TBL Stars: <strong>{{this.tbl_stars}}</strong> <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></p>
+                <p>Description: <strong>{{this.description}}</strong></p>
+                <p>Licence: <strong>{{this.licence}}</strong></p>
+
+                <p>Public URL: <a href="{{this.public_url}}" target="_blank">{{this.public_url}}</a></p>
+                <p>Spreadsheet URL: <a href="{{this.spreadsheet_url}}" target="_blank">{{this.spreadsheet_url}}</a></p>
+                <p>
+                </p>
+                <hr>
+                <h4>Published As&hellip;</h4>
+                {{#if this.data_views}}
+                    <ul>
+                        {{#each this.data_views}}
+                            <li>
+                                <strong>{{this.filetype}}</strong> - 
+                                <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
+                                <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Add another View</a>
+                    </p>
+                {{else}}
+                    <p>
+                        This data is not yet published. To publish it you must create a View.
+                    </p>
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Create View for this Data</a>
+                    </p>
+                {{/if}}
+            </div>
+        {{/each}}
+        <div class="card text-center">
+            <a href="#/drive" class="btn btn-primary">Add Another Data Source from Google Drive</a>
+        </div>
+    {{else}}
+        <div class="card text-center">
+        <p>You have not yet created any Data Sources from your Google Worksheets.</p>
+        <p><a class="btn btn-primary" href="#/drive">Create one Now!</a></p>
+        </div>
+    {{/if}}
+</script>
+
+<script id="tpl-data-source-edit" type="text/x-handlebars-template">
+    <h1>Edit Data Source</h1>
+    <div class="card">
+        <form id="data-source-edit" role="form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" value="{{title}}" maxlength="500">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="5">{{description}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="licence">Licence</label>
+                <textarea class="form-control" id="licence" rows="5">{{licence}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="slug">Vanity URL</label>
+                <input type="text" class="form-control" id="slug" value="{{slug}}" maxlength="500">
+            </div>
+            <div class="form-group">
+                <label for="tags">Tags (comma seperated)</label>
+                <input type="text" class="form-control" id="tags" value="{{tags}}" maxlength="500">
+            </div>
+            <div class="form-group">
+                <label for="tbl_stars">TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></label>
+                <!-- TODO Replace with nicer 5-star selector issue#25-->
+                <input type="number" class="form-control" id="tbl_stars" value="{{tbl_stars}}" min="0" max="5" maxlength="1">
+            </div>
+            <hr>
+            <div class="form-group">
+                <input type="hidden" id="id" value="{{id}}">
+                <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
+                <a href="#/data-source" class="btn btn-link">Cancel</a>
+                <button type="button" id="delete" class="btn btn-danger pull-right">Delete</button>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script id="tpl-data-view-add" type="text/x-handlebars-template">
+    <h1>Create Data View for &quot;{{title}}&quot;</h1>
+    <div class="card">
+        <p>Select the type of data view your want to create.</p>
+        <form class="row" id="data-view-add">
+            <div class="col-sm-2" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'html' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="html"  data-mime="text/html">HTML</button>
+            </div>
+            <div class="col-sm-2" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'txt' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="txt"  data-mime="text/plain">Plain Text</button>
+            </div>
+            <div class="col-sm-2" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'csv' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="csv"  data-mime="text/csv">CSV</button>
+            </div>
+            <div class="col-sm-2" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'json' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="json" data-mime="application/json">JSON</button>
+            </div>
+            <div class="col-sm-2" style="margin-bottom:10px">
+                <button class="data-view-type btn btn-primary btn-lg btn-block" {{#if_in_array 'xml' used_extensions}}disabled="disabled"{{/if_in_array}} data-source-id="{{id}}" data-ext="xml"  data-mime="application/xml">XML</button>
+            </div>
+        </form>
+        <p><span class="text-muted">Data sources can have multiple views, but ony one of each type.</span></p>
+    </div>
+</script>
+
+<script id="tpl-data-view-edit" type="text/x-handlebars-template">
+    <h1>Edit {{filetype}} Data View</h1>
+    <div class="card">
+        <form id="data-view-edit" role="form">
+            <div class="form-group">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab"  id="tab-write" href="#write">Write</a></li>
+                    <li><a data-toggle="tab" id="tab-preview" href="#preview">Preview</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="write">
+                        <textarea class="form-control" id="template" rows="20" data-template-type="{{extension}}">{{template}}</textarea>
+                    </div>
+                    <div class="tab-pane" id="preview">
+                        <textarea class="form-control" id="preview" rows="20" data-template-type="{{extension}}" disabled="disabled"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" id="source-id" value="{{source_id}}">
+                <input type="hidden" id="view-id" value="{{id}}">
+                <input type="hidden" id="sample-data" value="{{sample-data}}">
+                <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
+                <a href="#/data-source" class="btn btn-link">Cancel</a>
+                <button id="delete" class="btn btn-danger pull-right">Delete</button>
+            </div>
+        </form>
     </div>
 </script>
 
 <script id="tpl-help" type="text/html">
-    <h1>Oops! Error</h1>
-    <div class="content">
-        <p>I&apos;m sorry, something has gone wrong.</p>
-        <p>TODO: Add help and supprt info.</p>
+    <h1>Error</h1>
+    <div class="card">
+        <h2>I&apos;m Sorry, something has gone wrong</h2>
+        <p>This is an early release of Open Data Press. It does have some rough edges.</p>
+        <p>To fix this problem, here&apos;s a few things you can try</p>
+        <ol>
+            <li>Try <a href="#" onClick="window.location.reload()">refreshing the page</a>. This is usually enough to fix most problems you might encounter.</li>
+            <li>Go back to the <a href="/dashboard">Dashboard home</a> and try again.</li>
+            <li><a href="/auth/logout">Log out</a>, then log back in again.</li>
+            <li>Close your browser and start over.</li>
+        </ol>
+        <p>If you&apos;ve tried all these things and still encounter a problem, please do <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">report it</a>. There could be something deeper going wrong.</p>
+        <p>When you log a ticket, please tell me <strong>what you did</strong> when the error occurred, and if there were any <strong>error messages</strong> too.</p>
+        <p>Thank you for your help<p>
+        <p style="margin-left:40px;">&mdash; Craig</p>
+        <hr>
+        <p class="text-center"><a class="btn btn-primary btn-lg" href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">Report A Problem</a></p>
     </div>
 </script>
 
 <script id="tpl-settings" type="text/x-handlebars-template">
     <h1>Profile Settings</h1>
-    <div class="content">
-        <form id="form-settings" role="form">
+    <div class="card">
+        <form id="settings" role="form">
             <div class="form-group">
                 <label for="profile_name">Name</label>
-                <input type="text" class="form-control" id="profile_name" value="{{profile_name}}">
+                <input type="text" class="form-control" id="profile_name" value="{{profile_name}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="profile_description">Description</label>
-                <textarea class="form-control" id="profile_description">{{profile_description}}</textarea>
+                <textarea class="form-control" id="profile_description" rows="5">{{profile_description}}</textarea>
             </div>
             <div class="form-group">
                 <label for="profile_email">Email</label>
-                <input type="email" class="form-control" id="profile_email" value="{{profile_email}}">
+                <input type="email" class="form-control" id="profile_email" value="{{profile_email}}" maxlength="500">
             </div>
             <div class="form-group">
                 <label for="profile_web_address">Web Address</label>
-                <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}">
+                <input type="text" class="form-control" id="profile_web_address" value="{{profile_web_address}}" maxlength="500">
             </div>
             <hr>
             <div class="form-group">
-                <input type="hidden" id="google_id" value="{{google_id}}">
                 <button type="submit" id="submit" class="btn btn-primary">Save Changes</button>
                 <a href="#" class="btn btn-link">Cancel</a>
             </div>
@@ -120,38 +294,62 @@
 
 <script id="tpl-google-sheets" type="text/x-handlebars-template">
     <h1>Spreadsheets on Google Drive</h1>
-    <div class="content">
+    <div class="card" id="google-sheets">
         <p>Choose a spreadsheet to import</p>
-        <ul>
-        {{#each files}}
-            <li>
-                <a class="drive-spreadsheet" data-key="{{this.id}}" data-title="{{this.title}}" href="#">
-                    <h4>{{this.title}}</h4>
-                    <p><strong>Owners:</strong> {{this.ownerNames}}</p>
-                    <p><img src="{{this.thumbnailLink}}"></p>
-                </a>
-            </li>
-        {{/each}}
-        </ul>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Owners</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each files}}
+                    <tr>
+                        <td>{{this.title}}</td>
+                        <td>{{this.ownerNames}}</td>
+                        <td><a class="drive-spreadsheet btn btn-primary btn-sm" href="#/drive/{{this.id}}">Import</a></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <p class="text-center">
+            <span style="display:none" class="loader"><i class="icon-spinner"></i></span>
+            <a href="#" class="more-link btn btn-default" data-next-page-url="{{next_page_url}}">Load more</a>
+        </p>
     </div>
+</script>
+
+<script id="tpl-google-sheets-more" type="text/x-handlebars-template">
+    {{#each files}}
+        <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.ownerNames}}</td>
+            <td><a class="drive-spreadsheet btn btn-primary btn-sm" href="#/drive/{{this.id}}">Import</a></td>
+        </tr>
+    {{/each}}
 </script>
 
 <script id="tpl-google-worksheets" type="text/x-handlebars-template">
     <h1>Worksheets in Spreadsheet</h1>
-    <div class="content">
+    <div class="card">
         <p>Choose a worksheet to import from <strong>{{title}}</strong></p>
-        <ul>
         {{#each worksheets}}
-            <li><a class="drive-worksheet" data-key="{{../key}}" data-id="{{this.id}}" data-title="{{this.title}}" href="#">{{this.title}}</a></li>
+            <p><a class="drive-worksheet btn btn-primary" href="#/drive/{{../key}}/{{this.id}}">{{this.title}}</a></p>
         {{/each}}
-        </ul>
+        <hr>
+        <p>
+            <a class="btn btn-default" href="#/drive/">Go Back</a>
+            <a class="btn btn-link" href="#/">Cancel</a>
+        </p>
     </div>
 </script>
 
 <script id="tpl-google-table" type="text/x-handlebars-template">
     <h1>Data in Worksheet</h1>
-    <div class="content clearfix">
-        <p>Data in <strong>{{title}}</strong></p>
+    <div class="card clearfix">
+        <p>Preview of data in <strong>{{title}}</strong> <em>(max 5 rows)</em></p>
         <div class="table-wrapper">
             <table class="table table-striped">
                 <thead>
@@ -175,7 +373,9 @@
             </table>
         </div>
         <hr>
-        <button id="import-data" class="btn btn-primary pull-right" data-title="{{title}}" data-key="{{key}}" data-id="{{id}}">Import Data</button>
+        <a class="btn btn-default" href="#/drive/{{key}}">Go Back</a>
+        <a class="btn btn-link" href="#/">Cancel</a>
+        <button id="create-data-source" class="btn btn-primary pull-right" data-key="{{key}}" data-id="{{id}}" data-title="{{title}}">Import Data</button>
     </div>
 </script>
 

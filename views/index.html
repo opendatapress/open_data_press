@@ -6,8 +6,30 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Welcome</h1>
-  <p>{{ message }}</p>
+    <h2>Hello!</h2>
+    <p>Thank you for trying out <strong>Open Data Press</strong> v0.1.</p>
+    <p>Open Data Press makes it easy to publish Open Data from your Google Spreadsheets.</p>
+    <ol>
+        <li><strong>Create a spreadsheet in Google Drive.</strong><br>
+            Share, collaborate and refine your data as usual.</li>
+        <li><strong>Design a custom template in OpenDataPress.</strong><br>
+            Format your data the way you want it - any mark-up, any schema.</li>
+        <li><strong>Publish your Open Data.</strong><br>
+            Your Open Data is automatically updated whenever your Google Spreadsheet is changed.</li>
+    </ol>
+    <p>This first release is a bit rough around the edges, but hopefully clear enough to demonstrate the concept.</p>
+    <p>To find out more, <a href="https://github.com/opendatapress/open_data_press/wiki">check out the wiki</a>.</p>
+    <hr>
+    <h3>Getting  Started</h3>
+    <p>Get started by <a href="/auth/login">Logging in</a>.</p>
+    <p>If you're running your own instance, be sure to include your Google API keys in the <a href="https://github.com/opendatapress/open_data_press/wiki/Configuration">configuration files</a>, otherwise nothing will work. ;)</p>
+    <hr>
+    <h3>Reporting Problems</h3>
+    <p>If you have any suggestions for improvements or encounter any problems, please <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">log an issue</a> on the GitHub repository.</p>
+    <p>For everything else, you can get in touch with me on <a href="mailto:craig@craig-russell.co.uk" target="_blank">email</a> and <a href="http://twitter.com/craig552uk" target="_blank">twitter</a>.</p>
+    <hr>
+    <p>Thanks again!<p>
+    <p style="margin-left:40px;">&mdash; Craig</p>
 {% endblock %}
 
 {% block javascripts %}

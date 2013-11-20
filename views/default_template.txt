@@ -1,0 +1,7 @@
+Title: {{title|e}}
+Author: {{author.name|e}}
+Email: {{author.email|e}}
+
+{% for heading in headings %}{{heading|e}} {% endfor %}
+<% for row in data_rows %>{% for heading in headings %}<%= row.{{heading|e}} %> {% endfor %}
+<% endfor %>

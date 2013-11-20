@@ -1,0 +1,3 @@
+{% for heading in headings %}"{{heading|e}}"{% if not loop.last %},{% endif %}{% endfor %}
+<% for row in data_rows %>{% for heading in headings %}"<%= row.{{heading|e}} %>"{% if not loop.last %},{% endif %}{% endfor %}
+<% endfor %>

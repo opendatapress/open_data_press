@@ -1,0 +1,15 @@
+{
+  "title":"{{title|e}}",
+  "generated_by":"opendatapress.org",
+  "author":{
+    "name":"{{author.name|e}}",
+    "email":"{{author.email|e}}"
+  },
+  "data":[
+    <% for row in data_rows %>
+      { {% for heading in headings %}
+        "{{heading|e}}":"<%= row.{{heading|e}} %>"{% if not loop.last %},{% endif %}{% endfor %}
+      }<% if not loop.last %>,<% endif %>
+    <% endfor %>
+  ]
+}

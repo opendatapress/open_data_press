@@ -19,50 +19,68 @@ html, body {
     margin-bottom: 0;
 }
 
-.left-fixed {
+#dash-panel {
     position: absolute;
     top: 51px;
+    bottom: 0;
     left: 0;
-    bottom: 0;
-    width:200px;
-    border-right: 3px solid lightgrey;
-    padding: 3px;
-}
-
-.left-footer {
-    position: absolute;
-    bottom: 10px;
-    width: 192px;
-    text-align: center;
-    font-size: 0.9em;
-    color: #696969;
-}
-
-.right-fluid {
-    position: absolute;
-    top: 51px;
-    left: 200px;
-    bottom: 0;
     right: 0;
     overflow-y: scroll;
     background-color: #e5e5e5;
-    padding: 10px 20px;
 }
 
-.content {
+#dash-footer {
+    position: absolute;
+    bottom: 0;
+    left:0;
+    right:0;
+    text-align:center;
+    font-size: 0.9em;
+    line-height: 20px;
+    vertical-align: middle;
+}
+
+.card {
     border: 1px solid #c6c6c6;
     background-color: #FFF;
     padding: 20px;
-}
-
-@media (min-width: 1200px) {
-    .content{
-        max-width: 950px;
-    }
+    margin-bottom: 20px;
 }
 
 .table-wrapper {
     overflow-x: scroll;
     border: 1px solid #c9c9c9;
     padding: 2px;
+}
+
+.text-muted a {
+    color: #999;
+    text-decoration: underline;
+}
+
+.text-muted a:hover,
+.text-muted a:focus {
+    color: #666;
+}
+
+.spinner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50%;
+}
+
+i.icon-spinner {
+    display: inline-block;
+    width: 31px;
+    height: 31px;
+    background-image: url('/img/spinner.gif');
+}
+
+.nav-tabs {
+    margin-bottom: 15px;
+}
+
+form#data-view-edit textarea {
+    font-family: monospace;
 }
