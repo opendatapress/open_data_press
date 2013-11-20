@@ -14,15 +14,16 @@
 
 
     /* Handlebars Templates */
-    tpl_settings          = Handlebars.compile($('#tpl-settings').html()),
-    tpl_message           = Handlebars.compile($('#tpl-message').html()),
-    tpl_data_source_list  = Handlebars.compile($('#tpl-data-source-list').html()),
-    tpl_data_source_edit  = Handlebars.compile($('#tpl-data-source-edit').html()),
-    tpl_data_view_add     = Handlebars.compile($('#tpl-data-view-add').html()),
-    tpl_data_view_edit    = Handlebars.compile($('#tpl-data-view-edit').html()),
-    tpl_google_sheets     = Handlebars.compile($('#tpl-google-sheets').html()),
-    tpl_google_worksheets = Handlebars.compile($('#tpl-google-worksheets').html()),
-    tpl_google_table      = Handlebars.compile($('#tpl-google-table').html()),
+    tpl_settings           = Handlebars.compile($('#tpl-settings').html()),
+    tpl_message            = Handlebars.compile($('#tpl-message').html()),
+    tpl_data_source_list   = Handlebars.compile($('#tpl-data-source-list').html()),
+    tpl_data_source_edit   = Handlebars.compile($('#tpl-data-source-edit').html()),
+    tpl_data_view_add      = Handlebars.compile($('#tpl-data-view-add').html()),
+    tpl_data_view_edit     = Handlebars.compile($('#tpl-data-view-edit').html()),
+    tpl_google_sheets      = Handlebars.compile($('#tpl-google-sheets').html()),
+    tpl_google_sheets_more = Handlebars.compile($('#tpl-google-sheets-more').html()),
+    tpl_google_worksheets  = Handlebars.compile($('#tpl-google-worksheets').html()),
+    tpl_google_table       = Handlebars.compile($('#tpl-google-table').html()),
 
 
     /* Set the page title */
@@ -416,6 +417,34 @@
         .error(function(res){ 
             showError(res);
         });
+        return false;
+    })
+
+    // Load more Drive Files
+    .on('click', '#google-sheets.card a.more-link', function(){
+        var 
+        table   = $('#google-sheets.card table tbody'),
+        spinner = $('#google-sheets.card span.loader'),
+        button  = $(this),
+        api_url = button.attr('data-next-page-url');
+        // Show spinner in place of button
+        button.hide();
+        spinner.show();
+        $.ajax(api_url)
+        .success(function(res){
+            table.append(tpl_google_sheets_more(res.body));
+            spinner.hide();
+            if (res.body.next_page_url){
+                button.show();
+                button.attr('data-next-page-url', res.body.next_page_url);
+            }else{
+                button.remove();
+            }
+        })
+        .error(function(res){ 
+            showError(res);
+        });
+
         return false;
     })
 })()

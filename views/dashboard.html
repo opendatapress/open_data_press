@@ -294,7 +294,7 @@
 
 <script id="tpl-google-sheets" type="text/x-handlebars-template">
     <h1>Spreadsheets on Google Drive</h1>
-    <div class="card">
+    <div class="card" id="google-sheets">
         <p>Choose a spreadsheet to import</p>
         <table class="table table-striped">
             <thead>
@@ -314,7 +314,21 @@
                 {{/each}}
             </tbody>
         </table>
+        <p class="text-center">
+            <span style="display:none" class="loader"><i class="icon-spinner"></i></span>
+            <a href="#" class="more-link btn btn-default" data-next-page-url="{{next_page_url}}">Load more</a>
+        </p>
     </div>
+</script>
+
+<script id="tpl-google-sheets-more" type="text/x-handlebars-template">
+    {{#each files}}
+        <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.ownerNames}}</td>
+            <td><a class="drive-spreadsheet btn btn-primary btn-sm" href="#/drive/{{this.id}}">Import</a></td>
+        </tr>
+    {{/each}}
 </script>
 
 <script id="tpl-google-worksheets" type="text/x-handlebars-template">
