@@ -23,7 +23,7 @@ class LoginRoute(SessionHandler):
         # Force refresh of auth tokens for now issue#22
         flow = google_api.oauth2_flow(approval_prompt='force')
 
-        # This is causing some problems I've not yet knocked all the kinks out of issue#22
+        # TODO This is causing some problems I've not yet knocked all the kinks out of issue#22
         # if 'approval_prompt' in self.request.GET.keys():
         #     # Force refresh of authentication tokens
         #     flow = google_api.oauth2_flow(approval_prompt='force')
@@ -79,25 +79,27 @@ class OAuth2CallbackRoute(SessionHandler):
                     modified_at   = now, 
                     last_login_at = now)
 
+            # We expect a refresh token, so store it issue#22
+            user.credentials = auth.to_json()
+
             # TODO The following may be causing occasional invalid grant errors issue#22
+            # logging.debug("User Refresh Token: %s" % user.refresh_token())
 
-            logging.debug("User Refresh Token: %s" % user.refresh_token())
-
-            # Do nothing if we have a refresh token
-            if user.refresh_token():
-                logging.debug("User has existing Refresh Token")
-                pass
+            # # Do nothing if we have a refresh token
+            # if user.refresh_token():
+            #     logging.debug("User has existing Refresh Token")
+            #     pass
         
-            # Store refresh token if we can
-            elif None == user.refresh_token() and auth.refresh_token:
-                logging.debug("Storing Refresh Token for User")
-                user.credentials = auth.to_json()
+            # # Store refresh token if we can
+            # elif None == user.refresh_token() and auth.refresh_token:
+            #     logging.debug("Storing Refresh Token for User")
+            #     user.credentials = auth.to_json()
     
-            # Go get a refresh token if we need one
-            else:
-                logging.debug("Fetching Refresh Token")
-                logging.debug("Redirect to: /auth/login?approval_prompt")
-                return self.redirect('/auth/login?approval_prompt')
+            # # Go get a refresh token if we need one
+            # else:
+            #     logging.debug("Fetching Refresh Token")
+            #     logging.debug("Redirect to: /auth/login?approval_prompt")
+            #     return self.redirect('/auth/login?approval_prompt')
 
             # Update user account
             # https://github.com/opendatapress/open_data_press/issues/5#issuecomment-23477495
