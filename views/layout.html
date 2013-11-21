@@ -20,13 +20,15 @@
         <div class="header">
             <nav>
                 <strong><a href="/">Open Data Press</a></strong>
-                {% if current_user %}
-                | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
-                | <a href="/dashboard">Dashboard</a>
-                | <a href="/auth/logout">Logout</a>
-                {% else %}
-                | <a href="/auth/login">Login</a>
-                {% endif %}
+                {% block current_user %}
+                    {% if current_user %}
+                    | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
+                    | <a href="/dashboard">Dashboard</a>
+                    | <a href="/auth/logout">Logout</a>
+                    {% else %}
+                    | <a href="/auth/login">Login</a>
+                    {% endif %}
+                {% endblock %}
             </nav>
         </div>
         
