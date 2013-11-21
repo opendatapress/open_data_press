@@ -13,7 +13,6 @@ class HomeRoute(SessionHandler):
         data = {}
         data['current_user'] = self.current_user().to_dict() if self.current_user() else {}
         data['recent_data']  = [ds.to_dict() for ds in DataSource.get_recently_created(limit=5)]
-        logging.info(data['recent_data'])
         body = render('index.html', data)
         self.response.write(body)
 
