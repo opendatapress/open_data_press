@@ -6,30 +6,51 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Hello!</h2>
-    <p>Thank you for trying out <strong>Open Data Press</strong> v0.1.</p>
-    <p>Open Data Press makes it easy to publish Open Data from your Google Spreadsheets.</p>
-    <ol>
-        <li><strong>Create a spreadsheet in Google Drive.</strong><br>
-            Share, collaborate and refine your data as usual.</li>
-        <li><strong>Design a custom template in OpenDataPress.</strong><br>
-            Format your data the way you want it - any mark-up, any schema.</li>
-        <li><strong>Publish your Open Data.</strong><br>
-            Your Open Data is automatically updated whenever your Google Spreadsheet is changed.</li>
-    </ol>
-    <p>This first release is a bit rough around the edges, but hopefully clear enough to demonstrate the concept.</p>
-    <p>To find out more, <a href="https://github.com/opendatapress/open_data_press/wiki">check out the wiki</a>.</p>
-    <hr>
-    <h3>Getting  Started</h3>
-    <p>Get started by <a href="/auth/login">Logging in</a>.</p>
-    <p>If you're running your own instance, be sure to include your Google API keys in the <a href="https://github.com/opendatapress/open_data_press/wiki/Configuration">configuration files</a>, otherwise nothing will work. ;)</p>
-    <hr>
-    <h3>Reporting Problems</h3>
-    <p>If you have any suggestions for improvements or encounter any problems, please <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">log an issue</a> on the GitHub repository.</p>
-    <p>For everything else, you can get in touch with me on <a href="mailto:craig@craig-russell.co.uk" target="_blank">email</a> and <a href="http://twitter.com/craig552uk" target="_blank">twitter</a>.</p>
-    <hr>
-    <p>Thanks again!<p>
-    <p style="margin-left:40px;">&mdash; Craig</p>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <h2>Hello!</h2>
+                <p>Thank you for trying out <strong>Open Data Press</strong> v0.1.</p>
+                <p>Open Data Press makes it easy to publish Open Data from your Google Spreadsheets.</p>
+                <ol>
+                    <li><strong>Create a spreadsheet in Google Drive.</strong><br>
+                        Share, collaborate and refine your data as usual.</li>
+                    <li><strong>Design a custom template in OpenDataPress.</strong><br>
+                        Format your data the way you want it - any mark-up, any schema.</li>
+                    <li><strong>Publish your Open Data.</strong><br>
+                        Your Open Data is automatically updated whenever your Google Spreadsheet is changed.</li>
+                </ol>
+                <p>This first release is a bit rough around the edges, but hopefully clear enough to demonstrate the concept.</p>
+                <p>To find out more, <a href="https://github.com/opendatapress/open_data_press/wiki">check out the wiki</a>.</p>
+                <hr>
+                <h3>Getting  Started</h3>
+                <p>Get started by <a href="/auth/login">Logging in</a>.</p>
+                <p>If you're running your own instance, be sure to include your Google API keys in the <a href="https://github.com/opendatapress/open_data_press/wiki/Configuration">configuration files</a>, otherwise nothing will work. ;)</p>
+                <hr>
+                <h3>Reporting Problems</h3>
+                <p>If you have any suggestions for improvements or encounter any problems, please <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">log an issue</a> on the GitHub repository.</p>
+                <p>For everything else, you can get in touch with me on <a href="mailto:craig@craig-russell.co.uk" target="_blank">email</a> and <a href="http://twitter.com/craig552uk" target="_blank">twitter</a>.</p>
+                <hr>
+                <p>Thanks again!<p>
+                <p style="margin-left:40px;">&mdash; Craig</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h2>New Open Data</h2>
+            {% for ds in recent_data %}
+                <div class="card">
+                    <h3><a href="{{ds.public_url|e}}">{{ds.title|e}}</a></h3>
+                    <p>Published by: <a href="/{{ds.user_profile_slug|e}}">{{ds.user_profile_name|e}}</a></p>
+                    {% if ds.data_views %}
+                        <p>Download as {% for dv in ds.data_views %} <a class="btn btn-xs btn-success" href="{{dv.download_url}}">{{dv.filetype|e}}</a> {% endfor %}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+
+
 {% endblock %}
 
 {% block javascripts %}

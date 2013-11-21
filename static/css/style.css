@@ -1,0 +1,10 @@
+html, body {
+    background-color: #e5e5e5;
+}
+
+.card {
+    border: 1px solid #c6c6c6;
+    background-color: #FFF;
+    padding: 0 20px 10px 20px;
+    margin-bottom: 20px;
+}

@@ -5,12 +5,15 @@
 import logging
 from helpers.sessions import SessionHandler
 from helpers.views import static, render
+from models.data_source import DataSource
 
 class HomeRoute(SessionHandler):
 
     def get(self):
-        current_user = self.current_user().to_dict() if self.current_user() else {}
-        data = {'message': 'Hello World!', 'current_user': current_user}
+        data = {}
+        data['current_user'] = self.current_user().to_dict() if self.current_user() else {}
+        data['recent_data']  = [ds.to_dict() for ds in DataSource.get_recently_created(limit=5)]
+        logging.info(data['recent_data'])
         body = render('index.html', data)
         self.response.write(body)
 

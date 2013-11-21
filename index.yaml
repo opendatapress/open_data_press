@@ -12,6 +12,12 @@ indexes:
 
 - kind: DataSource
   properties:
+  - name: data_views
+  - name: created_at
+    direction: desc
+
+- kind: DataSource
+  properties:
   - name: user
   - name: created_at
 
