@@ -31,8 +31,8 @@ handlers:
 - url: /img
   static_dir: static/img
 
-- url: /font
-  static_dir: static/font
+- url: /fonts
+  static_dir: static/fonts
 
 - url: /.*
   script: main.app
