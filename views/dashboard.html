@@ -113,15 +113,13 @@
                 <hr>
                 <h4>Published As&hellip;</h4>
                 {{#if this.data_views}}
-                    <ul>
-                        {{#each this.data_views}}
-                            <li>
-                                <strong>{{this.filetype}}</strong> - 
-                                <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
-                                <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
-                            </li>
-                        {{/each}}
-                    </ul>
+                    {{#each this.data_views}}
+                        <p>
+                            <strong>{{this.filetype}}</strong> - 
+                            <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
+                            <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
+                        </p>
+                    {{/each}}
                     <p>
                         <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Add another View</a>
                     </p>
