@@ -10,7 +10,7 @@
                 {% for ds in user.data_sources %}
                     <div class="card clearfix">
                         {% if ds.data_views %}
-                            <div class="pull-right" style="margin-top:20px; text-align:right;">
+                            <div class="pull-right" style="margin:20px 0 0 20px; text-align:right;">
                                 {% for view in ds.data_views %}
                                     <p><a class="btn btn-success" href="{{view.download_url|e}}" target="_blank">Download {{ view.filetype|e }}</a></p>
                                 {% endfor %}
@@ -25,7 +25,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="card">
+                <div class="card" style="padding-top:20px">
                     <p>{{user.profile_name|e}} hasn't published any Open Data... yet.</p>
                 </div>
             {% endif %}
