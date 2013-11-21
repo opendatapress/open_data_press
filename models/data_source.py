@@ -41,6 +41,8 @@ class DataSource(db.Model):
             'title':              self.title,
             'used_extensions':    self.used_extensions(),
             'user_id':            self.user.key().id(),
+            'user_profile_name':  self.user.profile_name,
+            'user_profile_slug':  self.user.profile_slug,
             'public_url':         self.public_url(),
             'spreadsheet_url':    self.spreadsheet_url(),
         }
@@ -63,3 +65,8 @@ class DataSource(db.Model):
     def get_by_slug(self, user, slug):
         """ Find a data source, belonging to the user, with the specified profile slug """
         return user.data_sources.filter('slug =', slug).get()
+
+    @classmethod
+    def get_recently_created(self, limit=10):
+        """Get the most recently created data sources"""
+        return DataSource.gql("ORDER BY created_at DESC").fetch(limit=limit)
