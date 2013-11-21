@@ -39,7 +39,7 @@
     </div>
 </div>
 <div id="dash-footer" class="text-muted">
-    Built by <a href="http://craig-russell.co.uk" target="_blank">Craig Russell</a> - 
+    Built with <i class="glyphicon glyphicon-heart" title=":heart:"></i> by <a href="http://craig-russell.co.uk" target="_blank">Craig Russell</a> - 
     <a href="https://github.com/opendatapress/open_data_press/wiki" target="_blank">About</a> - 
     <a href="https://github.com/opendatapress/open_data_press/" target="_blank">Source Code</a> -
     Open Data Press v{{VERSION}}
@@ -113,15 +113,13 @@
                 <hr>
                 <h4>Published As&hellip;</h4>
                 {{#if this.data_views}}
-                    <ul>
-                        {{#each this.data_views}}
-                            <li>
-                                <strong>{{this.filetype}}</strong> - 
-                                <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
-                                <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
-                            </li>
-                        {{/each}}
-                    </ul>
+                    {{#each this.data_views}}
+                        <p>
+                            <strong>{{this.filetype}}</strong> - 
+                            <a class="btn btn-info btn-xs" href="#/data-source/{{../id}}/{{this.id}}">Edit</a>
+                            <a class="btn btn-success btn-xs" href="{{this.download_url}}" target="_blank">Download Open Data</a>
+                        </p>
+                    {{/each}}
                     <p>
                         <a class="btn btn-primary btn-sm" href="#/data-source/{{this.id}}/add-data-view">Add another View</a>
                     </p>
@@ -216,6 +214,7 @@
     <div class="card">
         <form id="data-view-edit" role="form">
             <div class="form-group">
+                <p class="pull-right"><a href="https://github.com/opendatapress/open_data_press/wiki/View-Templates" target="_blank">Template Help</a></p>
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab"  id="tab-write" href="#write">Write</a></li>
                     <li><a data-toggle="tab" id="tab-preview" href="#preview">Preview</a></li>

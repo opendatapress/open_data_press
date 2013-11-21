@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block current_user %}
+{% endblock %}
+
+{% block content %}
+    <h1>I&apos;m Sorry, something has gone wrong</h1>
+    <div class="card">
+        <p class="text-muted" style="margin-top:20px">500 - Server Error</p>
+        <p>This is an early release of Open Data Press. It does have some rough edges.</p>
+        <p>If this problem keeps occurring, please do <a href="https://github.com/opendatapress/open_data_press/issues/new" target="_blank">report it</a>.</p>
+        <p>When you log a ticket, please tell me <strong>what you did</strong> when the error occurred, and if there were any <strong>error messages</strong> too.</p>
+        <p>Thank you for your help<p>
+        <p style="margin-left:40px;">&mdash; Craig</p>
+        <hr>
+        <p><a class="btn btn-primary btn-lg" href="/">Go Back Home</a></p>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

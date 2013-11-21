@@ -1,0 +1,46 @@
+html, body {
+    background-color: #e5e5e5;
+}
+
+.header {
+    background-color:#2B84C0;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.header nav {
+    line-height: 100px;
+    vertical-align: center;
+}
+
+.header nav a {
+    color: #FFF;
+    font-size: 16px;
+    margin-left: 20px;
+}
+
+.header nav a.brand {
+    font-size: 24px;
+    margin-left: 0;
+}
+
+.header nav a:hover, 
+.header nav a:focus {
+    color: #FFF;
+}
+
+.card {
+    border: 1px solid #c6c6c6;
+    background-color: #FFF;
+    padding: 0 20px 10px 20px;
+    margin-bottom: 20px;
+}
+
+.footer {
+    margin-top: 20px;
+    padding: 20px 0;
+    border-top: 1px solid #c6c6c6;
+    font-size: 13px;
+    text-align: center;
+    color: #666;
+}

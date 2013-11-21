@@ -3,33 +3,67 @@
 {% block title %}{{user.profile_name|e}}{% endblock %}
 
 {% block content %}
-    <h1>Profile for {{user.profile_name|e}}</h1>
-    <img src="{{ user.google_picture_url|e }}" width="150" heigth="150">
-    <dl class="dl-horizontal">
-        <dt>Profile Name</dt>        <dd>{{ user.profile_name|e }}</dd>
-        <dt>Created At</dt>          <dd>{{ user.created_at|e }}</dd>
-        <dt>Google Birthday</dt>     <dd>{{ user.google_birthday|e }}</dd>
-        <dt>Google Email</dt>        <dd>{{ user.google_email|e }}</dd>
-        <dt>Google Gender</dt>       <dd>{{ user.google_gender|e }}</dd>
-        <dt>Google ID</dt>           <dd>{{ user.google_id|e }}</dd>
-        <dt>Google Locale</dt>       <dd>{{ user.google_locale|e }}</dd>
-        <dt>Google Name</dt>         <dd>{{ user.google_name|e }}</dd>
-        <dt>Last Login At</dt>       <dd>{{ user.last_login_at|e }}</dd>
-        <dt>Modified At</dt>         <dd>{{ user.modified_at|e }}</dd>
-        <dt>Profile Description</dt> <dd>{{ user.profile_description|e }}</dd>
-        <dt>Profile Email</dt>       <dd>{{ user.profile_email|e }}</dd>
-        <dt>Profile Slug</dt>        <dd>{{ user.profile_slug|e }}</dd>
-        <dt>Profile Web Address</dt> <dd>{{ user.profile_web_address|e }}</dd>
-    </dl>
-
-    <h2>Published Open Data</h2>
-    {% if user.data_sources %}
-      <ul>
-        {% for data_source in user.data_sources %}
-            <li><a href="{{ data_source.public_url|e }}">{{ data_source.title|e }}</a></li>
-        {% endfor %}
-      </ul>
-    {% else %}
-        <p>This Open Data is not yet available in a downloadable format.</p>
-    {% endif %}
+    <h1>Open Data by {{user.profile_name|e}}</h1>
+    <div class="row">
+        <div class="col-sm-8">
+            {% if user.data_sources %}
+                {% for ds in user.data_sources %}
+                    <div class="card clearfix">
+                        {% if ds.data_views %}
+                            <div class="pull-right" style="margin:20px 0 0 20px; text-align:right;">
+                                {% for view in ds.data_views %}
+                                    <p><a class="btn btn-success" href="{{view.download_url|e}}" target="_blank">Download {{ view.filetype|e }}</a></p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <h3><a href="{{ ds.public_url|e }}">{{ ds.title|e }}</a></h3>
+                        <p>
+                            {% if ds.description %}
+                                {{ ds.description|e }}
+                            {% else %}
+                                The publisher of this data has not provided a description.
+                            {% endif %}
+                        </p>
+                        <hr>
+                        <p>
+                            TBL Stars 
+                            <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>:
+                            {% for star in range(5) %}
+                                {% if loop.index > ds.tbl_stars %}
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {% endif%}
+                            {% endfor %}
+                        </p>
+                        <p>Created: {{ ds.created_at|datetime }}</p>
+                        <p>Source Data: <a href="{{ ds.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></p>
+                        <p>Tags: {% for tag in ds.tags %} {{tag}} {% endfor %}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card" style="padding-top:20px">
+                    <p>{{user.profile_name|e}} hasn't published any Open Data... yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <p style="margin-top:20px;"><img src="{{ user.google_picture_url|e }}" width="150" height="150"></p>
+                <h3><strong>{{ user.profile_name|e }}</strong> ({{ user.profile_slug|e }})</h3>
+                {% if user.profile_description %}
+                    <p>{{ user.profile_description|e }}</p>
+                {% endif %}
+                <hr>
+                {% if user.profile_email %}
+                    <p>Email: <a href="mailto:{{ user.profile_email|e }}">{{ user.profile_email|e }}</a></p>
+                {% endif %}
+                {% if user.profile_web_address %}
+                    <p>Web: <a href="{{ user.profile_web_address|e }}">{{ user.profile_web_address|e }}</a></p>
+                {% endif %}
+                <p>Member since {{ user.created_at|date }}</p>
+                <p>Published data sets: {{ user.data_sources|count }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

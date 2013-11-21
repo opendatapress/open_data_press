@@ -5,12 +5,14 @@
 import logging
 from helpers.sessions import SessionHandler
 from helpers.views import static, render
+from models.data_source import DataSource
 
 class HomeRoute(SessionHandler):
 
     def get(self):
-        current_user = self.current_user().to_dict() if self.current_user() else {}
-        data = {'message': 'Hello World!', 'current_user': current_user}
+        data = {}
+        data['current_user'] = self.current_user().to_dict() if self.current_user() else {}
+        data['recent_data']  = [ds.to_dict() for ds in DataSource.get_recently_created(limit=5)]
         body = render('index.html', data)
         self.response.write(body)
 
@@ -18,12 +20,12 @@ class HomeRoute(SessionHandler):
 def error_404(request, response, exception):
     msg_info = (request.method, request.path_url, request.POST.items(), exception)
     logging.error("%s %s %s 404 '%s'" % msg_info)
-    response.write(static('404.html'))
+    response.write(render('404.html'))
     response.set_status(404)
 
 
 def error_500(request, response, exception):
     msg_info = (request.method, request.path_url, request.POST.items(), exception, exception.__class__)
     logging.error("%s %s %s 500 '%s' %s" % msg_info)
-    response.write(static('500.html'))
+    response.write(render('500.html'))
     response.set_status(500)

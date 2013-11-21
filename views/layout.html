@@ -15,31 +15,37 @@
 <body>
     {% block container %}
     <a href="#content" class="sr-only">Skip to content</a>
-    <div class="container">
 
-        <div class="header">
-            <nav>
-                <strong><a href="/">Open Data Press</a></strong>
-                {% if current_user %}
-                | <a href="/{{current_user.profile_slug|e}}">My Profile</a>
-                | <a href="/dashboard">Dashboard</a>
-                | <a href="/auth/logout">Logout</a>
-                {% else %}
-                | <a href="/auth/login">Login</a>
-                {% endif %}
+    <div class="header">
+        <div class="container clearfix">
+            <nav class="pull-left">
+                <a class="brand" href="/">Open Data Press</a>
             </nav>
-        </div>
+            <nav class="pull-right">
+                {% block current_user %}
+                    {% if current_user %}
+                    <a href="/{{current_user.profile_slug|e}}">My Profile</a>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/auth/logout">Logout</a>
+                    {% else %}
+                    <a href="/auth/login">Login</a>
+                    {% endif %}
+                {% endblock %}
+            </nav>
+        </div><!-- .container -->
+    </div><!-- .header -->
         
-        <hr>
-
+    <div class="container">
         <div id="content">
             {% block content %}{% endblock %}
         </div>
 
-        <hr>
-
-        <div class="footer"> Open Data Press v{{VERSION}} </div>
-
+        <div class="footer"  class="text-muted">
+            Built with <i class="glyphicon glyphicon-heart" title=":heart:"></i> by <a href="http://craig-russell.co.uk" target="_blank">Craig Russell</a> - 
+            <a href="https://github.com/opendatapress/open_data_press/wiki" target="_blank">About</a> - 
+            <a href="https://github.com/opendatapress/open_data_press/" target="_blank">Source Code</a> -
+            Open Data Press v{{VERSION}}
+        </div>
     </div><!-- .container -->
     {% endblock %}
 
