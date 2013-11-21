@@ -70,7 +70,7 @@ def list_drive_files(auth_json, query="", page_token=None):
         http = http_from_oauth2(auth_json)
         service = drive_service()
         file_list = []
-        param = {'q': query}
+        param = {'q': query, 'maxResults': 25}
         if page_token:
             param['pageToken'] = base64.b64decode(page_token)
 
@@ -92,9 +92,11 @@ def list_drive_files(auth_json, query="", page_token=None):
         }
 
     except UnicodeDecodeError as e:
+        logging.error(e)
         raise GoogleAPIException('Could not fetch file list from Google Drive - Invalid Page Token')
 
     except Exception as e:
+        logging.error(e)
         raise GoogleAPIException('Could not fetch file list from Google Drive.')
 
 
