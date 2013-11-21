@@ -17,10 +17,27 @@
                             </div>
                         {% endif %}
                         <h3><a href="{{ ds.public_url|e }}">{{ ds.title|e }}</a></h3>
-                        <p>{{ ds.description|e }} </p>
+                        <p>
+                            {% if ds.description %}
+                                {{ ds.description|e }}
+                            {% else %}
+                                The publisher of this data has not provided a description.
+                            {% endif %}
+                        </p>
                         <hr>
-                        <p>Source Data: <a href="{{ ds.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></p>
+                        <p>
+                            TBL Stars 
+                            <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>:
+                            {% for star in range(5) %}
+                                {% if loop.index > ds.tbl_stars %}
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {% endif%}
+                            {% endfor %}
+                        </p>
                         <p>Created: {{ ds.created_at|datetime }}</p>
+                        <p>Source Data: <a href="{{ ds.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></p>
                         <p>Tags: {% for tag in ds.tags %} {{tag}} {% endfor %}</p>
                     </div>
                 {% endfor %}
@@ -34,8 +51,7 @@
             <div class="card">
                 <p style="margin-top:20px;"><img src="{{ user.google_picture_url|e }}" width="150" height="150"></p>
                 <h3><strong>{{ user.profile_name|e }}</strong> ({{ user.profile_slug|e }})</h3>
-                <p></p>
-                {% if user.profile_email %}
+                {% if user.profile_description %}
                     <p>{{ user.profile_description|e }}</p>
                 {% endif %}
                 <hr>
@@ -46,6 +62,7 @@
                     <p>Web: <a href="{{ user.profile_web_address|e }}">{{ user.profile_web_address|e }}</a></p>
                 {% endif %}
                 <p>Member since {{ user.created_at|date }}</p>
+                <p>Published data sets: {{ user.data_sources|count }}</p>
             </div>
         </div>
     </div>

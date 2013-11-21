@@ -4,31 +4,72 @@
 
 {% block content %}
     <h1>{{data_source.title|e}}</h1>
-        <dl class="dl-horizontal">
-        <dt>created_at</dt>          <dd>{{ data_source.created_at|e }}</dd>
-        <dt>description</dt>         <dd>{{ data_source.description|e }}</dd>
-        <dt>google_spreadsheet</dt>  <dd>{{ data_source.google_spreadsheet|e }}</dd>
-        <dt>google_worksheet</dt>    <dd>{{ data_source.google_worksheet|e }}</dd>
-        <dt>id</dt>                  <dd>{{ data_source.id|e }}</dd>
-        <dt>licence</dt>             <dd>{{ data_source.licence|e }}</dd>
-        <dt>modified_at</dt>         <dd>{{ data_source.modified_at|e }}</dd>
-        <dt>slug</dt>                <dd>{{ data_source.slug|e }}</dd>
-        <dt>tags</dt>                <dd>{% for tag in data_source.tags %} {{tag}} {% endfor %}</dd>
-        <dt>tbl_stars</dt>           <dd>{{ data_source.tbl_stars|e }}</dd>
-        <dt>title</dt>               <dd>{{ data_source.title|e }}</dd>
-        <dt>public_url</dt>          <dd><a href="{{ data_source.public_url|e }}">{{ data_source.public_url|e }}</a></dd>
-        <dt>spreadsheet_url</dt>     <dd><a href="{{ data_source.spreadsheet_url|e }}" target="_blank">{{ data_source.spreadsheet_url|e }}</a></dd>
-    </dl>
-
-    <h2>Download This Data</h2>
-    {% if data_source.data_views %}
-      <ul>
-        {% for view in data_source.data_views %}
-            <li><a href="{{view.download_url|e}}" target="_blank">{{ view.filetype|e }}</a></li>
-        {% endfor %}
-      </ul>
-    {% else %}
-        <p>This Open Data is not yet available in a downloadable format.</p>
-        <p>You may be able to view the <a href="{{ data_source.spreadsheet_url|e }}">Google Spreadsheet</a> if this user has chosen to publish it.</p>
-    {% endif %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                {% if data_source.data_views %}
+                    <div class="pull-right" style="margin:20px 0 0 20px; text-align:right;">
+                        {% for view in data_source.data_views %}
+                            <p><a class="btn btn-success" href="{{view.download_url|e}}" target="_blank">Download {{ view.filetype|e }}</a></p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <h2>Description</h2>
+                <p>
+                    {% if data_source.description %}
+                        {{ data_source.description|e }}
+                    {% else %}
+                        The publisher of this data has not provided a description.
+                    {% endif %}
+                </p>
+                <h2>Licence</h2>
+                <p>
+                    {% if data_source.licence %}
+                        {{ data_source.licence|e }}
+                    {% else %}
+                        The publisher of this data has not provided a licence.
+                    {% endif %}
+                </p>
+                <h2 style="clear:both">Other Information</h2>
+                <table class="table">
+                    <tbody>
+                        <tr><th>Created</th>        <td>{{ data_source.created_at|datetime }}</td></tr>
+                        <tr><th>Last Modified</th>  <td>{{ data_source.modified_at|datetime }}</td></tr>
+                        <tr><th>TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></th>      
+                        <td>
+                            {% for star in range(5) %}
+                                {% if loop.index > data_source.tbl_stars %}
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {% endif%}
+                            {% endfor %}
+                        </td></tr>
+                        <tr><th>Tags</th>           <td>{% for tag in data_source.tags %} {{tag}} {% endfor %}</td></tr>
+                        <tr><th>Source Data</th>    <td><a href="{{ data_source.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <a href="/{{ user.profile_slug|e }}">
+                    <p style="margin-top:20px;"><img src="{{ user.google_picture_url|e }}" width="150" height="150"></p>
+                    <h3><strong>{{ user.profile_name|e }}</strong> ({{ user.profile_slug|e }})</h3>
+                </a>
+                {% if user.profile_description %}
+                    <p>{{ user.profile_description|e }}</p>
+                {% endif %}
+                <hr>
+                {% if user.profile_email %}
+                    <p>Email: <a href="mailto:{{ user.profile_email|e }}">{{ user.profile_email|e }}</a></p>
+                {% endif %}
+                {% if user.profile_web_address %}
+                    <p>Web: <a href="{{ user.profile_web_address|e }}">{{ user.profile_web_address|e }}</a></p>
+                {% endif %}
+                <p>Member since {{ user.created_at|date }}</p>
+                <p>Published data sets: {{ user.data_sources|count }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
