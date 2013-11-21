@@ -6,7 +6,7 @@ import jinja2
 import os
 import main
 import logging
-
+from datetime import datetime as dt
 
 # Application renderer configured to load templates from the file system
 APP_RENDER = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('./views')))
@@ -22,6 +22,31 @@ APP_RENDER = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('
 # <% endfor %>
 #
 DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<#', '#>', '~', '~~')
+
+# Custom filters
+
+def date_filter(value):
+    try:
+        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y')
+    except Exception:
+        return value
+
+def time_filter(value):
+    try:
+        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%X')
+    except Exception:
+        return value
+
+def datetime_filter(value):
+    try:
+        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y %X')
+    except Exception:
+        return value
+
+APP_RENDER.filters['date']     = date_filter
+APP_RENDER.filters['time']     = time_filter
+APP_RENDER.filters['datetime'] = datetime_filter
+
 
 
 # Render template using data
