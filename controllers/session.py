@@ -19,12 +19,16 @@ class LoginRoute(SessionHandler):
         if 'redirect_url' in self.request.GET.keys():
             print self.request.GET['redirect_url']
             self.session['redirect_url'] = self.request.GET['redirect_url']
+        
+        # Force refresh of auth tokens for now issue#22
+        flow = google_api.oauth2_flow(approval_prompt='force')
 
-        if 'approval_prompt' in self.request.GET.keys():
-            # Force refresh of authentication tokens
-            flow = google_api.oauth2_flow(approval_prompt='force')
-        else:
-            flow = google_api.oauth2_flow()
+        # This is causing some problems I've not yet knocked all the kinks out of issue#22
+        # if 'approval_prompt' in self.request.GET.keys():
+        #     # Force refresh of authentication tokens
+        #     flow = google_api.oauth2_flow(approval_prompt='force')
+        # else:
+        #     flow = google_api.oauth2_flow()
 
         url = flow.step1_get_authorize_url()
         logging.debug("Redirect to: %s" % url)
@@ -107,6 +111,7 @@ class OAuth2CallbackRoute(SessionHandler):
             user.put()
 
             # Create session
+            logging.debug("Creating session for user: %s" % user.google_id)
             self.current_user(user)
 
             # Redirect to provided url if set
