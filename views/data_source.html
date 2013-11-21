@@ -33,8 +33,7 @@
                 <h2 style="clear:both">Other Information</h2>
                 <table class="table">
                     <tbody>
-                        <tr><th>Created</th>        <td>{{ data_source.created_at|datetime }}</td></tr>
-                        <tr><th>Last Modified</th>  <td>{{ data_source.modified_at|datetime }}</td></tr>
+                        <tr><th>First Published</th> <td>{{ data_source.created_at|datetime }}</td></tr>
                         <tr><th>TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></th>      
                         <td>
                             {% for star in range(5) %}
