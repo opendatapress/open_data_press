@@ -21,6 +21,9 @@ def load_data(filename):
 
 
 class MockHttp(object):
+    def __init__(self, cache=None, timeout=None, proxy_info=None, ca_certs=None, disable_ssl_certificate_validation=False):
+        pass
+
     def request(self, uri, method="GET", body=None, headers=None, redirections=1, connection_type=None):
 
         # Response for oAuth2 Handshake
