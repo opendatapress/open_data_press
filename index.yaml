@@ -18,6 +18,18 @@ indexes:
 
 - kind: DataSource
   properties:
+  - name: featured
+  - name: created_at
+    direction: desc
+
+- kind: DataSource
+  properties:
+  - name: is_featured
+  - name: created_at
+    direction: desc
+
+- kind: DataSource
+  properties:
   - name: user
   - name: created_at
 

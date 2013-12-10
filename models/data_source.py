@@ -14,6 +14,7 @@ class DataSource(db.Model):
     description        = db.TextProperty(default=u'')
     google_spreadsheet = db.StringProperty(required=True)
     google_worksheet   = db.StringProperty(required=True)
+    is_featured        = db.BooleanProperty(default=False)
     licence            = db.TextProperty(default=u'')
     modified_at        = db.DateTimeProperty(required=True)
     slug               = db.StringProperty(required=True)
@@ -33,6 +34,7 @@ class DataSource(db.Model):
             'google_spreadsheet': self.google_spreadsheet,
             'google_worksheet':   self.google_worksheet,
             'id':                 self.key().id(),
+            'is_featured':        self.is_featured,
             'licence':            self.licence,
             'modified_at':        self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
             'slug':               self.slug,
@@ -67,6 +69,6 @@ class DataSource(db.Model):
         return user.data_sources.filter('slug =', slug).get()
 
     @classmethod
-    def get_recently_created(self, limit=10):
-        """Get the most recently created data sources"""
-        return DataSource.gql("ORDER BY created_at DESC").fetch(limit=limit)
+    def get_featured(self, limit=10):
+        """Get data sources flagged as featured"""
+        return DataSource.gql("WHERE is_featured = TRUE ORDER BY created_at DESC").fetch(limit=limit)
