@@ -72,6 +72,7 @@ class UserRoute(APIHandler):
             if "profile_email"       in data.keys(): user.profile_email       = data["profile_email"]
             if "profile_description" in data.keys(): user.profile_description = data["profile_description"]
             if "profile_web_address" in data.keys(): user.profile_web_address = data["profile_web_address"]
+            # TODO allow editing profile slug - must check for collisions - issue#46
             user.modified_at = DT.now()
             user.put()
             self.response.write('{"response":"success","body":%s}' % json.dumps(user.to_dict(), ensure_ascii=False))
