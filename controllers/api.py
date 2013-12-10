@@ -20,8 +20,9 @@ import logging
 
 
 def log_api_error(obj,error):
-    msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), error, error.__class__)
-    logging.error("%s %s %s 500 '%s' %s" % msg_info)
+    current_user = User.get_by_google_id(obj.session['current_user'])
+    msg_info = (obj.request.method, obj.request.path_url, obj.request.POST.items(), error, error.__class__, current_user.profile_slug)
+    logging.error("%s %s %s 500 '%s' %s [%s]" % msg_info)
 
 
 #

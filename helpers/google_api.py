@@ -38,7 +38,7 @@ def oauth2_flow(**kwargs):
 #  auth_json : a JSON object of valid credentials
 #
 def http_from_oauth2(auth_json):
-    http  = httplib2.Http()
+    http  = httplib2.Http(timeout=30)
     creds = OAuth2Credentials.from_json(auth_json)
     return creds.authorize(http)
 
@@ -97,7 +97,7 @@ def list_drive_files(auth_json, query="", page_token=None):
 
     except Exception as e:
         logging.error(e)
-        raise GoogleAPIException('Could not fetch file list from Google Drive.')
+        raise GoogleAPIException('Could not fetch file list from Google Drive - Unknown Error')
 
 
 # Get a list of all the worksheets in a spreadsheet
@@ -249,6 +249,8 @@ def _key(heading):
     # Strip XML namespace    
     gsx = '{http://schemas.google.com/spreadsheets/2006/extended}'
     heading = heading.replace(gsx, '')
+    # Replace hyphens with underscores
+    heading = heading.replace('-','_')
     # Convert accented letter to ASCII lower-case equivalents
     return unicodedata.normalize('NFD', unicode(heading)).encode('ascii', 'ignore')
 
