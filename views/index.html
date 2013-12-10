@@ -36,8 +36,8 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <h2>New Open Data</h2>
-            {% for ds in recent_data %}
+            <h2>Featured Open Data</h2>
+            {% for ds in featured_data %}
                 <div class="card">
                     <h3><a href="{{ds.public_url|e}}">{{ds.title|e}}</a></h3>
                     <p>Published by: <a href="/{{ds.user_profile_slug|e}}">{{ds.user_profile_name|e}}</a></p>
