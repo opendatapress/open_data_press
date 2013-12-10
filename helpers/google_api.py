@@ -249,6 +249,8 @@ def _key(heading):
     # Strip XML namespace    
     gsx = '{http://schemas.google.com/spreadsheets/2006/extended}'
     heading = heading.replace(gsx, '')
+    # Replace hyphens with underscores
+    heading = heading.replace('-','_')
     # Convert accented letter to ASCII lower-case equivalents
     return unicodedata.normalize('NFD', unicode(heading)).encode('ascii', 'ignore')
 
