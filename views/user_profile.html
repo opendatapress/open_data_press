@@ -36,7 +36,7 @@
                                 {% endif%}
                             {% endfor %}
                         </p>
-                        <p>Created: {{ ds.created_at|datetime }}</p>
+                        <p>Created: {{ ds.created_at|datetime('%b %d, %Y %X') }}</p>
                         <p>Source Data: <a href="{{ ds.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></p>
                         <p>Tags: {% for tag in ds.tags %} {{tag}} {% endfor %}</p>
                     </div>
@@ -61,7 +61,7 @@
                 {% if user.profile_web_address %}
                     <p>Web: <a href="{{ user.profile_web_address|e }}">{{ user.profile_web_address|e }}</a></p>
                 {% endif %}
-                <p>Member since {{ user.created_at|date }}</p>
+                <p>Member since {{ user.created_at|datetime('%b %d, %Y') }}</p>
                 <p>Published data sets: {{ user.data_sources|count }}</p>
             </div>
         </div>
