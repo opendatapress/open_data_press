@@ -8,7 +8,7 @@
   "data":[
     <% for row in data_rows %>
       { {% for heading in headings %}
-        "{{heading|e}}":"<%= row.{{heading|e}} %>"{% if not loop.last %},{% endif %}{% endfor %}
+        "{{heading|e}}":"<%= row.{{heading|e}}|e %>"{% if not loop.last %},{% endif %}{% endfor %}
       }<% if not loop.last %>,<% endif %>
     <% endfor %>
   ]

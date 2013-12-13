@@ -8,7 +8,7 @@
   </author>
   <% for row in data_rows %>
   <row>{% for heading in headings %}
-    <{{heading|e}}><%= row.{{heading|e}} %></{{heading|e}}>{% endfor %}
+    <{{heading|e}}><%= row.{{heading|e}}|e %></{{heading|e}}>{% endfor %}
   </row>
   <% endfor %>
 </document>

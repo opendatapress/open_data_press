@@ -93,6 +93,9 @@
 <script id="tpl-data-source-list" type="text/x-handlebars-template">
     <h1>All Data Sources</h1>
     {{#if this.data_sources}}
+        <div class="card text-center">
+            <a href="#/drive" class="btn btn-primary">Add Another Data Source from Google Drive</a>
+        </div>
         {{#each data_sources}}
             <div class="card">
                 <h3>
@@ -133,9 +136,6 @@
                 {{/if}}
             </div>
         {{/each}}
-        <div class="card text-center">
-            <a href="#/drive" class="btn btn-primary">Add Another Data Source from Google Drive</a>
-        </div>
     {{else}}
         <div class="card text-center">
         <p>You have not yet created any Data Sources from your Google Worksheets.</p>
@@ -363,7 +363,7 @@
                     {{#first 5 data_rows}}
                         <tr>
                             {{#key_value this}}
-                                <td>{{value}}</td>
+                                <td class="key-{{key}}">{{truncate value 30}}</td>
                             {{/key_value}}
                         </tr>
                     {{/first}}
