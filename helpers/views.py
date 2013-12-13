@@ -25,28 +25,19 @@ DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<#', '#>', '~', '~~')
 
 # Custom filters
 
-def date_filter(value):
+# Attempt to read a string as datetime object
+# If possible return a formatted date time string
+def format_date_time(value, format='%Y-%m-%d %H:%M:%S'):
     try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y')
+        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime(format)
     except Exception:
         return value
 
-def time_filter(value):
-    try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%X')
-    except Exception:
-        return value
+# Filters available in Application View Rendering
+APP_RENDER.filters['datetime'] = format_date_time
 
-def datetime_filter(value):
-    try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y %X')
-    except Exception:
-        return value
-
-APP_RENDER.filters['date']     = date_filter
-APP_RENDER.filters['time']     = time_filter
-APP_RENDER.filters['datetime'] = datetime_filter
-
+# Filters availabel in Data View Rendering
+DATA_RENDER.filters['datetime'] = format_date_time
 
 
 # Render template using data
