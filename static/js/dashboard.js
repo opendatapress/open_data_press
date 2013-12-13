@@ -90,6 +90,15 @@
         }
     });
 
+    /* Truncate element value */
+    Handlebars.registerHelper('truncate', function(value, limit) {
+        if(value.length > limit){
+            return value.substr(0, limit) + "…";
+        }else{
+            return value;
+        }
+    });
+
     /* URL Route Handlers */
     new Router()
 

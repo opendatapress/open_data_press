@@ -363,7 +363,7 @@
                     {{#first 5 data_rows}}
                         <tr>
                             {{#key_value this}}
-                                <td>{{value}}</td>
+                                <td class="key-{{key}}">{{truncate value 30}}</td>
                             {{/key_value}}
                         </tr>
                     {{/first}}
