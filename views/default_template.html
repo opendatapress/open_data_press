@@ -16,7 +16,7 @@
     <tbody>
       <% for row in data_rows %>
       <tr>{% for heading in headings %}
-        <td><%= row.{{heading|e}} %></td>{% endfor %}
+        <td><%= row.{{heading|e}}|e %></td>{% endfor %}
       </tr>
       <% endfor %>
     </tbody>
