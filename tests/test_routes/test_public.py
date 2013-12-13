@@ -53,6 +53,7 @@ class TestSessionHandler(unittest.TestCase):
     def test_data_view_path_responds(self):
         url = "/%s/%s.%s" % (self.user.profile_slug, self.data_source.slug, self.data_view.extension)
         response = main.app.get_response(url)
+        self.assertEqual(response.headers.getall('Access-Control-Allow-Origin'), ['*'])
         self.assertEqual(response.status_int, 200)
         self.assertEqual(response.content_type, self.data_view.mimetype)
 

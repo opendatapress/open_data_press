@@ -74,6 +74,7 @@ class DataViewRoute(SessionHandler):
             if not data_view:
                 raise ValueError("No data view exists with the extension %s" % data_view_ext)
 
+            self.response.headers.add('Access-Control-Allow-Origin','*')
             self.response.content_type = str(data_view.mimetype)
             self.response.write(data_view.render())
 
