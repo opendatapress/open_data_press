@@ -25,23 +25,20 @@ DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<#', '#>', '~', '~~')
 
 # Custom filters
 
-def date_filter(value):
+def format_date_time(value, format):
     try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y')
+        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime(format)
     except Exception:
         return value
+        
+def date_filter(value):
+    return format_date_time(value, '%b %d, %Y')
 
 def time_filter(value):
-    try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%X')
-    except Exception:
-        return value
+    return format_date_time(value, '%X')
 
 def datetime_filter(value):
-    try:
-        return dt.strptime(value[0:19], "%Y-%m-%d %H:%M:%S").strftime('%b %d, %Y %X')
-    except Exception:
-        return value
+    return format_date_time(value, '%b %d, %Y %X')
 
 APP_RENDER.filters['date']     = date_filter
 APP_RENDER.filters['time']     = time_filter
