@@ -3,6 +3,7 @@
 # Session route handlers
 #
 import logging
+import random
 from datetime import datetime
 from helpers import google_api
 from helpers.sessions import SessionHandler
@@ -108,7 +109,7 @@ class OAuth2CallbackRoute(SessionHandler):
             user.google_gender      = google_user.get('gender')
             user.google_locale      = google_user.get('locale')
             user.google_name        = google_user.get('name')
-            user.google_picture_url = google_user.get('picture') # TODO or default if None issue#28
+            user.google_picture_url = google_user.get('picture', '/img/default_avatar_%s.png' % random.randrange(1,8))
             user.last_login_at      = now
             user.put()
 

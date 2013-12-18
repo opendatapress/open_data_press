@@ -16,7 +16,7 @@ class User(db.Model):
     google_id           = db.StringProperty(required=True)
     google_locale       = db.StringProperty(default=u'')
     google_name         = db.StringProperty(default=u'')
-    google_picture_url  = db.LinkProperty()
+    google_picture_url  = db.StringProperty(default=u'')
     last_login_at       = db.DateTimeProperty(required=True)
     modified_at         = db.DateTimeProperty(required=True)
     profile_description = db.TextProperty(default=u'')
