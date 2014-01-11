@@ -22,7 +22,7 @@ __author__  = "Craig Russell"
 __website__ = "http://opendatapress.org"
 __email__   = "craig@craig-russell.co.uk"
 __licence__ = "MIT"
-__version__ = "0.1" # Display in view templates with {{VERSION}}
+__version__ = "0.1.0" # Display in view templates with {{VERSION}}
 
 # Map route patterns to controller handlers
 routes = [
