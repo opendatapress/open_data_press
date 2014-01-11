@@ -19,3 +19,4 @@ OpenDataPress is a complete rebuild of EasyOpenData (the first incarnation). [Fi
 [1]: http://opendatapress.org
 [2]: http://craig-russell.co.uk/2013/08/29/new-direction-for-easy-open-data.html#.Uoy3Be1dWlg
 [3]: https://github.com/opendatapress/open_data_press/wiki
+
