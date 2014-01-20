@@ -3,12 +3,12 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    Craig Russell <craig@craig-russell.co.uk> @craig552uk
 
 # THANKS
 
-    <name>
+    Michael Roberts <mroberts@groupsia.org> @michaeloroberts 
 
 # TECHNOLOGY COLOPHON
 
-    HTML5, CSS3, Python, Google App Engine
+    HTML5, CSS3, Python, WebApp2, Google App Engine
