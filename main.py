@@ -32,6 +32,7 @@ routes = [
 
     # Home Root
     ('/',                                       root.HomeRoute),
+    ('/search/?',                               root.SearchRoute),
 
     # Session
     (r'/auth/login/?',                          session.LoginRoute),

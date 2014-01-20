@@ -44,3 +44,17 @@ html, body {
     text-align: center;
     color: #666;
 }
+
+.search-form {
+    text-align: center;
+    padding: 20px;
+}
+
+.search-form input {
+    display: inline-block;
+    width: auto;
+}
+
+.search-form input[type="search"] {
+    width: 50%;
+}

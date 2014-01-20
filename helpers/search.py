@@ -7,13 +7,15 @@ import logging
 
 _OPEN_DATA_INDEX = 'open_data_index'
 
+
 def query(query=u""):
     """Search the document index"""
-    logging.info("Searching: %s" % query)
+    logging.info("Searching with query: %s" % query)
 
     try:
         index = search.Index(name=_OPEN_DATA_INDEX)
-        return index.search(query)
+        query_options = search.QueryOptions(ids_only=True)
+        return index.search(search.Query(query_string=query, options=query_options))
     
     except search.Error as e:
         logging.exception("Failed to search index: %s" % e)
