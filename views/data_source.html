@@ -36,15 +36,17 @@
                         <tr><th>First Published</th> <td>{{ data_source.created_at|datetime('%b %d, %Y %X') }}</td></tr>
                         <tr><th>TBL Stars <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small></th>      
                         <td>
-                            {% for star in range(5) %}
-                                {% if loop.index > data_source.tbl_stars %}
-                                    <span class="glyphicon glyphicon-star-empty"></span>
-                                {% else %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {% endif%}
-                            {% endfor %}
+                            <span class="tbl-stars">
+                                {% for star in range(5) %}
+                                    {% if loop.index > data_source.tbl_stars %}
+                                        <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star-empty"></span></a>
+                                    {% else %}
+                                        <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star"></span></a>
+                                    {% endif%}
+                                {% endfor %}
+                            </span>
                         </td></tr>
-                        <tr><th>Tags</th>           <td>{% for tag in data_source.tags %} {{tag}} {% endfor %}</td></tr>
+                        <tr><th>Tags</th>           <td>{% for tag in data_source.tags %} <a href="/search?q=tag:{{tag|e}}">{{tag|e}}</a> {% endfor %}</td></tr>
                         <tr><th>Source Data</th>    <td><a href="{{ data_source.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></td></tr>
                     </tbody>
                 </table>

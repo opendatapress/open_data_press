@@ -58,3 +58,7 @@ html, body {
 .search-form input[type="search"] {
     width: 50%;
 }
+
+.tbl-stars a {
+    color: black;
+}

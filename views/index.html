@@ -6,6 +6,11 @@
 {% endblock %}
 
 {% block content %}
+    <form class="search-form card" action="/search" role="form">
+        <input class="form-control input-lg" type="search" name="q" placeholder="Search for Open Data">
+        <input class="form-control input-lg" type="submit" value="Search">
+    </form>
+    
     <div class="row">
         <div class="col-sm-8">
             <div class="card">

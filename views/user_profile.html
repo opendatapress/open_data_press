@@ -26,19 +26,21 @@
                         </p>
                         <hr>
                         <p>
-                            TBL Stars 
-                            <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>:
-                            {% for star in range(5) %}
-                                {% if loop.index > ds.tbl_stars %}
-                                    <span class="glyphicon glyphicon-star-empty"></span>
-                                {% else %}
-                                    <span class="glyphicon glyphicon-star"></span>
-                                {% endif%}
-                            {% endfor %}
+                            TBL Stars:
+                            <span class="tbl-stars">
+                                {% for star in range(5) %}
+                                    {% if loop.index > ds.tbl_stars %}
+                                        <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star-empty"></span></a>
+                                    {% else %}
+                                        <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star"></span></a>
+                                    {% endif%}
+                                {% endfor %}
+                            </span>
+                            <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>
                         </p>
                         <p>Created: {{ ds.created_at|datetime('%b %d, %Y %X') }}</p>
                         <p>Source Data: <a href="{{ ds.spreadsheet_url|e }}" target="_blank">Google Spreadsheet</a></p>
-                        <p>Tags: {% for tag in ds.tags %} {{tag}} {% endfor %}</p>
+                        <p>Tags: {% for tag in ds.tags %} <a href="/search?q=tag:{{tag|e}}">{{tag|e}}</a> {% endfor %}</p>
                     </div>
                 {% endfor %}
             {% else %}

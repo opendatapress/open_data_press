@@ -12,38 +12,44 @@
         <input class="form-control input-lg" type="submit" value="Search">
     </form>
 
-    {% for ds in results %}
-        <div class="card clearfix">
-            {% if ds.data_views %}
-                <div class="pull-right" style="margin:20px 0 0 20px; text-align:right;">
-                    {% for view in ds.data_views %}
-                        <p><a class="btn btn-success" href="{{view.download_url|e}}" target="_blank">Download {{ view.filetype|e }}</a></p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <h3><a href="{{ ds.public_url|e }}">{{ ds.title|e }}</a></h3>
-            <p>
-                {% if ds.description %}
-                    {{ ds.description|e }}
-                {% else %}
-                    The publisher of this data has not provided a description.
+    {% if results %}
+        {% for ds in results %}
+            <div class="card clearfix">
+                {% if ds.data_views %}
+                    <div class="pull-right" style="margin:20px 0 0 20px; text-align:right;">
+                        {% for view in ds.data_views %}
+                            <p><a class="btn btn-success" href="{{view.download_url|e}}" target="_blank">Download {{ view.filetype|e }}</a></p>
+                        {% endfor %}
+                    </div>
                 {% endif %}
-            </p>
-            <hr>
-            <p>
-                TBL Stars: 
-                {% for star in range(5) %}
-                    {% if loop.index > ds.tbl_stars %}
-                        <span class="glyphicon glyphicon-star-empty"></span>
+                <h3><a href="{{ ds.public_url|e }}">{{ ds.title|e }}</a></h3>
+                <p>
+                    {% if ds.description %}
+                        {{ ds.description|e }}
                     {% else %}
-                        <span class="glyphicon glyphicon-star"></span>
-                    {% endif%}
-                {% endfor %}
-                <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>
-            </p>
-            <p>Tags: {% for tag in ds.tags %} {{tag}} {% endfor %}</p>
-        </div>
-    {% endfor %}
+                        The publisher of this data has not provided a description.
+                    {% endif %}
+                </p>
+                <hr>
+                <p>
+                    TBL Stars: 
+                        <span class="tbl-stars">
+                            {% for star in range(5) %}
+                                {% if loop.index > ds.tbl_stars %}
+                                    <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star-empty"></span></a>
+                                {% else %}
+                                    <a href="/search?q=stars>={{loop.index}}"><span class="glyphicon glyphicon-star"></span></a>
+                                {% endif%}
+                            {% endfor %}
+                        </span>
+                    <small><a href="http://5stardata.info/" target="_blank">What&apos;s this?</a></small>
+                </p>
+                <p>Tags: {% for tag in ds.tags %} <a href="/search?q=tag:{{tag|e}}">{{tag|e}}</a> {% endfor %}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h2 class="text-center">Sorry, I can't find any open data matching those terms</h2>
+    {% endif %}
 
 {% endblock %}
 
