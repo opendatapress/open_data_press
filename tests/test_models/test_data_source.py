@@ -117,4 +117,4 @@ class TestDataSourceModel(unittest.TestCase):
         doc = ds.to_search_document()
         # Crude but functional
         self.assertEqual(doc.__class__, search.Document)
-        self.assertEqual(len(doc.fields), 7)
+        self.assertEqual(len(doc.fields), 5)

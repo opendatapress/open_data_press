@@ -57,11 +57,9 @@ class DataSource(db.Model):
             fields = [
                 search.TextField(name='title',       value=self.title),
                 search.TextField(name='description', value=self.description),
-                search.TextField(name='tags',        value=self.tags),
-                search.TextField(name='data_types',  value=" ".join(self.used_extensions())),
-                search.AtomField(name='pubic_url',   value=self.public_url()),
-                search.AtomField(name='owner',       value=unicode(self.user.key().id())),
-                search.NumberField(name='tbl_stars', value=self.tbl_stars),
+                search.TextField(name='tag',         value=self.tags),
+                search.TextField(name='type',        value=" ".join(self.used_extensions())),
+                search.NumberField(name='stars',     value=self.tbl_stars),
             ])
 
     def public_url(self):
