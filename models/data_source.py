@@ -4,6 +4,7 @@
 #
 
 from google.appengine.ext import db
+from google.appengine.api import search
 from models.user import User
 from helpers import google_api
 
@@ -48,6 +49,20 @@ class DataSource(db.Model):
             'public_url':         self.public_url(),
             'spreadsheet_url':    self.spreadsheet_url(),
         }
+
+    def to_search_document(self):
+        """Returns a Google search document representation of the data source"""
+        return search.Document(
+            doc_id = str(self.key().id()),
+            fields = [
+                search.TextField(name='title',       value=self.title),
+                search.TextField(name='description', value=self.description),
+                search.TextField(name='tags',        value=self.tags),
+                search.TextField(name='data_types',  value=" ".join(self.used_extensions())),
+                search.AtomField(name='pubic_url',   value=self.public_url()),
+                search.AtomField(name='owner',       value=unicode(self.user.key().id())),
+                search.NumberField(name='tbl_stars', value=self.tbl_stars),
+            ])
 
     def public_url(self):
         return "/%s/%s/" % (self.user.profile_slug, self.slug)

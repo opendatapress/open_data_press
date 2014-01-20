@@ -3,6 +3,7 @@
 import unittest
 from google.appengine.ext import db
 from google.appengine.ext import testbed
+from google.appengine.api import search
 from models.data_source import DataSource
 from models.user import User
 from tests import dummy
@@ -46,6 +47,7 @@ class TestDataSourceModel(unittest.TestCase):
     def test_data_source_instance_methods_exist(self):
         ds = DataSource(**dummy.data_source)
         self.assertTrue('to_dict' in dir(ds))
+        self.assertTrue('to_search_document' in dir(ds))
 
 
     def test_data_source_required_properties(self):
@@ -109,3 +111,10 @@ class TestDataSourceModel(unittest.TestCase):
         self.assertTrue('tbl_stars'          in data)
         self.assertTrue('title'              in data)
         self.assertTrue('user_id'            in data)
+
+    def test_data_source_mnethod_to_search_document(self):
+        ds = self.make_data_source()
+        doc = ds.to_search_document()
+        # Crude but functional
+        self.assertEqual(doc.__class__, search.Document)
+        self.assertEqual(len(doc.fields), 7)
