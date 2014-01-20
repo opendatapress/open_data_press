@@ -175,11 +175,11 @@ class DataViewItemRoute(APIHandler):
             if not data_view.data_source.key() == data_source.key():
                 raise ValueError("Data View with id %s does not belong to Data Source with id %s" % (data_view_id, data_source_id))
 
-            data_view.delete()
-            
             # Update Search Index
-            # NOTE: DB latency may prevent the data_source record from being updated before we re-index the document
-            search.index_doc(data_source.to_search_document())
+            # An ugly hack to fix issue#54
+            search.index_doc(data_source.to_search_document(strip_extension=data_view.extension))
+
+            data_view.delete()
 
             self.response.write('{"response":"success","body":"Data View deleted"}')
 

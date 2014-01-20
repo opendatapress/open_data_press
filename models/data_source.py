@@ -50,15 +50,19 @@ class DataSource(db.Model):
             'spreadsheet_url':    self.spreadsheet_url(),
         }
 
-    def to_search_document(self):
+    def to_search_document(self, strip_extension=""):
         """Returns a Google search document representation of the data source"""
+
+        # An ugly hack to fix issue#54
+        extensions = " ".join(self.used_extensions()).replace(strip_extension, '')
+        
         return search.Document(
             doc_id = str(self.key().id()),
             fields = [
                 search.TextField(name='title',       value=self.title),
                 search.TextField(name='description', value=self.description),
                 search.TextField(name='tag',         value=self.tags),
-                search.TextField(name='type',        value=" ".join(self.used_extensions())),
+                search.TextField(name='type',        value=extensions),
                 search.NumberField(name='stars',     value=self.tbl_stars),
             ])
 
