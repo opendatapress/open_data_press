@@ -4,7 +4,7 @@
 #
 from datetime import datetime as DT
 from oauth2client.anyjson import simplejson as json
-from helpers import slug
+from helpers import slug, search
 from helpers.api_0_helpers import APIHandler, log_api_error
 from models.user import User
 from models.data_source import DataSource
@@ -42,6 +42,10 @@ class DataSourceListRoute(APIHandler):
                                 modified_at        = DT.now())
             data_source.user = current_user.key()
             data_source.put()
+            
+            # Update Search Index
+            search.index_doc(data_source.to_search_document())
+
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict(), ensure_ascii=False))
 
         except slug.SlugError as e:
@@ -101,6 +105,9 @@ class DataSourceItemRoute(APIHandler):
             if "title"       in payload.keys(): data_source.title       = payload['title']
             data_source.modified_at = DT.now()
             data_source.put()
+            
+            # Update Search Index
+            search.index_doc(data_source.to_search_document())
 
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_source.to_dict(), ensure_ascii=False))
 
@@ -127,6 +134,10 @@ class DataSourceItemRoute(APIHandler):
                 raise ValueError("Data Source with id %s does not belong to user '%s'" % (data_source_id, current_user.profile_slug))
 
             data_source.delete()
+            
+            # Update Search Index
+            search.delete_doc(str(data_source.key().id()))
+
             self.response.write('{"response":"success","body":"Data source deleted"}')
 
         except ValueError as e:

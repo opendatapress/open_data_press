@@ -4,6 +4,7 @@
 #
 from datetime import datetime as DT
 from oauth2client.anyjson import simplejson as json
+from helpers import search
 from helpers.api_0_helpers import APIHandler, log_api_error
 from models.user import User
 from models.data_source import DataSource
@@ -65,6 +66,10 @@ class DataViewListRoute(APIHandler):
             if "filetype"  in payload.keys(): data_view.filetype = payload['filetype']
             data_view.data_source = data_source.key()
             data_view.put()
+            
+            # Update Search Index
+            search.index_doc(data_source.to_search_document())
+
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
@@ -136,6 +141,9 @@ class DataViewItemRoute(APIHandler):
                 data_view.modified_at = DT.now()
                 data_view.put()
 
+            # Update Search Index
+            search.index_doc(data_source.to_search_document())
+
             self.response.write('{"response":"success","body":%s}' % json.dumps(data_view.to_dict(), ensure_ascii=False))
 
         except ValueError as e:
@@ -168,6 +176,10 @@ class DataViewItemRoute(APIHandler):
                 raise ValueError("Data View with id %s does not belong to Data Source with id %s" % (data_view_id, data_source_id))
 
             data_view.delete()
+            
+            # Update Search Index
+            # NOTE: DB latency may prevent the data_source record from being updated before we re-index the document
+            search.index_doc(data_source.to_search_document())
 
             self.response.write('{"response":"success","body":"Data View deleted"}')
 

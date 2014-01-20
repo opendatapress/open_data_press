@@ -20,6 +20,7 @@ class TestAPIHandler(unittest.TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
+        self.testbed.init_search_stub()
 
         # Get headers for making authenticated requests
         google_api.httplib2.Http = MockHttp
