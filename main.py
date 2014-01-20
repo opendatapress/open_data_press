@@ -15,7 +15,10 @@ from controllers import root
 from controllers import public
 from controllers import session
 from controllers import dashboard
-from controllers import api
+from controllers.api_0 import user        as api_user
+from controllers.api_0 import data_source as api_data_source
+from controllers.api_0 import data_view   as api_data_view
+from controllers.api_0 import misc        as api_misc
 
 
 __author__  = "Craig Russell"
@@ -39,17 +42,17 @@ routes = [
     (r'/dashboard/?',                           dashboard.MainRoute),
 
     # API
-    (r'/api/0/google/sheets/?',                 api.GoogleSheetsListRoute),
-    (r'/api/0/google/sheets/([\w\-]+)/?',       api.GoogleSheetsItemRoute),
-    (r'/api/0/google/sheets/([\w\-]+)/(\w+)/?', api.GoogleSheetsWorksheetRoute),
-    (r'/api/0/user/?',                          api.UserRoute),
-    (r'/api/0/data_source/?',                   api.DataSourceListRoute),
-    (r'/api/0/data_source/(\d+)/?',             api.DataSourceItemRoute),
-    (r'/api/0/data_source/(\d+)/view/?',        api.DataViewListRoute),
-    (r'/api/0/data_source/(\d+)/view/(\d+)/?',  api.DataViewItemRoute),
-    (r'/api/0/template/preview/?',              api.TemplatePreviewRoute),
-    (r'/api/.*',                                api.Error404Route),
-    (r'/api/?',                                 api.Error404Route),
+    (r'/api/0/user/?',                          api_user.UserRoute),
+    (r'/api/0/data_source/?',                   api_data_source.DataSourceListRoute),
+    (r'/api/0/data_source/(\d+)/?',             api_data_source.DataSourceItemRoute),
+    (r'/api/0/data_source/(\d+)/view/?',        api_data_view.DataViewListRoute),
+    (r'/api/0/data_source/(\d+)/view/(\d+)/?',  api_data_view.DataViewItemRoute),
+    (r'/api/0/google/sheets/?',                 api_misc.GoogleSheetsListRoute),
+    (r'/api/0/google/sheets/([\w\-]+)/?',       api_misc.GoogleSheetsItemRoute),
+    (r'/api/0/google/sheets/([\w\-]+)/(\w+)/?', api_misc.GoogleSheetsWorksheetRoute),
+    (r'/api/0/template/preview/?',              api_misc.TemplatePreviewRoute),
+    (r'/api/.*',                                api_misc.Error404Route),
+    (r'/api/?',                                 api_misc.Error404Route),
 
     # Public Site
     # Last in list for profile pattern matching
