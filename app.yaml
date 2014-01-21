@@ -30,12 +30,37 @@ handlers:
 - url: /fonts
   static_dir: static/fonts
 
+- url: /admin
+  script: main.app
+  secure: always
+  login: admin
+
 - url: /dashboard
   script: main.app
   secure: always
 
 - url: /.*
   script: main.app
+
+admin_console:
+  pages:
+  - name: Manage Users
+    url: /admin/manage_users
+
+  - name: Manage Data Views
+    url: /admin/manage_data_views
+
+  - name: Manage Data Sources
+    url: /admin/manage_data_sources
+
+  - name: Manage DataBase
+    url: /admin/manage_database
+
+  - name: Manage Search
+    url: /admin/manage_search
+
+  - name: Bulk Email
+    url: /admin/bulk_email
 
 libraries:
 

@@ -15,6 +15,7 @@ from controllers import root
 from controllers import public
 from controllers import session
 from controllers import dashboard
+from controllers import admin
 from controllers.api_0 import user        as api_user
 from controllers.api_0 import data_source as api_data_source
 from controllers.api_0 import data_view   as api_data_view
@@ -41,6 +42,18 @@ routes = [
 
     # Dashboard
     (r'/dashboard/?',                           dashboard.MainRoute),
+
+    # Admin Pages - shown in GAE console
+    (r'/admin/?',                               admin.HomeRoute),
+    (r'/admin/manage_users/?',                  admin.ManageUsersRoute),
+    (r'/admin/manage_users/(\d+)/?',            admin.ManageUsersRoute),
+    (r'/admin/manage_data_sources/?',           admin.ManageDataSourcesRoute),
+    (r'/admin/manage_data_sources/(\d+)/?',     admin.ManageDataSourcesRoute),
+    (r'/admin/manage_data_views/?',             admin.ManageDataViewsRoute),
+    (r'/admin/manage_data_views/(\d+)/?',       admin.ManageDataViewsRoute),
+    (r'/admin/manage_database/?',               admin.ManageDatabaseRoute),
+    (r'/admin/manage_search/?',                 admin.ManageSearchRoute),
+    (r'/admin/bulk_email/?',                    admin.BulkEmailRoute),
 
     # API
     (r'/api/0/user/?',                          api_user.UserRoute),
