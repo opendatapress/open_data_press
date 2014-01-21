@@ -2,67 +2,63 @@
 #
 # Base routes and error handlers
 #
-from helpers.sessions import SessionHandler
+from webapp2 import RequestHandler
 from helpers.views import render
 
-
-class HomeRoute(SessionHandler):
+class HomeRoute(RequestHandler):
     def get(self):
-
-        html = """
-        <h1>Admin Home</h1>
-        <ul>
-        <li><a href="/admin/manage_users">Manage Users</a></li>
-        <li><a href="/admin/manage_data_views">Manage Data Views</a></li>
-        <li><a href="/admin/manage_data_sources">Manage Data Sources</a></li>
-        <li><a href="/admin/manage_database">Manage DataBase</a></li>
-        <li><a href="/admin/manage_search">Manage Search</a></li>
-        <li><a href="/admin/bulk_email">Bulk Email</a></li>
-        </ul>
-        """
-        self.response.write(html)
+        self.response.write(render('admin/layout.html'))
 
 
-class ManageUsersRoute(SessionHandler):
+class ManageUsersRoute(RequestHandler):
     def get(self):
         # List all users
         # Edit a user
         # Delete a user
-        self.response.write("ManageUsersRoute")
+        if self.request.get('action') and self.request.get('action') == 'edit':
+            self.response.write(render('admin/manage_user_edit.html'))
+        else:
+            self.response.write(render('admin/manage_user_list.html'))
 
 
-class ManageDataSourcesRoute(SessionHandler):
+class ManageDataSourcesRoute(RequestHandler):
     def get(self):
         # List all data sources
         # List data sources filtered by user
         # Edit a data source
         # Delete a data source
-        self.response.write("ManageDataSourcesRoute")
+        if self.request.get('action') and self.request.get('action') == 'edit':
+            self.response.write(render('admin/manage_data_source_edit.html'))
+        else:
+            self.response.write(render('admin/manage_data_source_list.html'))
 
 
-class ManageDataViewsRoute(SessionHandler):
+class ManageDataViewsRoute(RequestHandler):
     def get(self):
         # List all data views
         # List all data views filtered by data source
         # Edit a data view
         # Delete a data view
-        self.response.write("ManageDataViewsRoute")
+        if self.request.get('action') and self.request.get('action') == 'edit':
+            self.response.write(render('admin/manage_data_view_edit.html'))
+        else:
+            self.response.write(render('admin/manage_data_view_list.html'))
 
 
-class ManageDatabaseRoute(SessionHandler):
+class ManageDatabaseRoute(RequestHandler):
     def get(self):
         # Resave all DB entires using current objetc model
-        self.response.write("ManageDatabaseRoute")
+        self.response.write(render('admin/manage_database.html'))
 
 
-class ManageSearchRoute(SessionHandler):
+class ManageSearchRoute(RequestHandler):
     def get(self):
         # Empty search index and re-index all documents
-        self.response.write("ManageSearchRoute")
+        self.response.write(render('admin/manage_search.html'))
 
 
-class BulkEmailRoute(SessionHandler):
+class BulkEmailRoute(RequestHandler):
     def get(self):
         # List of name <email> for all users
-        self.response.write("BulkEmailRoute")
+        self.response.write(render('admin/bulk_email.html'))
 
