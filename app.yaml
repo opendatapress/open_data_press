@@ -30,9 +30,12 @@ handlers:
 - url: /fonts
   static_dir: static/fonts
 
+- url: /dashboard
+  script: main.app
+  secure: always
+
 - url: /.*
   script: main.app
-  # secure: always
 
 libraries:
 
