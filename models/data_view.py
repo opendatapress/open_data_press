@@ -55,7 +55,7 @@ class DataView(db.Model):
     def default_template(self, source_data):
         """Return a generated default template for this view type"""
         try: 
-            return render('default_template.%s' % self.extension, source_data)
+            return render('template/default.%s' % self.extension, source_data)
 
         except Exception as e:
             logging.error("ERROR %s, %s" % (e.__class__, e))
