@@ -70,15 +70,23 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Extension</th>
+          <th>id</th>
+          <th>filetype</th>
+          <th>created_at</th>
+          <th>modified_at</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {% for data_view in data_source.data_views %}
           <tr>
             <td>{{ data_view.id|e }}</td>
-            <td>{{ data_view.extension|e }}</td>
+            <td><a href="{{ data_view.download_url|e }}">{{ data_view.filetype|e }}</a></td>
+            <td>{{ data_view.created_at|datetime }}</td>
+            <td>{{ data_view.modified_at|datetime }}</td>
+            <td>
+              <a href="/admin/manage_data_views/{{ data_view.id|e }}">Edit</a>
+            </td>
           </tr>
         {% endfor %}
       </tbody>
