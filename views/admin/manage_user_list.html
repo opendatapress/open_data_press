@@ -3,5 +3,39 @@
 {% block title %}Manage Users - List{% endblock %}
 
 {% block content %}
-
+    <ul>
+    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Slug</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>No. Data Sources</th>
+          <th>Created</th>
+          <th>Modified</th>
+          <th>Last Login</th>
+          <th></th>
+        </tr>        
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{user.id|e }}</td>
+            <td>{{user.profile_slug|e }}</td>
+            <td>{{user.profile_name|e }}</td>
+            <td>{{user.profile_email|e }}</td>
+            <td>{{user.data_sources|length }} <a href="/admin/manage_data_sources?user={{user.id|e }}">View</a></td>
+            <td>{{user.created_at|datetime }}</td>
+            <td>{{user.modified_at|datetime }}</td>
+            <td>{{user.last_login_at|datetime }}</td>
+            <td>
+              <a href="/admin/manage_users/{{user.id|e}}">Edit</a>
+              <a href="/admin/manage_users/{{user.id|e}}?delete">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 {% endblock %}

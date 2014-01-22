@@ -2,8 +2,10 @@
 #
 # Base routes and error handlers
 #
+import time
 from webapp2 import RequestHandler
 from helpers.views import render
+from models.user import User
 
 class HomeRoute(RequestHandler):
     def get(self):
@@ -11,14 +13,41 @@ class HomeRoute(RequestHandler):
 
 
 class ManageUsersRoute(RequestHandler):
-    def get(self):
+
+    def get(self, user_id=None):
+        if user_id:
+            user = User.get_by_id(int(user_id))
+
+            if not user:
+                return self.response.write("No User with ID %s" % user_id)
+
+            if 'delete' in self.request.GET:
+                user.delete()
+                return self.redirect('/admin/manage_users/')
+
+            # Show user edit form
+            data = {'user': user.to_dict()}
+            return self.response.write(render('admin/manage_user_edit.html', data))
+
         # List all users
-        # Edit a user
-        # Delete a user
-        if self.request.get('action') and self.request.get('action') == 'edit':
-            self.response.write(render('admin/manage_user_edit.html'))
-        else:
-            self.response.write(render('admin/manage_user_list.html'))
+        users = [user.to_dict() for user in User.all().fetch(limit=None)]
+        data = {'users': users}
+        self.response.write(render('admin/manage_user_list.html', data))
+
+    def post(self, user_id=None):
+        if user_id:
+            user = User.get_by_id(int(user_id))
+
+            if user:
+                user.profile_slug        = self.request.get('profile_slug')
+                user.profile_name        = self.request.get('profile_name')
+                user.profile_email       = self.request.get('profile_email')
+                user.profile_web_address = self.request.get('profile_web_address')
+                user.profile_description = self.request.get('profile_description')
+                user.save()
+                return self.redirect('/admin/manage_users/%s' % user.key().id())
+                
+        self.redirect('/admin/manage_users/')
 
 
 class ManageDataSourcesRoute(RequestHandler):

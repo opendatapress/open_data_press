@@ -1,7 +1,65 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}Manage Users - Edit{% endblock %}
+{% block title %}Edit User <code>{{user.id|e }}</code>{% endblock %}
 
 {% block content %}
+  <form action="/admin/manage_users/{{user.id|e}}" method="post">
+    
+    <fieldset>
+      <legend>Profile Information</legend>
+      <table>
+        <tr>
+          <th>data_sources <a href="/admin/manage_data_sources?user={{user.id|e }}">View</a></th>
+          <td>{{user.data_sources|length }}</td>
+        </tr>
+        <tr>
+          <th>profile_slug</th>
+          <td><input type="text" name="profile_slug" value="{{user.profile_slug|e }}" placeholder="user-name"></td>
+        </tr>
+        <tr>
+          <th>profile_name</th>
+          <td><input type="text" name="profile_name" value="{{user.profile_name|e }}" placeholder="User Name"></td>
+        </tr>
+        <tr>
+          <th>profile_email</th>
+          <td><input type="text" name="profile_email" value="{{user.profile_email|e }}" placeholder="user-name@example.com"></td>
+        </tr>
+        <tr>
+          <th>profile_web_address</th>
+          <td><input type="text" name="profile_web_address" value="{{user.profile_web_address|e }}" placeholder="http://example.com"></td>
+        </tr>
+        <tr>
+          <th>profile_description</th>
+          <td><input type="text" name="profile_description" value="{{user.profile_description|e }}" placeholder="A Sample User"></td>
+        </tr>
+      </table>
+    </fieldset>
 
+    <fieldset>
+      <legend>Recorded Information</legend>
+      <table>
+        <tr><th>google_id</th>           <td>{{user.google_id|e }}</td></tr>
+        <tr><th>google_name</th>         <td>{{user.google_name|e }}</td></tr>
+        <tr><th>google_email</th>        <td>{{user.google_email|e }}</td></tr>
+        <tr><th>google_birthday</th>     <td>{{user.google_birthday|e }}</td></tr>
+        <tr><th>google_gender</th>       <td>{{user.google_gender|e }}</td></tr>
+        <tr><th>google_locale</th>       <td>{{user.google_locale|e }}</td></tr>
+        <tr><th>google_picture_url</th>  <td><a href="{{user.google_picture_url|e }}">{{user.google_picture_url|e }}</a></td></tr>
+        <tr><th>created_at</th>          <td>{{user.created_at|e }}</td></tr>
+        <tr><th>modified_at</th>         <td>{{user.modified_at|e }}</td></tr>
+        <tr><th>last_login_at</th>       <td>{{user.last_login_at|e }}</td></tr>
+      </table>
+    </fieldset>
+
+    <fieldset>
+      <legend>OAuth2 Credentials</legend>
+      <code>{{user.credentials|e }}</code>
+    </fieldset>
+
+    <fieldset>
+      <input type="submit" value="Save Changes">
+      <a href="/admin/manage_users">Cancel</a>
+    </fieldset>
+      
+  </form>
 {% endblock %}

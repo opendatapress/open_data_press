@@ -46,6 +46,7 @@ class User(db.Model):
             'google_locale':       self.google_locale,
             'google_name':         self.google_name,
             'google_picture_url':  self.google_picture_url,
+            'id':                  self.key().id(),
             'last_login_at':       self.last_login_at.strftime('%Y-%m-%d %H:%M:%s'),
             'modified_at':         self.modified_at.strftime('%Y-%m-%d %H:%M:%s'),
             'profile_description': self.profile_description,
