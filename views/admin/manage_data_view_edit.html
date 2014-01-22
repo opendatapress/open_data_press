@@ -1,7 +1,65 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}Manage Data Views - Edit{% endblock %}
+{% block title %}Manage Data Views <code>{{ data_view.id|e }}</code>{% endblock %}
 
 {% block content %}
+<form action="/admin/manage_data_views/{{ data_view.id|e }}" method="post">
+  
+  <fieldset>
+    <legend>Data View Information</legend>
+    <table>
+      <tr>
+        <th>filetype</th>
+        <td><input type="text" name="filetype" value="{{ data_view.filetype|e }}" placeholder="Plain Text"><td>
+      </tr>
+      <tr>
+        <th>extension</th>
+        <td>
+          <select name="extension">
+            <option value="txt"  {% if data_view.extension == 'txt'  %}selected="selected"{% endif %}>txt</option>
+            <option value="csv"  {% if data_view.extension == 'csv'  %}selected="selected"{% endif %}>csv</option>
+            <option value="html" {% if data_view.extension == 'html' %}selected="selected"{% endif %}>html</option>
+            <option value="json" {% if data_view.extension == 'json' %}selected="selected"{% endif %}>json</option>
+            <option value="xml"  {% if data_view.extension == 'xml'  %}selected="selected"{% endif %}>xml</option>
+          </select>
+        <td>
+      </tr>
+      <tr>
+        <th>mimetype</th>
+        <td>
+          <select name="mimetype">
+            <option value="text/plain"       {% if data_view.mimetype == 'text/plain'       %}selected="selected"{% endif %}>text/plain</option>
+            <option value="text/csv"         {% if data_view.mimetype == 'text/csv'         %}selected="selected"{% endif %}>text/csv</option>
+            <option value="text/html"        {% if data_view.mimetype == 'text/html'        %}selected="selected"{% endif %}>text/html</option>
+            <option value="application/json" {% if data_view.mimetype == 'application/json' %}selected="selected"{% endif %}>application/json</option>
+            <option value="application/xml"  {% if data_view.mimetype == 'application/xml'  %}selected="selected"{% endif %}>application/xml</option>
+          </select>
+        <td>
+      </tr>
+      <tr>
+        <th>download_url</th>
+        <td><a href="{{ data_view.download_url|e }}">{{ data_view.download_url|e }}</a><td>
+      </tr>
+      <tr>
+        <th>created_at</th>
+        <td>{{ data_view.created_at|e }}<td>
+      </tr>
+      <tr>
+        <th>modified_at</th>
+        <td>{{ data_view.modified_at|e }}<td>
+      </tr>
+    </table>
+  </fieldset>
 
+  <fieldset>
+    <legend>Template</legend>
+    <textarea name="template" cols="80" rows="40">{{ data_view.template|e }}</textarea>
+  </fieldset>
+
+  <fieldset>
+    <input type="submit" value="Save Changes">
+    <a href="/admin/manage_data_views">Cancel</a>
+  </fieldset>
+
+</form>
 {% endblock %}

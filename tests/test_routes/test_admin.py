@@ -10,6 +10,7 @@ from google.appengine.ext import testbed
 from helpers import google_api
 from models.user import User
 from models.data_source import DataSource
+from models.data_view import DataView
 
 class TestAdminHandler(unittest.TestCase):
 
@@ -34,6 +35,13 @@ class TestAdminHandler(unittest.TestCase):
         ds.user = user.key()
         ds.save()
         return ds
+
+
+    def create_data_view(self, data_source):
+        dv = DataView(**dummy.data_view)
+        dv.data_source = data_source.key()
+        dv.save()
+        return dv
 
 
     def test_admin_manage_user_list(self):
@@ -122,3 +130,47 @@ class TestAdminHandler(unittest.TestCase):
         self.assertEqual(response.status_int, 302)
         self.assertTrue('/admin/manage_data_sources/' in response.location)
         self.assertFalse(DataSource.get_by_id(data_source_id))
+
+
+    def test_admin_manage_data_view_list(self):
+        response = main.app.get_response('/admin/manage_data_views')
+        self.assertEqual(response.status_int, 200)
+
+
+    def test_admin_manage_data_view_edit(self):
+        user = self.create_user()
+        data_source = self.create_data_source(user=user)
+        data_view = self.create_data_view(data_source)
+        data_view_id = data_view.key().id()
+
+        response = main.app.get_response('/admin/manage_data_views/%s' % data_view_id)
+        self.assertEqual(response.status_int, 200)
+
+        form_data = {
+            'filetype':  'HTML',
+            'extension': 'html',
+            'mimetype':  'text/html',
+            'template':  '<div>Test Template</div>'}
+
+        response = main.app.get_response('/admin/manage_data_views/%s' % data_view_id, POST=form_data)
+        self.assertEqual(response.status_int, 302)
+        self.assertTrue('/admin/manage_data_views/%s' % data_view_id in response.location)
+
+        data_view_b = DataView.get_by_id(data_view_id)
+        self.assertEqual(data_view_b.filetype,  form_data['filetype'])
+        self.assertEqual(data_view_b.extension, form_data['extension'])
+        self.assertEqual(data_view_b.mimetype,  form_data['mimetype'])
+        self.assertEqual(data_view_b.template,  form_data['template'])
+
+
+    def test_admin_manage_data_view_delete(self):
+        user = self.create_user()
+        data_source = self.create_data_source(user=user)
+        data_view = self.create_data_view(data_source)
+        data_view_id = data_view.key().id()
+
+        response = main.app.get_response('/admin/manage_data_views/%s/?delete' % data_view_id)
+        self.assertEqual(response.status_int, 302)
+        self.assertTrue('/admin/manage_data_views/' in response.location)
+        self.assertFalse(DataView.get_by_id(data_view_id))
+

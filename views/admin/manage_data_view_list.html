@@ -3,5 +3,29 @@
 {% block title %}Manage Data Views - List{% endblock %}
 
 {% block content %}
-
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>filetype</th>
+      <th>created_at</th>
+      <th>modified_at</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data_view in data_views %}
+      <tr>
+        <td>{{ data_view.id|e }}</td>
+        <td><a href="{{ data_view.download_url|e }}">{{ data_view.filetype|e }}</a></td>
+        <td>{{ data_view.created_at|datetime }}</td>
+        <td>{{ data_view.modified_at|datetime }}</td>
+        <td>
+          <a href="/admin/manage_data_views/{{ data_view.id|e }}">Edit</a>
+          <a href="/admin/manage_data_views/{{ data_view.id|e }}/?delete">Delete</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

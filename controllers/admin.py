@@ -7,6 +7,7 @@ from webapp2 import RequestHandler
 from helpers.views import render
 from models.user import User
 from models.data_source import DataSource
+from models.data_view import DataView
 
 class HomeRoute(RequestHandler):
     def get(self):
@@ -102,16 +103,51 @@ class ManageDataSourcesRoute(RequestHandler):
 
         self.redirect('/admin/manage_data_sources/')
 
+
 class ManageDataViewsRoute(RequestHandler):
-    def get(self):
-        # List all data views
-        # List all data views filtered by data source
-        # Edit a data view
-        # Delete a data view
-        if self.request.get('action') and self.request.get('action') == 'edit':
-            self.response.write(render('admin/manage_data_view_edit.html'))
+
+    def get(self, data_view_id=None):
+        if data_view_id:
+            data_view = DataView.get_by_id(int(data_view_id))
+
+            if not data_view:
+                return self.response.write("No Data View with ID %s" % data_view_id)
+
+            if 'delete' in self.request.GET:
+                data_view.delete()
+                return self.redirect('/admin/manage_data_views/')
+
+            data = {'data_view': data_view.to_dict()}
+            return self.response.write(render('admin/manage_data_view_edit.html', data))
+
+        if 'data_source' in self.request.GET:
+            data_source_id = int(self.request.get('data_source'))
+            data_source = DataSource.get_by_id(data_source_id)
+
+            if not data_source:
+                return self.response.write("No Data Source with ID %s" % data_source_id)
+            
+            data_views = [dv.to_dict() for dv in data_source.data_views]
+            
         else:
-            self.response.write(render('admin/manage_data_view_list.html'))
+            data_views = [dv.to_dict() for dv in DataView.all().fetch(limit=None)]
+
+        data = {'data_views': data_views}
+        self.response.write(render('admin/manage_data_view_list.html', data))
+
+    def post(self, data_view_id=None):
+        if data_view_id:
+            data_view = DataView.get_by_id(int(data_view_id))
+
+            if data_view:
+                data_view.filetype   = self.request.get('filetype')
+                data_view.extension  = self.request.get('extension')
+                data_view.mimetype   = self.request.get('mimetype')
+                data_view.template   = self.request.get('template')
+                data_view.save()
+                return self.redirect('/admin/manage_data_views/%s' % data_view_id)
+
+        self.redirect('/admin/manage_data_views/')
 
 
 class ManageDatabaseRoute(RequestHandler):
