@@ -3,5 +3,7 @@
 {% block title %}Manage Search{% endblock %}
 
 {% block content %}
+    <p>Over time data in the search index may diverge form records in the database, that can lead to incorrect search results.  Reindexing all documents will resolve this. This may take some time.</p>
 
+    <p><a href="/admin/manage_search?reindex">Reindex All Documents</a></p>
 {% endblock %}

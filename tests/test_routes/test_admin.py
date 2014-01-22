@@ -18,6 +18,7 @@ class TestAdminHandler(unittest.TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
+        self.testbed.init_search_stub()
 
 
     def tearDown(self):
@@ -178,6 +179,12 @@ class TestAdminHandler(unittest.TestCase):
     def test_admin_manage_database(self):
         response = main.app.get_response('/admin/manage_database')
         self.assertEqual(response.status_int, 200)
+
+
+    def test_admin_manage_search(self):
+        response = main.app.get_response('/admin/manage_search')
+        self.assertEqual(response.status_int, 200)
+
 
     def test_admin_bulk_email(self):
         response = main.app.get_response('/admin/bulk_email')

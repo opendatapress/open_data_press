@@ -4,6 +4,7 @@
 #
 import time
 from webapp2 import RequestHandler
+from helpers import search
 from helpers.views import render
 from models.user import User
 from models.data_source import DataSource
@@ -63,6 +64,7 @@ class ManageDataSourcesRoute(RequestHandler):
                 
             if 'delete' in self.request.GET:
                 data_source.delete()
+                search.delete_doc(str(data_source.key().id()))
                 return self.redirect('/admin/manage_data_sources/') 
 
             data = {'data_source': data_source.to_dict()}
@@ -99,6 +101,7 @@ class ManageDataSourcesRoute(RequestHandler):
                 data_source.tbl_stars   = int(self.request.get('tbl_stars'))
                 data_source.is_featured = bool(self.request.get('is_featured'))
                 data_source.save()
+                search.index_doc(data_source.to_search_document())
                 return self.redirect('/admin/manage_data_sources/%s' % data_source_id)
 
         self.redirect('/admin/manage_data_sources/')
@@ -115,6 +118,7 @@ class ManageDataViewsRoute(RequestHandler):
 
             if 'delete' in self.request.GET:
                 data_view.delete()
+                search.index_doc(data_view.data_source.to_search_document())
                 return self.redirect('/admin/manage_data_views/')
 
             data = {'data_view': data_view.to_dict()}
@@ -145,6 +149,7 @@ class ManageDataViewsRoute(RequestHandler):
                 data_view.mimetype   = self.request.get('mimetype')
                 data_view.template   = self.request.get('template')
                 data_view.save()
+                search.index_doc(data_view.data_source.to_search_document())
                 return self.redirect('/admin/manage_data_views/%s' % data_view_id)
 
         self.redirect('/admin/manage_data_views/')
@@ -159,6 +164,7 @@ class ManageDatabaseRoute(RequestHandler):
 
             for data_source in DataSource.all().fetch(limit=None):
                 data_source.save()
+                search.index_doc(data_source.to_search_document())
 
             for data_view in DataView.all().fetch(limit=None):
                 data_view.save()
@@ -169,8 +175,16 @@ class ManageDatabaseRoute(RequestHandler):
 
 
 class ManageSearchRoute(RequestHandler):
+
     def get(self):
-        # Empty search index and re-index all documents
+        if 'reindex' in self.request.GET:
+            search.empty_index()
+
+            for data_source in DataSource.all().fetch(limit=None):
+                search.index_doc(data_source.to_search_document())
+
+            return self.response.write("Reindexed all documents")
+
         self.response.write(render('admin/manage_search.html'))
 
 

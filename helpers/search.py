@@ -45,7 +45,16 @@ def delete_doc(doc_id=''):
         logging.exception('Failed to delete document: %s' % e)
 
 
-def rebuild_index():
+def empty_index():
     """Reindex all documents from scratch"""
-    # TODO: Admin method to rebuild search index #issue37
-    pass
+    logging.info("Attempting to delete all entries from search index")
+
+    index = search.Index(name=_OPEN_DATA_INDEX)
+
+    while True:
+        document_ids = [doc.doc_id for doc in index.get_range(ids_only=True)]
+
+        if not document_ids:
+            break
+
+        index.delete(document_ids)
