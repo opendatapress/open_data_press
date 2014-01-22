@@ -174,3 +174,7 @@ class TestAdminHandler(unittest.TestCase):
         self.assertTrue('/admin/manage_data_views/' in response.location)
         self.assertFalse(DataView.get_by_id(data_view_id))
 
+
+    def test_admin_manage_database(self):
+        response = main.app.get_response('/admin/manage_database')
+        self.assertEqual(response.status_int, 200)

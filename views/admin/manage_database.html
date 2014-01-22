@@ -4,4 +4,13 @@
 
 {% block content %}
 
+    <h2>Resave Database Entries</h2>
+    <p>If an upgrade has affected the data model, some entries may be missing required attributes. Resaving entries ensures that all entries have only correct attributes saved. This may take some time to run.</p>
+    <p>
+        <form action="/admin/manage_database">
+            <input type="hidden" name="resave" value="all">
+            <input type="submit" value="Resave All Entries">
+        </form>
+    </p>
+
 {% endblock %}

@@ -151,8 +151,20 @@ class ManageDataViewsRoute(RequestHandler):
 
 
 class ManageDatabaseRoute(RequestHandler):
+
     def get(self):
-        # Resave all DB entires using current objetc model
+        if 'resave' in self.request.GET:
+            for user in User.all().fetch(limit=None):
+                user.save()
+
+            for data_source in DataSource.all().fetch(limit=None):
+                data_source.save()
+
+            for data_view in DataView.all().fetch(limit=None):
+                data_view.save()
+
+            return self.response.write("Resaved all entries")
+
         self.response.write(render('admin/manage_database.html'))
 
 
