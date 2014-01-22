@@ -6,6 +6,7 @@ import time
 from webapp2 import RequestHandler
 from helpers.views import render
 from models.user import User
+from models.data_source import DataSource
 
 class HomeRoute(RequestHandler):
     def get(self):
@@ -51,16 +52,55 @@ class ManageUsersRoute(RequestHandler):
 
 
 class ManageDataSourcesRoute(RequestHandler):
-    def get(self):
-        # List all data sources
-        # List data sources filtered by user
-        # Edit a data source
-        # Delete a data source
-        if self.request.get('action') and self.request.get('action') == 'edit':
-            self.response.write(render('admin/manage_data_source_edit.html'))
-        else:
-            self.response.write(render('admin/manage_data_source_list.html'))
 
+    def get(self, data_source_id=None):
+        if data_source_id:
+            data_source = DataSource.get_by_id(int(data_source_id))
+
+            if not data_source:
+                return self.response.write("No Data Source with ID %s" % data_source_id)
+                
+            if 'delete' in self.request.GET:
+                data_source.delete()
+                return self.redirect('/admin/manage_data_sources/') 
+
+            data = {'data_source': data_source.to_dict()}
+            return self.response.write(render('admin/manage_data_source_edit.html', data))
+
+        if 'user' in self.request.GET: 
+            # List data sources for user
+            user_id = int(self.request.get('user'))
+            user = User.get_by_id(user_id)
+            
+            if not user:
+                return self.response.write("No User with ID %s" % user_id)
+
+            # List data sources belonging to user
+            data_sources = [ds.to_dict() for ds in user.data_sources]
+
+        else:
+            # List all data sources
+            data_sources = [ds.to_dict() for ds in DataSource.all().fetch(limit=None)]
+
+        data = {'data_sources': data_sources}
+        self.response.write(render('admin/manage_data_source_list.html', data))
+
+    def post(self, data_source_id=None):
+        if data_source_id:
+            data_source = DataSource.get_by_id(int(data_source_id))
+
+            if data_source:
+                data_source.title       = self.request.get('title')
+                data_source.slug        = self.request.get('slug')
+                data_source.description = self.request.get('description')
+                data_source.licence     = self.request.get('licence')
+                data_source.tags        = self.request.get('tags')
+                data_source.tbl_stars   = int(self.request.get('tbl_stars'))
+                data_source.is_featured = bool(self.request.get('is_featured'))
+                data_source.save()
+                return self.redirect('/admin/manage_data_sources/%s' % data_source_id)
+
+        self.redirect('/admin/manage_data_sources/')
 
 class ManageDataViewsRoute(RequestHandler):
     def get(self):

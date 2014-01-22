@@ -4,4 +4,37 @@
 
 {% block content %}
 
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>User</th>
+      <th>Slug</th>
+      <th>Views</th>
+      <th>Featured</th>
+      <th>Created</th>
+      <th>Modified</th>
+    </tr>            
+  </thead>
+  <tbody>
+    {% for data_source in data_sources %}
+      <tr>
+        <td>{{ data_source.id|e }}</td>
+        <td>{{ data_source.title|e }}</td>
+        <td><a href="/admin/manage_users/{{ data_source.user_id|e }}">{{ data_source.user_profile_slug|e }}</a></td>
+        <td><a href="{{ data_source.public_url|e }}">{{ data_source.slug|e }}</a></td>
+        <td>{%for ext in data_source.used_extensions %}{{ ext|e }}{% endfor %}</td>
+        <td>{% if data_source.is_featured %}Yes{% endif %}</td>
+        <td>{{ data_source.created_at|datetime }}</td>
+        <td>{{ data_source.modified_at|datetime }}</td>
+        <td>
+          <a href="/admin/manage_data_sources/{{ data_source.id|e }}">Edit</a>
+          <a href="/admin/manage_data_sources/{{ data_source.id|e }}?delete">Delete</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 {% endblock %}

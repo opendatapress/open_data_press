@@ -1,7 +1,118 @@
 {% extends "admin/layout.html" %}
 
-{% block title %}Manage Data Views - Edit{% endblock %}
+{% block title %}Manage Data Source <code>{{ data_source.id|e }}</code>{% endblock %}
 
 {% block content %}
+<form action="/admin/manage_data_sources/{{ data_source.id|e }}" method="post">
 
+  <fieldset>
+    <legend>Data Source Information</legend>
+    <table>
+      <tr>
+        <td>title</td>
+        <td><input type="text" name="title"placeholder="My Open Data"  value="{{ data_source.title|e }}"></td>
+      </tr>
+      <tr>
+        <td>slug</td>
+        <td><input type="text" name="slug" placeholder="my-open-data" value="{{ data_source.slug|e }}"> <a href="{{ data_source.public_url|e }}">View</a></td>
+      </tr>
+      <tr>
+        <td>description</td>
+        <td><textarea name="description">{{ data_source.description|e }}</textarea></td>
+      </tr>
+      <tr>
+        <td>licence</td>
+        <td><textarea name="licence">{{ data_source.licence|e }}</textarea></td>
+      </tr>
+      <tr>
+        <td>tags (comma seperated)</td>
+        <td><input type="text" name="tags" placeholder="apples,oranges,pears" value="{{ data_source.tags|join(',') }}"></td>
+      </tr>
+      <tr>
+        <td>tbl_stars</td>
+        <td><input type="number" name="tbl_stars" min="0" max="5" maxlength="1" value="{{ data_source.tbl_stars|e }}"></td>
+      </tr>
+      <tr>
+        <td>is_featured</td>
+        <td><input type="checkbox" name="is_featured" {% if data_source.is_featured %}checked="checked"{% endif %}></td>
+      </tr>
+      <tr>
+        <td>created_at</td>
+        <td>{{ data_source.created_at|e }}</td>
+      </tr>
+      <tr>
+        <td>modified_at</td>
+        <td>{{ data_source.modified_at|e }}</td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Google Spreadsheet Information</legend>
+    <table>
+      <tr>
+        <td>google_spredsheet</td>
+        <td>{{ data_source.google_spreadsheet|e }}</td>
+      </tr>
+      <tr>
+        <td>google_worksheet</td>
+        <td>{{ data_source.google_worksheet|e }}</td>
+      </tr>
+      <tr>
+        <td>spreadsheet_url</td>
+        <td><a href="{{ data_source.spreadsheet_url|e }}">{{ data_source.spreadsheet_url|e }}</a></td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Data Views</legend>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Extension</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data_view in data_source.data_views %}
+          <tr>
+            <td>{{ data_view.id|e }}</td>
+            <td>{{ data_view.extension|e }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>User</legend>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ data_source.user_id|e }}</td>
+          <td>{{ data_source.user_profile_name|e }}</td>
+          <td>{{ data_source.user_profile_slug|e }}</td>
+          <td>
+          <a href="/admin/manage_users/{{ data_source.user_id|e }}">View</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <input type="submit" value="Save Changes">
+    <a href="/admin/manage_data_sources">Cancel</a>
+  </fieldset>
+  
+</form>
 {% endblock %}
