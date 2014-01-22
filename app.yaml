@@ -47,11 +47,11 @@ admin_console:
   - name: Manage Users
     url: /admin/manage_users
 
-  - name: Manage Data Views
-    url: /admin/manage_data_views
-
   - name: Manage Data Sources
     url: /admin/manage_data_sources
+
+  - name: Manage Data Views
+    url: /admin/manage_data_views
 
   - name: Manage DataBase
     url: /admin/manage_database
