@@ -3,5 +3,12 @@
 {% block title %}Bulk Email{% endblock %}
 
 {% block content %}
+<p>
+    <a href="mailto:?bcc={% for user in users %}{{ user.profile_name|e }}&lt;{{ user.google_email|e }}&gt;; {% endfor %}" target="_blank">Send Bulk Email</a>
+</p>
 
+<h2>Mailing List</h2>
+<textarea disabled rows="40" cols="50">{% for user in users %}{{ user.google_name|e }}&lt;{{ user.google_email|e }}&gt;;
+{% endfor %}
+</textarea>
 {% endblock %}

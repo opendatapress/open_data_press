@@ -176,6 +176,6 @@ class ManageSearchRoute(RequestHandler):
 
 class BulkEmailRoute(RequestHandler):
     def get(self):
-        # List of name <email> for all users
-        self.response.write(render('admin/bulk_email.html'))
-
+        users = [user.to_dict() for user in User.all().fetch(limit=None)]
+        data = {'users': users}
+        self.response.write(render('admin/bulk_email.html', data))

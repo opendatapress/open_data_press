@@ -178,3 +178,7 @@ class TestAdminHandler(unittest.TestCase):
     def test_admin_manage_database(self):
         response = main.app.get_response('/admin/manage_database')
         self.assertEqual(response.status_int, 200)
+
+    def test_admin_bulk_email(self):
+        response = main.app.get_response('/admin/bulk_email')
+        self.assertEqual(response.status_int, 200)
