@@ -21,7 +21,18 @@ APP_RENDER = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.abspath('
 #     <p><%= row.code %> <%= row.title %></p>
 # <% endfor %>
 #
-DATA_RENDER = jinja2.Environment('<%', '%>', '<%=', '%>', '<#', '#>', '~', '~~')
+DATA_RENDER = jinja2.Environment(
+                    block_start_string    = '<%',
+                    block_end_string      = '%>',
+                    variable_start_string = '<%=',
+                    variable_end_string   = '%>',
+                    comment_start_string  = '<#',
+                    comment_end_string    = '#>',
+                    line_statement_prefix = '~',
+                    line_comment_prefix   = '~~',
+                    newline_sequence      = '\r\n',
+                )
+
 
 # Custom filters
 
