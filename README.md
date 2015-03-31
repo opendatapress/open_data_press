@@ -16,7 +16,7 @@ For more information checkout the [Wiki][3] or the Project Site
 
 OpenDataPress is a complete rebuild of EasyOpenData (the first incarnation). [Find out why...][2]
 
-**Update:** Regrettably, I no longer have the time to devote to this project. IF you would like to take ownership please [get in touch][4].
+**Update:** Regrettably, I no longer have the time to devote to this project. If you would like to take ownership please [get in touch][4].
 
 [1]: http://opendatapress.org
 [2]: http://craig-russell.co.uk/2013/08/29/new-direction-for-easy-open-data.html#.Uoy3Be1dWlg
